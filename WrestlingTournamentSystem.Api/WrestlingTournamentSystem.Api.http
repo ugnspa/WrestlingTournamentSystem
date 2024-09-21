@@ -1,0 +1,6 @@
+@WrestlingTournamentSystem.Api_HostAddress = http://localhost:5007
+
+GET {{WrestlingTournamentSystem.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
