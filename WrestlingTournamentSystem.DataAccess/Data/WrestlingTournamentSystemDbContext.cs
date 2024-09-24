@@ -28,9 +28,10 @@ namespace WrestlingTournamentSystem.DataAccess.Data
             modelBuilder.Entity<TournamentStatus>(entity =>
             {
                 entity.HasData(
-                    new TournamentStatus { Id = 1 , Name = "Registration" },
-                    new TournamentStatus { Id = 2, Name = "In Progress" },
-                    new TournamentStatus { Id = 3, Name = "Finished" }
+                    new TournamentStatus { Id = 1 , Name = "Closed" },
+                    new TournamentStatus { Id = 2 , Name = "Registration" },
+                    new TournamentStatus { Id = 3, Name = "In Progress" },
+                    new TournamentStatus { Id = 4, Name = "Finished" }
                 );
             });
 
@@ -48,10 +49,11 @@ namespace WrestlingTournamentSystem.DataAccess.Data
             modelBuilder.Entity<TournamentWeightCategoryStatus>(entity =>
             {
                 entity.HasData(
-                        new TournamentWeightCategoryStatus { Id = 1, Name = "Registration" },
-                        new TournamentWeightCategoryStatus { Id = 2, Name = "Weigh-In" },
-                        new TournamentWeightCategoryStatus { Id = 3, Name = "In Progress" },
-                        new TournamentWeightCategoryStatus { Id = 4, Name = "Finished" }
+                        new TournamentWeightCategoryStatus { Id = 1, Name = "Closed" },
+                        new TournamentWeightCategoryStatus { Id = 2, Name = "Registration" },
+                        new TournamentWeightCategoryStatus { Id = 3, Name = "Weigh-In" },
+                        new TournamentWeightCategoryStatus { Id = 4, Name = "In Progress" },
+                        new TournamentWeightCategoryStatus { Id = 5, Name = "Finished" }
                     );
 
             });
