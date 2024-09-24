@@ -23,10 +23,10 @@ namespace WrestlingTournamentSystem.DataAccess.Entities
         public string Location { get; set; } = null!;
 
         [Required]
-        public DateOnly StartDate { get; set; }
+        public DateTime StartDate { get; set; }
 
         [Required]
-        public DateOnly EndDate { get; set; }
+        public DateTime EndDate { get; set; }
 
         // Navigation properties
         [Required]
