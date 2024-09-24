@@ -45,8 +45,8 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateOnly>("EndDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Location")
                         .IsRequired()
@@ -58,8 +58,8 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<DateOnly>("StartDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("StatusId")
                         .HasColumnType("int");
@@ -92,16 +92,21 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Registration"
+                            Name = "Closed"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "In Progress"
+                            Name = "Registration"
                         },
                         new
                         {
                             Id = 3,
+                            Name = "In Progress"
+                        },
+                        new
+                        {
+                            Id = 4,
                             Name = "Finished"
                         });
                 });
@@ -114,11 +119,11 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateOnly>("EndDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateOnly>("StartDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("StatusId")
                         .HasColumnType("int");
@@ -161,21 +166,26 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Registration"
+                            Name = "Closed"
                         },
                         new
                         {
                             Id = 2,
-                            Name = "Weigh-In"
+                            Name = "Registration"
                         },
                         new
                         {
                             Id = 3,
-                            Name = "In Progress"
+                            Name = "Weigh-In"
                         },
                         new
                         {
                             Id = 4,
+                            Name = "In Progress"
+                        },
+                        new
+                        {
+                            Id = 5,
                             Name = "Finished"
                         });
                 });

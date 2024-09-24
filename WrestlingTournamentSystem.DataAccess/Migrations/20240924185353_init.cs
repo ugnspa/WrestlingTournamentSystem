@@ -60,8 +60,8 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Location = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    StartDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    EndDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     StatusId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -127,8 +127,8 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    StartDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    EndDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     StatusId = table.Column<int>(type: "int", nullable: false),
                     fk_TournamentId = table.Column<int>(type: "int", nullable: false),
                     fk_WeightCategoryId = table.Column<int>(type: "int", nullable: false)
@@ -185,9 +185,10 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { 1, "Registration" },
-                    { 2, "In Progress" },
-                    { 3, "Finished" }
+                    { 1, "Closed" },
+                    { 2, "Registration" },
+                    { 3, "In Progress" },
+                    { 4, "Finished" }
                 });
 
             migrationBuilder.InsertData(
@@ -195,10 +196,11 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { 1, "Registration" },
-                    { 2, "Weigh-In" },
-                    { 3, "In Progress" },
-                    { 4, "Finished" }
+                    { 1, "Closed" },
+                    { 2, "Registration" },
+                    { 3, "Weigh-In" },
+                    { 4, "In Progress" },
+                    { 5, "Finished" }
                 });
 
             migrationBuilder.InsertData(
