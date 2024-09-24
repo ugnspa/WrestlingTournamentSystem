@@ -1,5 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using WrestlingTournamentSystem.DataAccess.Data;
+using WrestlingTournamentSystem.DataAccess.Interfaces;
+using WrestlingTournamentSystem.BusinessLogic.Interfaces;
+using WrestlingTournamentSystem.BusinessLogic.Services;
+using WrestlingTournamentSystem.DataAccess.Mappers;
+using WrestlingTournamentSystem.DataAccess.Repositories;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +17,17 @@ builder.Services.AddDbContext<WrestlingTournamentSystemDbContext>(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+//Mappers
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
+//Add repositories
+builder.Services.AddScoped< ITournamentsRepository, TournamentsRepository>();
+builder.Services.AddScoped<ITournamentStatusRepository, TournamentStatusRepository>();
+
+//Add services
+builder.Services.AddScoped<ITournamentsService, TournamentsService>();
+
 
 var app = builder.Build();
 
