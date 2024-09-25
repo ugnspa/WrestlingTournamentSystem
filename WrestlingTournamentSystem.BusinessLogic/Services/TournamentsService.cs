@@ -69,6 +69,9 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 
         public async Task<TournamentReadDTO> UpdateTournamentAsync(int tournamentId, TournamentUpdateDTO tournamentUpdateDTO)
         {
+            if (tournamentUpdateDTO == null)
+                throw new ArgumentNullException(nameof(tournamentUpdateDTO));
+
             var tournamentToUpdate = await _tournamentsRepository.GetTournamentAsync(tournamentId);
 
             if (tournamentToUpdate == null)
