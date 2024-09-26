@@ -21,12 +21,12 @@ namespace WrestlingTournamentSystem.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<TournamentReadDTO>> GetTournaments()
+        public async Task<ActionResult<IEnumerable<TournamentReadDTO>>> GetTournaments()
         {
-            return await _tournamentsService.GetTournamentsAsync();
+            return Ok(await _tournamentsService.GetTournamentsAsync());
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}")]   
         public async Task<IActionResult> GetTournament(int id)
         {
             try
