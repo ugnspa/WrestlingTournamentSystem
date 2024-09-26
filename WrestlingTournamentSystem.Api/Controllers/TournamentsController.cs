@@ -50,7 +50,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
         public async Task<IActionResult> CreateTournament(TournamentCreateDTO tournamentCreateDTO)
         {
             if(!ModelState.IsValid)
-                return BadRequest(ModelState);
+                return BadRequest(ModelState);  
 
             if (tournamentCreateDTO.StartDate > tournamentCreateDTO.EndDate)
                 return UnprocessableEntity("Start date must be before end date");

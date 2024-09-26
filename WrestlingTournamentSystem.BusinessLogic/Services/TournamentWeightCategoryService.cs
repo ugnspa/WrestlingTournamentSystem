@@ -26,6 +26,25 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 
         }
 
+        public async Task DeleteTournamentWeightCategoryAsync(int tournamentId, int tournamentWeightCategoryId)
+        {
+            var tournamentExists = await _tournamentsRepository.TournamentExistsAsync(tournamentId);
+        
+            if (!tournamentExists)
+            {
+                throw new NotFoundException($"Tournament with id {tournamentId} does not exist");
+            }
+
+            var tournamentWeightCategory = await _tournamentWeightCategoryRepository.GetTournamentWeightCategoryAsync(tournamentId, tournamentWeightCategoryId);
+
+            if (tournamentWeightCategory == null)
+            {
+                throw new NotFoundException($"Tournament does not have weight category with id {tournamentWeightCategoryId}");
+            }
+
+            await _tournamentWeightCategoryRepository.DeleteTournamentWeightCategoryAsync(tournamentWeightCategory);
+        }
+
         public async Task<IEnumerable<TournamentWeightCategoryReadDTO>> GetTournamentWeightCategoriesAsync(int tournamentId)
         {
             var tournamentExists = await _tournamentsRepository.TournamentExistsAsync(tournamentId);
@@ -53,7 +72,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 
             if (tournamentWeightCategory == null)
             {
-                throw new NotFoundException($"Tournament weight category with id {tournamentWeightCategoryId} does not exist");
+                throw new NotFoundException($"Tournament does not have weight category with id {tournamentWeightCategoryId}");
             }
 
             return _mapper.Map<TournamentWeightCategoryReadDTO>(tournamentWeightCategory);
