@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WrestlingTournamentSystem.BusinessLogic.Interfaces;
 using WrestlingTournamentSystem.DataAccess.DTO.Tournament;
+using WrestlingTournamentSystem.DataAccess.Exceptions;
 
 namespace WrestlingTournamentSystem.Api.Controllers
 {
@@ -35,7 +36,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
 
                 return Ok(tournament);
             }
-            catch (ArgumentException e)
+            catch (NotFoundException e)
             {
                 return NotFound(e.Message);
             }
@@ -48,8 +49,11 @@ namespace WrestlingTournamentSystem.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateTournament(TournamentCreateDTO tournamentCreateDTO)
         {
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (tournamentCreateDTO.StartDate > tournamentCreateDTO.EndDate)
-                return StatusCode(StatusCodes.Status422UnprocessableEntity, "Start date must be before end date");
+                return UnprocessableEntity("Start date must be before end date");
             
             try
             {
@@ -60,7 +64,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
             {
                 return BadRequest(e.Message);
             }
-            catch (ArgumentException e)
+            catch (NotFoundException e)
             {
                 return NotFound(e.Message);
             }
@@ -73,15 +77,18 @@ namespace WrestlingTournamentSystem.Api.Controllers
         [HttpPut("{tournamentId}")]
         public async Task<IActionResult> UpdateTournament(int tournamentId, TournamentUpdateDTO tournamentUpdateDTO)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (tournamentUpdateDTO.StartDate > tournamentUpdateDTO.EndDate)
-                return StatusCode(StatusCodes.Status422UnprocessableEntity, "Start date must be before end date");
+                return UnprocessableEntity("Start date must be before end date");
 
             try
             {
                 var tournamentReadDTO = await _tournamentsService.UpdateTournamentAsync(tournamentId, tournamentUpdateDTO);
                 return Ok(tournamentReadDTO);
             }
-            catch(ArgumentException e) 
+            catch(NotFoundException e) 
             {                
                 return NotFound(e.Message);
             }
@@ -99,7 +106,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 await _tournamentsService.DeleteTournamentAsync(id);
                 return NoContent();
             }
-            catch (ArgumentException e)
+            catch (NotFoundException e)
             {
                 return NotFound(e.Message);
             }

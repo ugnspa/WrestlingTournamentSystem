@@ -7,6 +7,7 @@ using WrestlingTournamentSystem.DataAccess.DTO.TournamentWeightCategory;
 using WrestlingTournamentSystem.BusinessLogic.Interfaces;
 using WrestlingTournamentSystem.DataAccess.Interfaces;
 using AutoMapper;
+using WrestlingTournamentSystem.DataAccess.Exceptions;
 
 namespace WrestlingTournamentSystem.BusinessLogic.Services
 {
@@ -31,7 +32,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 
             if (!tournamentExists)
             {
-                throw new ArgumentException($"Tournament with id {tournamentId} does not exist");
+                throw new NotFoundException($"Tournament with id {tournamentId} does not exist");
             }
 
             var tournamentWeightCategories = await _tournamentWeightCategoryRepository.GetTournamentWeightCategoriesAsync(tournamentId);
@@ -45,14 +46,14 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 
             if (!tournamentExists)
             {
-                throw new ArgumentException($"Tournament with id {tournamentId} does not exist");
+                throw new NotFoundException($"Tournament with id {tournamentId} does not exist");
             }
 
             var tournamentWeightCategory = await _tournamentWeightCategoryRepository.GetTournamentWeightCategoryAsync(tournamentId, tournamentWeightCategoryId);
 
             if (tournamentWeightCategory == null)
             {
-                throw new ArgumentException($"Tournament weight category with id {tournamentWeightCategoryId} does not exist");
+                throw new NotFoundException($"Tournament weight category with id {tournamentWeightCategoryId} does not exist");
             }
 
             return _mapper.Map<TournamentWeightCategoryReadDTO>(tournamentWeightCategory);

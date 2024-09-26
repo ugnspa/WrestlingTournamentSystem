@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WrestlingTournamentSystem.BusinessLogic.Interfaces;
 using WrestlingTournamentSystem.DataAccess.DTO.TournamentWeightCategory;
+using WrestlingTournamentSystem.DataAccess.Exceptions;
 
 namespace WrestlingTournamentSystem.Api.Controllers
 {
@@ -22,7 +23,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
             {
                 return Ok(await _tournamentWeightCategoryService.GetTournamentWeightCategoriesAsync(tournamentId));
             }
-            catch (ArgumentException e)
+            catch (NotFoundException e)
             {
                 return NotFound(e.Message);
             }
@@ -38,7 +39,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
             {
                 return Ok(await _tournamentWeightCategoryService.GetTournamentWeightCategoryAsync(tournamentId, weightCategoryId));
             }
-            catch (ArgumentException e)
+            catch (NotFoundException e)
             {
                 return NotFound(e.Message);
             }

@@ -8,6 +8,7 @@ using WrestlingTournamentSystem.DataAccess.Entities;
 using WrestlingTournamentSystem.DataAccess.Interfaces;
 using AutoMapper;
 using WrestlingTournamentSystem.DataAccess.DTO.Tournament;
+using WrestlingTournamentSystem.DataAccess.Exceptions;
 
 namespace WrestlingTournamentSystem.BusinessLogic.Services
 {
@@ -31,7 +32,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             var closedStatus = await _tournamentStatusRepository.GetClosedTournamentStatus();
 
             if (closedStatus == null)
-                throw new ArgumentException("Closed status was not found");
+                throw new NotFoundException("Closed status was not found");
 
             tournament.TournamentStatus = closedStatus;
 
@@ -45,17 +46,17 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             var tournament = await _tournamentsRepository.GetTournamentAsync(id);
 
             if (tournament == null)
-                throw new ArgumentException($"Tournament with id {id} was not found");
+                throw new NotFoundException($"Tournament with id {id} was not found");
 
             await _tournamentsRepository.DeleteTournamentAsync(tournament);
         }
 
         public async Task<TournamentReadDTO> GetTournamentAsync(int id)
         {
-            var tournament= await _tournamentsRepository.GetTournamentAsync(id);
+            var tournament = await _tournamentsRepository.GetTournamentAsync(id);
 
             if (tournament == null)
-                throw new ArgumentException($"Tournament with id {id} was not found");
+                throw new NotFoundException($"Tournament with id {id} was not found");
 
             return _mapper.Map<TournamentReadDTO>(tournament);
         }
@@ -75,7 +76,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             var tournamentToUpdate = await _tournamentsRepository.GetTournamentAsync(tournamentId);
 
             if (tournamentToUpdate == null)
-                throw new ArgumentException($"Tournament with id {tournamentId} was not found");
+                throw new NotFoundException($"Tournament with id {tournamentId} was not found");
 
             _mapper.Map(tournamentUpdateDTO, tournamentToUpdate);
 
@@ -84,7 +85,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
                 var tournamentStatus = await _tournamentStatusRepository.GetTournamentStatusById(tournamentUpdateDTO.StatusId);
 
                 if(tournamentStatus == null)
-                    throw new ArgumentException($"Tournament status with id {tournamentUpdateDTO.StatusId} was not found");
+                    throw new NotFoundException($"Tournament status with id {tournamentUpdateDTO.StatusId} was not found");
 
                 tournamentToUpdate.TournamentStatus = tournamentStatus;
             }    
