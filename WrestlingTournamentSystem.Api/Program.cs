@@ -22,11 +22,13 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 //Add repositories
-builder.Services.AddScoped< ITournamentsRepository, TournamentsRepository>();
+builder.Services.AddScoped< ITournamentRepository, TournamentRepository>();
 builder.Services.AddScoped<ITournamentStatusRepository, TournamentStatusRepository>();
+builder.Services.AddScoped<ITournamentWeightCategoryRepository, TournamentWeightCategoryRepository>();
 
 //Add services
 builder.Services.AddScoped<ITournamentsService, TournamentsService>();
+builder.Services.AddScoped<ITournamentWeightCategoryService, TournamentWeightCategoryService>();
 
 
 var app = builder.Build();

@@ -9,11 +9,11 @@ using WrestlingTournamentSystem.DataAccess.Interfaces;
 
 namespace WrestlingTournamentSystem.DataAccess.Data
 {
-    public class TournamentsRepository : ITournamentsRepository
+    public class TournamentRepository : ITournamentRepository
     {
         private readonly WrestlingTournamentSystemDbContext _context;
 
-        public TournamentsRepository(WrestlingTournamentSystemDbContext context)
+        public TournamentRepository(WrestlingTournamentSystemDbContext context)
         {
             _context = context;
         }
@@ -39,6 +39,11 @@ namespace WrestlingTournamentSystem.DataAccess.Data
         public async Task<IEnumerable<Tournament>> GetTournamentsAsync()
         {
             return await _context.Tournaments.Include(t => t.TournamentStatus).ToListAsync();
+        }
+
+        public async Task<bool> TournamentExistsAsync(int id)
+        {
+            return await _context.Tournaments.AnyAsync(t => t.Id == id);
         }
 
         public async Task UpdateTournamentAsync(Tournament tournament)

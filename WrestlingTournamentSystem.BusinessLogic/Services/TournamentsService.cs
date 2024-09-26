@@ -13,10 +13,10 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 {
     public class TournamentsService : ITournamentsService
     {
-        private readonly ITournamentsRepository _tournamentsRepository;
+        private readonly ITournamentRepository _tournamentsRepository;
         private readonly ITournamentStatusRepository _tournamentStatusRepository;
         private readonly IMapper _mapper;
-        public TournamentsService(ITournamentsRepository tournamentsRepository, ITournamentStatusRepository tournamentStatusRepository, IMapper mapper) 
+        public TournamentsService(ITournamentRepository tournamentsRepository, ITournamentStatusRepository tournamentStatusRepository, IMapper mapper) 
         {
             _tournamentsRepository = tournamentsRepository;
             _tournamentStatusRepository = tournamentStatusRepository;

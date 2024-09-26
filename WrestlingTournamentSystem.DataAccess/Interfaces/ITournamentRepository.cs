@@ -7,12 +7,13 @@ using WrestlingTournamentSystem.DataAccess.Entities;
 
 namespace WrestlingTournamentSystem.DataAccess.Interfaces
 {
-    public interface ITournamentsRepository
+    public interface ITournamentRepository
     {
         public Task<IEnumerable<Tournament>> GetTournamentsAsync();
         public Task<Tournament?> GetTournamentAsync(int id);
         public Task CreateTournamentAsync(Tournament tournament);
         public Task UpdateTournamentAsync(Tournament tournament);
         public Task DeleteTournamentAsync(Tournament tournament);
+        public Task<bool> TournamentExistsAsync(int id);
     }
 }
