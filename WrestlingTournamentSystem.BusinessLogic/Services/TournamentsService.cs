@@ -36,9 +36,12 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 
             tournament.TournamentStatus = closedStatus;
 
-            await _tournamentsRepository.CreateTournamentAsync(tournament);
+            var result = await _tournamentsRepository.CreateTournamentAsync(tournament);
 
-            return _mapper.Map<TournamentReadDTO>(tournament);
+            if(result == null)
+                throw new Exception("Failed to create tournament");
+
+            return _mapper.Map<TournamentReadDTO>(result);
         }
 
         public async Task DeleteTournamentAsync(int id)

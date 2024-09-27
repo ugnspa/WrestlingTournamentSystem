@@ -18,10 +18,12 @@ namespace WrestlingTournamentSystem.DataAccess.Data
             _context = context;
         }
 
-        public async Task CreateTournamentAsync(Tournament tournament)
+        public async Task<Tournament?> CreateTournamentAsync(Tournament tournament)
         {
             _context.Tournaments.Add(tournament);
             await _context.SaveChangesAsync();
+
+            return await GetTournamentAsync(tournament.Id);
         }
 
         public async Task DeleteTournamentAsync(Tournament tournament)
