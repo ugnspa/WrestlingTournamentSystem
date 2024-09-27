@@ -42,7 +42,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}");
             }
         }
 
@@ -70,7 +70,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}");
             }
         }
 
@@ -94,7 +94,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
             }
             catch(Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}");
             }
         }
 
@@ -112,7 +112,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}");
             }
         }
     }

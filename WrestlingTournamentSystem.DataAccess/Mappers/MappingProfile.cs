@@ -26,6 +26,8 @@ namespace WrestlingTournamentSystem.DataAccess.Mappers
                 .ForMember(dest => dest.Weight, opt => opt.MapFrom(src => src.WeightCategory.Weight))
                 .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.WeightCategory.Age))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.TournamentWeightCategoryStatus.Name));
+            CreateMap<TournamentWeightCategoryCreateDTO, TournamentWeightCategory>();
+
         }
     }
 }

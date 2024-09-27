@@ -20,6 +20,14 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
             _context = context;
         }
 
+        public async Task<TournamentWeightCategory?> CreateTournamentWeightCategoryAsync(TournamentWeightCategory tournamentWeightCategory)
+        {
+            _context.TournamentWeightCategories.Add(tournamentWeightCategory);
+            await _context.SaveChangesAsync();
+
+            return await GetTournamentWeightCategoryAsync(tournamentWeightCategory.fk_TournamentId, tournamentWeightCategory.Id);
+        }
+
         public async Task DeleteTournamentWeightCategoryAsync(TournamentWeightCategory tournamentWeightCategory)
         {
             _context.TournamentWeightCategories.Remove(tournamentWeightCategory);

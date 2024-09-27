@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WrestlingTournamentSystem.BusinessLogic.Interfaces;
+using WrestlingTournamentSystem.DataAccess.DTO.Tournament;
 using WrestlingTournamentSystem.DataAccess.DTO.TournamentWeightCategory;
+using WrestlingTournamentSystem.DataAccess.Entities;
 using WrestlingTournamentSystem.DataAccess.Exceptions;
 
 namespace WrestlingTournamentSystem.Api.Controllers
@@ -29,7 +31,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}");
             }
         }
         [HttpGet("{weightCategoryId}")]
@@ -45,7 +47,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}" );
             }
         }
 
@@ -63,7 +65,31 @@ namespace WrestlingTournamentSystem.Api.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateTournamentWeightCategory(int tournamentId, TournamentWeightCategoryCreateDTO tournamentWeightCategoryCreateDTO)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (tournamentWeightCategoryCreateDTO.StartDate > tournamentWeightCategoryCreateDTO.EndDate)
+                return UnprocessableEntity("Start date must be before end date");
+
+            try
+            {
+                var tournamentWeightCategoryRead = await _tournamentWeightCategoryService.CreateTournamentWeightCategoryAsync(tournamentId, tournamentWeightCategoryCreateDTO);
+                return Created("", tournamentWeightCategoryRead);
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}");
             }
         }
     }

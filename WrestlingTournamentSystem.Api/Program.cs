@@ -25,6 +25,8 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddScoped< ITournamentRepository, TournamentRepository>();
 builder.Services.AddScoped<ITournamentStatusRepository, TournamentStatusRepository>();
 builder.Services.AddScoped<ITournamentWeightCategoryRepository, TournamentWeightCategoryRepository>();
+builder.Services.AddScoped<IWeightCategoryRepository, WeightCategoryRepository>();
+builder.Services.AddScoped<ITournamentWeightCategoryStatusRepository, TournamentWeightCategoryStatusRepository>();
 
 //Add services
 builder.Services.AddScoped<ITournamentsService, TournamentsService>();

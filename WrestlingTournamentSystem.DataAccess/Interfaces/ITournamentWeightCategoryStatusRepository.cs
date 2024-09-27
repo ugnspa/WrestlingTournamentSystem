@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace WrestlingTournamentSystem.DataAccess.Interfaces
 {
-    public interface IWeightCategoryRepository
+    public interface ITournamentWeightCategoryStatusRepository
     {
-        public Task<bool> WeightCategoryExistsAsync(int WeigthCategoryId);
+        public Task<bool> TournamentWeightCategoryStatusExistsAsync(int tournamentWeightCategoryStatusId);
     }
 }

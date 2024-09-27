@@ -5,18 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WrestlingTournamentSystem.DataAccess.DTO.Tournament
+namespace WrestlingTournamentSystem.DataAccess.DTO.TournamentWeightCategory
 {
-    public class TournamentUpdateDTO
+    public class TournamentWeightCategoryCreateDTO
     {
-        [StringLength(100)]
-        [Required]
-        public string Name { get; set; } = null!;
-
-        [StringLength(255)]
-        [Required]
-        public string Location { get; set; } = null!;
-
         [Required]
         public DateTime? StartDate { get; set; }
 
@@ -25,5 +17,8 @@ namespace WrestlingTournamentSystem.DataAccess.DTO.Tournament
 
         [Required]
         public int StatusId { get; set; }
+
+        [Required]
+        public int fk_WeightCategoryId { get; set; }
     }
 }
