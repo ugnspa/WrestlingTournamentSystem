@@ -62,7 +62,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             var wrestler = _mapper.Map<Wrestler>(wrestlerCreateDTO);
             //wrestler.PhotoUrl = AzureBlobService.DefaultWrestlerPhotoUrl; //Add default photo 
 
-            var result = await _wrestlerRepository.CreateAndAddWrestlerToTournamentWeightCategory(tournamentId, tournamentWeightCategoryId, wrestler);
+            var result = await _wrestlerRepository.CreateAndAddWrestlerToTournamentWeightCategoryAsync(tournamentId, tournamentWeightCategoryId, wrestler);
 
             if (result == null)
             {
@@ -91,6 +91,20 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             await ValidateTournamentAndWeightCategory(tournamentId, tournamentWeightCategoryId);
 
             return _mapper.Map<IEnumerable<WrestlerReadDTO>>(await _wrestlerRepository.GetTournamentWeightCategoryWrestlersAsync(tournamentId, tournamentWeightCategoryId));
+        }
+
+        public async Task DeleteWrestlerAsync(int tournamentId, int tournamentWeightCategoryId, int wrestlerId)
+        {
+            await ValidateTournamentAndWeightCategory(tournamentId, tournamentWeightCategoryId);
+
+            var wrestler = await _wrestlerRepository.GetTournamentWeightCategoryWrestlerAsync(tournamentId, tournamentWeightCategoryId, wrestlerId);
+            
+            if (wrestler == null)
+            {
+                throw new NotFoundException($"Tournament weight category does not have wrestler with id {wrestlerId}");
+            }
+
+            await _wrestlerRepository.DeleteWrestlerAsync(wrestler);
         }
     }
 }

@@ -36,7 +36,7 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Wrestler?> CreateAndAddWrestlerToTournamentWeightCategory(int tournamentId, int tournamentWeightCategoryId, Wrestler wrestler)
+        public async Task<Wrestler?> CreateAndAddWrestlerToTournamentWeightCategoryAsync(int tournamentId, int tournamentWeightCategoryId, Wrestler wrestler)
         {
             var tournamentWeightCategory = await _context.TournamentWeightCategories
                 .Include(twc => twc.Wrestlers)
@@ -50,6 +50,12 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
             tournamentWeightCategory.Wrestlers.Add(wrestler);
             await _context.SaveChangesAsync();
             return wrestler;
+        }
+
+        public async Task DeleteWrestlerAsync(Wrestler wrestler)
+        {
+            _context.Wrestlers.Remove(wrestler);
+            await _context.SaveChangesAsync();
         }
     }
 }

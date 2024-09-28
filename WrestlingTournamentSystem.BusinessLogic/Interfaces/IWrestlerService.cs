@@ -13,5 +13,6 @@ namespace WrestlingTournamentSystem.BusinessLogic.Interfaces
         public Task<IEnumerable<WrestlerReadDTO>> GetTournamentWeightCategoryWrestlersAsync(int tournamentId, int tournamentWeightCategoryId);
         public Task<WrestlerReadDTO?> GetTournamentWeightCategoryWrestlerAsync(int tournamentId, int tournamentWeightCategoryId, int wrestlerId);
         public Task<WrestlerReadDTO?> CreateAndAddWrestlerToTournamentWeightCategory(int tournamentId, int tournamentWeightCategoryId, WrestlerCreateDTO wrestlerCreateDTO);
+        public Task DeleteWrestlerAsync(int tournamentId, int tournamentWeightCategoryId, int wrestlerId);
     }
 }

@@ -70,5 +70,23 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}");
             }
         }
+
+        [HttpDelete("{wrestlerId}")]
+        public async Task<IActionResult> DeleteWrestler(int tournamentId, int weightCategoryId, int wrestlerId)
+        {
+            try
+            {
+                await _wrestlerService.DeleteWrestlerAsync(tournamentId, weightCategoryId, wrestlerId);
+                return NoContent();
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}");
+            }
+        }
     }
 }
