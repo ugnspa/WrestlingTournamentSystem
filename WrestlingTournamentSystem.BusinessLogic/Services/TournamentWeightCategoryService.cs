@@ -116,5 +116,39 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             return _mapper.Map<TournamentWeightCategoryReadDTO>(tournamentWeightCategory);
         }
 
+        public async Task<TournamentWeightCategoryReadDTO> UpdateTournamentWeightCategoryAsync(int tournamentId, int tournamentWeightCategoryId, TournamentWeightCategoryUpdateDTO tournamentWeightCategoryUpdateDTO)
+        {
+            if (tournamentWeightCategoryUpdateDTO == null)
+                throw new ArgumentNullException(nameof(tournamentWeightCategoryUpdateDTO));
+
+            var tournamentExists = await _tournamentsRepository.TournamentExistsAsync(tournamentId);
+
+            if (!tournamentExists)
+                throw new NotFoundException($"Tournament with id {tournamentId} does not exist");
+
+            var tournamentWeightCategoryToUpdate = await _tournamentWeightCategoryRepository.GetTournamentWeightCategoryAsync(tournamentId, tournamentWeightCategoryId);
+
+            if (tournamentWeightCategoryToUpdate == null)
+                throw new NotFoundException($"Tournament does not have weight category with id {tournamentWeightCategoryId}");
+
+            var tournamentWeightCategoryStatusExists = await _tournamentWeightCategoryStatusRepository.TournamentWeightCategoryStatusExistsAsync(tournamentWeightCategoryUpdateDTO.StatusId);
+
+            if(!tournamentWeightCategoryStatusExists)
+                throw new NotFoundException($"Tournament weight category status with id {tournamentWeightCategoryUpdateDTO.StatusId} does not exist");
+
+            var weightCategoryExists = await _weightCategoryRepository.WeightCategoryExistsAsync(tournamentWeightCategoryUpdateDTO.fk_WeightCategoryId);
+
+            if (!weightCategoryExists)
+                throw new NotFoundException($"Weight category with id {tournamentWeightCategoryUpdateDTO.fk_WeightCategoryId} does not exist");
+
+            _mapper.Map(tournamentWeightCategoryUpdateDTO, tournamentWeightCategoryToUpdate);
+
+            var result = await _tournamentWeightCategoryRepository.UpdateTournamentWeightCategoryAsync(tournamentWeightCategoryToUpdate);
+
+            if (result == null)
+                throw new Exception("Failed to update tournament weight category");
+
+            return _mapper.Map<TournamentWeightCategoryReadDTO>(result);
+        }
     }
 }

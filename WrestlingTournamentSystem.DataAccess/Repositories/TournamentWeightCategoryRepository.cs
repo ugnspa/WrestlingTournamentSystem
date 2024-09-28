@@ -7,6 +7,7 @@ using WrestlingTournamentSystem.DataAccess.Interfaces;
 using WrestlingTournamentSystem.DataAccess.Data;
 using WrestlingTournamentSystem.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
+using WrestlingTournamentSystem.DataAccess.Exceptions;
 
 namespace WrestlingTournamentSystem.DataAccess.Repositories
 {
@@ -52,6 +53,25 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
                 .Include(twc => twc.WeightCategory.WrestlingStyle)
                 .Include(twc => twc.TournamentWeightCategoryStatus)
                 .FirstOrDefaultAsync();
+        }
+
+        public Task<bool> TournamentWeightCategoryExistsAsync(int tournamentWeightCategoryId)
+        {
+            return _context.TournamentWeightCategories.AnyAsync(twc => twc.Id == tournamentWeightCategoryId);
+        }
+
+        public async Task<TournamentWeightCategory?> UpdateTournamentWeightCategoryAsync(TournamentWeightCategory tournamentWeightCategory)
+        {
+            var tournamentWeightCategoryToUpdate = _context.TournamentWeightCategories.Find(tournamentWeightCategory.Id);
+
+            if (tournamentWeightCategoryToUpdate == null)
+                throw new NotFoundException($"Tournament weight category with id {tournamentWeightCategory.Id} was not found");
+
+            _context.Entry(tournamentWeightCategoryToUpdate).CurrentValues.SetValues(tournamentWeightCategory);
+
+            await _context.SaveChangesAsync();
+
+            return await GetTournamentWeightCategoryAsync(tournamentWeightCategoryToUpdate.fk_TournamentId, tournamentWeightCategoryToUpdate.Id);
         }
     }
 }

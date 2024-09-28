@@ -12,7 +12,7 @@ namespace WrestlingTournamentSystem.DataAccess.Interfaces
         public Task<IEnumerable<Tournament>> GetTournamentsAsync();
         public Task<Tournament?> GetTournamentAsync(int id);
         public Task<Tournament?> CreateTournamentAsync(Tournament tournament);
-        public Task UpdateTournamentAsync(Tournament tournament);
+        public Task<Tournament?> UpdateTournamentAsync(Tournament tournament);
         public Task DeleteTournamentAsync(Tournament tournament);
         public Task<bool> TournamentExistsAsync(int id);
     }

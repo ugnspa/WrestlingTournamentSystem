@@ -92,5 +92,29 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}");
             }
         }
+
+        [HttpPut("{weightCategoryId}")]
+        public async Task<IActionResult> UpdateTournamentWeightCategory(int tournamentId, int weightCategoryId, TournamentWeightCategoryUpdateDTO tournamentWeightCategoryUpdateDTO)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (tournamentWeightCategoryUpdateDTO.StartDate > tournamentWeightCategoryUpdateDTO.EndDate)
+                return UnprocessableEntity("Start date must be before end date");
+
+            try
+            {
+                var tournamentWeightCategoryRead = await _tournamentWeightCategoryService.UpdateTournamentWeightCategoryAsync(tournamentId, weightCategoryId, tournamentWeightCategoryUpdateDTO);
+                return Ok(tournamentWeightCategoryRead);
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}");
+            }
+        }
     }
 }
