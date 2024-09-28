@@ -45,6 +45,11 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 
         public async Task<WrestlerReadDTO?> CreateAndAddWrestlerToTournamentWeightCategory(int tournamentId, int tournamentWeightCategoryId, WrestlerCreateDTO wrestlerCreateDTO)
         {
+            if(wrestlerCreateDTO == null)
+            {
+                throw new ArgumentNullException(nameof(wrestlerCreateDTO));
+            }
+
             await ValidateTournamentAndWeightCategory(tournamentId, tournamentWeightCategoryId);
 
             var wrestlingStyleExists = await _wrestlingStyleRepository.WrestlingStyleExistsAsync(wrestlerCreateDTO.StyleId);
