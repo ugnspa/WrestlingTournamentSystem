@@ -11,6 +11,6 @@ namespace WrestlingTournamentSystem.DataAccess.Interfaces
     {
         public Task<IEnumerable<Wrestler>> GetTournamentWeightCategoryWrestlersAsync(int tournamentId, int tournamentWeightCategoryId);
         public Task<Wrestler?> GetTournamentWeightCategoryWrestlerAsync(int tournamentId, int tournamentWeightCategoryId, int wrestlerId);
-
+        public Task<Wrestler?> CreateAndAddWrestlerToTournamentWeightCategory(int tournamentId, int tournamentWeightCategoryId, Wrestler wrestler);
     }
 }

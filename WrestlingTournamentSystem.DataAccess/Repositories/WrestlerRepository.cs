@@ -35,5 +35,21 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
                 .SelectMany(twc => twc.Wrestlers)
                 .ToListAsync();
         }
+
+        public async Task<Wrestler?> CreateAndAddWrestlerToTournamentWeightCategory(int tournamentId, int tournamentWeightCategoryId, Wrestler wrestler)
+        {
+            var tournamentWeightCategory = await _context.TournamentWeightCategories
+                .Include(twc => twc.Wrestlers)
+                .FirstOrDefaultAsync(twc => twc.Id == tournamentWeightCategoryId && twc.fk_TournamentId == tournamentId);
+
+            if (tournamentWeightCategory == null)
+            {
+                return null;
+            }
+
+            tournamentWeightCategory.Wrestlers.Add(wrestler);
+            await _context.SaveChangesAsync();
+            return wrestler;
+        }
     }
 }

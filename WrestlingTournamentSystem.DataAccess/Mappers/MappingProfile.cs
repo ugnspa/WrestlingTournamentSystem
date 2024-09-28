@@ -33,6 +33,7 @@ namespace WrestlingTournamentSystem.DataAccess.Mappers
             //Wrestler
             CreateMap<Wrestler, WrestlerReadDTO>()
                 .ForMember(dest => dest.Style, opt => opt.MapFrom(src => src.WrestlingStyle.Name));
+            CreateMap<WrestlerCreateDTO, Wrestler>();
 
         }
     }
