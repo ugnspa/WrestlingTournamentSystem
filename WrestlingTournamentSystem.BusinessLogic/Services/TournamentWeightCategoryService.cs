@@ -41,18 +41,20 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             if (!tournamentExists)
                 throw new NotFoundException($"Tournament with id {tournamentId} does not exist");
 
-            var tournamentWeightCategoryStatusExists = await _tournamentWeightCategoryStatusRepository.TournamentWeightCategoryStatusExistsAsync(tournamentWeightCategoryCreateDTO.StatusId);
-
-            if(!tournamentWeightCategoryStatusExists)
-                throw new NotFoundException($"Tournament weight category status with id {tournamentWeightCategoryCreateDTO.StatusId} does not exist");
-
             var weightCategoryExists = await _weightCategoryRepository.WeightCategoryExistsAsync(tournamentWeightCategoryCreateDTO.fk_WeightCategoryId);
 
             if(!weightCategoryExists)
                 throw new NotFoundException($"Weight category with id {tournamentWeightCategoryCreateDTO.fk_WeightCategoryId} does not exist");
-            
+
+            var closedWeightCategoryStatus = await _tournamentWeightCategoryStatusRepository.GetClosedTournamentWeightCategoryStatus();
+
+            if (closedWeightCategoryStatus == null)
+                throw new NotFoundException("Failed to get closed tournament weight category status");
+
             var tournamentWeightCategory = _mapper.Map<TournamentWeightCategory>(tournamentWeightCategoryCreateDTO);
+
             tournamentWeightCategory.fk_TournamentId = tournamentId;
+            tournamentWeightCategory.TournamentWeightCategoryStatus = closedWeightCategoryStatus;
 
             var result = await _tournamentWeightCategoryRepository.CreateTournamentWeightCategoryAsync(tournamentWeightCategory);
 

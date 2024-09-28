@@ -16,9 +16,6 @@ namespace WrestlingTournamentSystem.DataAccess.DTO.TournamentWeightCategory
         public DateTime? EndDate { get; set; }
 
         [Required]
-        public int StatusId { get; set; }
-
-        [Required]
         public int fk_WeightCategoryId { get; set; }
     }
 }
