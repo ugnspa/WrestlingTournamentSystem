@@ -28,5 +28,10 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
         {
             return await _context.TournamentStatuses.FirstOrDefaultAsync(ts => ts.Id == statusId);
         }
+
+        public async Task<bool> TournamentStatusExists(int statusId)
+        {
+            return await _context.TournamentStatuses.AnyAsync(ts => ts.Id == statusId);
+        }
     }
 }

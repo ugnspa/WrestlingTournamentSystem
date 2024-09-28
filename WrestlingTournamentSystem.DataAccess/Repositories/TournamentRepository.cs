@@ -49,7 +49,7 @@ namespace WrestlingTournamentSystem.DataAccess.Data
             return await _context.Tournaments.AnyAsync(t => t.Id == id);
         }
 
-        public async Task UpdateTournamentAsync(Tournament tournament)
+        public async Task<Tournament?> UpdateTournamentAsync(Tournament tournament)
         {
             var tournamentToUpdate = _context.Tournaments.Find(tournament.Id);
 
@@ -59,6 +59,8 @@ namespace WrestlingTournamentSystem.DataAccess.Data
             _context.Entry(tournamentToUpdate).CurrentValues.SetValues(tournament);
 
             await _context.SaveChangesAsync();
+
+            return await GetTournamentAsync(tournament.Id);
         }
 
 

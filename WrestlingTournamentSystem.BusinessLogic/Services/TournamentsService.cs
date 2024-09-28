@@ -76,26 +76,24 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             if (tournamentUpdateDTO == null)
                 throw new ArgumentNullException(nameof(tournamentUpdateDTO));
 
+            var tournamentStatusExists = await _tournamentStatusRepository.TournamentStatusExists(tournamentUpdateDTO.StatusId);
+
+            if (!tournamentStatusExists)
+                throw new NotFoundException($"Tournament status with id {tournamentUpdateDTO.StatusId} was not found");
+
             var tournamentToUpdate = await _tournamentsRepository.GetTournamentAsync(tournamentId);
 
             if (tournamentToUpdate == null)
                 throw new NotFoundException($"Tournament with id {tournamentId} was not found");
 
-            _mapper.Map(tournamentUpdateDTO, tournamentToUpdate);
+            _mapper.Map(tournamentUpdateDTO, tournamentToUpdate);   
 
-            if(tournamentToUpdate.TournamentStatus.Id != tournamentUpdateDTO.StatusId)
-            {
-                var tournamentStatus = await _tournamentStatusRepository.GetTournamentStatusById(tournamentUpdateDTO.StatusId);
+            var result = await _tournamentsRepository.UpdateTournamentAsync(tournamentToUpdate);
 
-                if(tournamentStatus == null)
-                    throw new NotFoundException($"Tournament status with id {tournamentUpdateDTO.StatusId} was not found");
+            if (result == null)
+                throw new Exception("Failed to update tournament");
 
-                tournamentToUpdate.TournamentStatus = tournamentStatus;
-            }    
-
-            await _tournamentsRepository.UpdateTournamentAsync(tournamentToUpdate);
-
-            return _mapper.Map<TournamentReadDTO>(tournamentToUpdate);
+            return _mapper.Map<TournamentReadDTO>(result);
         }
     }
 }
