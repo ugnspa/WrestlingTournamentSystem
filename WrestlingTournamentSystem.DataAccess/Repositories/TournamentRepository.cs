@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WrestlingTournamentSystem.DataAccess.Entities;
+using WrestlingTournamentSystem.DataAccess.Exceptions;
 using WrestlingTournamentSystem.DataAccess.Interfaces;
 
 namespace WrestlingTournamentSystem.DataAccess.Data
@@ -56,7 +57,7 @@ namespace WrestlingTournamentSystem.DataAccess.Data
             var tournamentToUpdate = _context.Tournaments.Find(tournament.Id);
 
             if (tournamentToUpdate == null)
-                throw new ArgumentException($"Tournament with id {tournament.Id} was not found");
+                throw new NotFoundException($"Tournament with id {tournament.Id} was not found");
 
             _context.Entry(tournamentToUpdate).CurrentValues.SetValues(tournament);
 
