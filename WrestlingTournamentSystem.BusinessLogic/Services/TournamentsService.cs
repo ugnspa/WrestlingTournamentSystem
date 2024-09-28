@@ -14,12 +14,12 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 {
     public class TournamentsService : ITournamentsService
     {
-        private readonly ITournamentRepository _tournamentsRepository;
+        private readonly ITournamentRepository _tournamentRepository;
         private readonly ITournamentStatusRepository _tournamentStatusRepository;
         private readonly IMapper _mapper;
-        public TournamentsService(ITournamentRepository tournamentsRepository, ITournamentStatusRepository tournamentStatusRepository, IMapper mapper) 
+        public TournamentsService(ITournamentRepository tournamentRepository, ITournamentStatusRepository tournamentStatusRepository, IMapper mapper) 
         {
-            _tournamentsRepository = tournamentsRepository;
+            _tournamentRepository = tournamentRepository;
             _tournamentStatusRepository = tournamentStatusRepository;
             _mapper = mapper;
         }
@@ -36,7 +36,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 
             tournament.TournamentStatus = closedStatus;
 
-            var result = await _tournamentsRepository.CreateTournamentAsync(tournament);
+            var result = await _tournamentRepository.CreateTournamentAsync(tournament);
 
             if(result == null)
                 throw new Exception("Failed to create tournament");
@@ -46,17 +46,17 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 
         public async Task DeleteTournamentAsync(int id)
         {
-            var tournament = await _tournamentsRepository.GetTournamentAsync(id);
+            var tournament = await _tournamentRepository.GetTournamentAsync(id);
 
             if (tournament == null)
                 throw new NotFoundException($"Tournament with id {id} was not found");
 
-            await _tournamentsRepository.DeleteTournamentAsync(tournament);
+            await _tournamentRepository.DeleteTournamentAsync(tournament);
         }
 
         public async Task<TournamentReadDTO> GetTournamentAsync(int id)
         {
-            var tournament = await _tournamentsRepository.GetTournamentAsync(id);
+            var tournament = await _tournamentRepository.GetTournamentAsync(id);
 
             if (tournament == null)
                 throw new NotFoundException($"Tournament with id {id} was not found");
@@ -66,7 +66,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 
         public async Task<IEnumerable<TournamentReadDTO>> GetTournamentsAsync()
         {
-            var tournaments = await _tournamentsRepository.GetTournamentsAsync();
+            var tournaments = await _tournamentRepository.GetTournamentsAsync();
 
             return _mapper.Map<IEnumerable<TournamentReadDTO>>(tournaments);
         }
@@ -81,14 +81,14 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             if (!tournamentStatusExists)
                 throw new NotFoundException($"Tournament status with id {tournamentUpdateDTO.StatusId} was not found");
 
-            var tournamentToUpdate = await _tournamentsRepository.GetTournamentAsync(tournamentId);
+            var tournamentToUpdate = await _tournamentRepository.GetTournamentAsync(tournamentId);
 
             if (tournamentToUpdate == null)
                 throw new NotFoundException($"Tournament with id {tournamentId} was not found");
 
             _mapper.Map(tournamentUpdateDTO, tournamentToUpdate);   
 
-            var result = await _tournamentsRepository.UpdateTournamentAsync(tournamentToUpdate);
+            var result = await _tournamentRepository.UpdateTournamentAsync(tournamentToUpdate);
 
             if (result == null)
                 throw new Exception("Failed to update tournament");

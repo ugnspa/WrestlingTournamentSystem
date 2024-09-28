@@ -9,6 +9,7 @@ using WrestlingTournamentSystem.DataAccess.Interfaces;
 using AutoMapper;
 using WrestlingTournamentSystem.DataAccess.Exceptions;
 using WrestlingTournamentSystem.DataAccess.Entities;
+using WrestlingTournamentSystem.DataAccess.Data;
 
 namespace WrestlingTournamentSystem.BusinessLogic.Services
 {
@@ -16,15 +17,15 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
     {
 
         private readonly ITournamentWeightCategoryRepository _tournamentWeightCategoryRepository;
-        private readonly ITournamentRepository _tournamentsRepository;
+        private readonly ITournamentRepository _tournamentRepository;
         private readonly ITournamentWeightCategoryStatusRepository _tournamentWeightCategoryStatusRepository;
         private readonly IWeightCategoryRepository _weightCategoryRepository;
         private readonly IMapper _mapper;
 
-        public TournamentWeightCategoryService(ITournamentWeightCategoryRepository tournamentWeightCategoryRepository, ITournamentRepository tournamentsRepository, ITournamentWeightCategoryStatusRepository tournamentWeightCategoryStatusRepository, IWeightCategoryRepository weightCategoryRepository, IMapper mapper)
+        public TournamentWeightCategoryService(ITournamentWeightCategoryRepository tournamentWeightCategoryRepository, ITournamentRepository tournamentRepository, ITournamentWeightCategoryStatusRepository tournamentWeightCategoryStatusRepository, IWeightCategoryRepository weightCategoryRepository, IMapper mapper)
         {
             _tournamentWeightCategoryRepository = tournamentWeightCategoryRepository;
-            _tournamentsRepository = tournamentsRepository;
+            _tournamentRepository = tournamentRepository;
             _tournamentWeightCategoryStatusRepository = tournamentWeightCategoryStatusRepository;
             _weightCategoryRepository = weightCategoryRepository;
             _mapper = mapper;
@@ -36,7 +37,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             if(tournamentWeightCategoryCreateDTO == null)
                 throw new ArgumentNullException(nameof(tournamentWeightCategoryCreateDTO));
 
-            var tournamentExists = await _tournamentsRepository.TournamentExistsAsync(tournamentId);
+            var tournamentExists = await _tournamentRepository.TournamentExistsAsync(tournamentId);
 
             if (!tournamentExists)
                 throw new NotFoundException($"Tournament with id {tournamentId} does not exist");
@@ -66,7 +67,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 
         public async Task DeleteTournamentWeightCategoryAsync(int tournamentId, int tournamentWeightCategoryId)
         {
-            var tournamentExists = await _tournamentsRepository.TournamentExistsAsync(tournamentId);
+            var tournamentExists = await _tournamentRepository.TournamentExistsAsync(tournamentId);
         
             if (!tournamentExists)
             {
@@ -85,7 +86,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 
         public async Task<IEnumerable<TournamentWeightCategoryReadDTO>> GetTournamentWeightCategoriesAsync(int tournamentId)
         {
-            var tournamentExists = await _tournamentsRepository.TournamentExistsAsync(tournamentId);
+            var tournamentExists = await _tournamentRepository.TournamentExistsAsync(tournamentId);
 
             if (!tournamentExists)
             {
@@ -99,7 +100,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 
         public async Task<TournamentWeightCategoryReadDTO> GetTournamentWeightCategoryAsync(int tournamentId, int tournamentWeightCategoryId)
         {
-            var tournamentExists = await _tournamentsRepository.TournamentExistsAsync(tournamentId);
+            var tournamentExists = await _tournamentRepository.TournamentExistsAsync(tournamentId);
 
             if (!tournamentExists)
             {
@@ -121,7 +122,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             if (tournamentWeightCategoryUpdateDTO == null)
                 throw new ArgumentNullException(nameof(tournamentWeightCategoryUpdateDTO));
 
-            var tournamentExists = await _tournamentsRepository.TournamentExistsAsync(tournamentId);
+            var tournamentExists = await _tournamentRepository.TournamentExistsAsync(tournamentId);
 
             if (!tournamentExists)
                 throw new NotFoundException($"Tournament with id {tournamentId} does not exist");
