@@ -27,10 +27,13 @@ builder.Services.AddScoped<ITournamentStatusRepository, TournamentStatusReposito
 builder.Services.AddScoped<ITournamentWeightCategoryRepository, TournamentWeightCategoryRepository>();
 builder.Services.AddScoped<IWeightCategoryRepository, WeightCategoryRepository>();
 builder.Services.AddScoped<ITournamentWeightCategoryStatusRepository, TournamentWeightCategoryStatusRepository>();
+builder.Services.AddScoped<IWrestlingStyleRepository, WrestlingStyleRepository>();
+builder.Services.AddScoped<IWrestlerRepository, WrestlerRepository>();
 
 //Add services
 builder.Services.AddScoped<ITournamentsService, TournamentsService>();
 builder.Services.AddScoped<ITournamentWeightCategoryService, TournamentWeightCategoryService>();
+builder.Services.AddScoped<IWrestlerService, WrestlerService>();
 
 
 var app = builder.Build();
