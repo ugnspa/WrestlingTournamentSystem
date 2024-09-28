@@ -55,11 +55,6 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public Task<bool> TournamentWeightCategoryExistsAsync(int tournamentWeightCategoryId)
-        {
-            return _context.TournamentWeightCategories.AnyAsync(twc => twc.Id == tournamentWeightCategoryId);
-        }
-
         public async Task<TournamentWeightCategory?> UpdateTournamentWeightCategoryAsync(TournamentWeightCategory tournamentWeightCategory)
         {
             var tournamentWeightCategoryToUpdate = _context.TournamentWeightCategories.Find(tournamentWeightCategory.Id);

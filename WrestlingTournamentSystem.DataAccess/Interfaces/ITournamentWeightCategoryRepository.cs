@@ -15,6 +15,5 @@ namespace WrestlingTournamentSystem.DataAccess.Interfaces
         public Task DeleteTournamentWeightCategoryAsync(TournamentWeightCategory tournamentWeightCategory);
         public Task<TournamentWeightCategory?> CreateTournamentWeightCategoryAsync(TournamentWeightCategory tournamentWeightCategory);
         public Task<TournamentWeightCategory?> UpdateTournamentWeightCategoryAsync(TournamentWeightCategory tournamentWeightCategory);
-        public Task<bool> TournamentWeightCategoryExistsAsync(int tournamentWeightCategoryId);
     }
 }
