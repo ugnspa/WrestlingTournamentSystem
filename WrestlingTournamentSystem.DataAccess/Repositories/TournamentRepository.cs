@@ -51,9 +51,6 @@ namespace WrestlingTournamentSystem.DataAccess.Data
 
         public async Task UpdateTournamentAsync(Tournament tournament)
         {
-            if (tournament == null)
-                throw new ArgumentNullException(nameof(tournament));
-
             var tournamentToUpdate = _context.Tournaments.Find(tournament.Id);
 
             if (tournamentToUpdate == null)
