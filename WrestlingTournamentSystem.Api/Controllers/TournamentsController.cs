@@ -13,7 +13,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
-    public class TournamentsController : ControllerBase
+    public class TournamentsController : BaseController
     {
         private readonly ITournamentsService _tournamentsService;
         public TournamentsController(ITournamentsService tournamentsService)
@@ -22,7 +22,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TournamentReadDTO>>> GetTournaments()
+        public async Task<IActionResult> GetTournaments()
         {
             return Ok(await _tournamentsService.GetTournamentsAsync());
         }
@@ -36,14 +36,11 @@ namespace WrestlingTournamentSystem.Api.Controllers
 
                 return Ok(tournament);
             }
-            catch (NotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
             catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}");
+                return HandleException(e);
             }
+
         }
 
         [HttpPost]
@@ -60,17 +57,9 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 var tournamentReadDTO = await _tournamentsService.CreateTournamentAsync(tournamentCreateDTO);
                 return Created("", tournamentReadDTO);
             }
-            catch (ArgumentNullException e)
-            {
-                return BadRequest(e.Message);
-            }
-            catch (NotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
             catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}");
+                return HandleException(e);
             }
         }
 
@@ -88,13 +77,9 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 var tournamentReadDTO = await _tournamentsService.UpdateTournamentAsync(tournamentId, tournamentUpdateDTO);
                 return Ok(tournamentReadDTO);
             }
-            catch(NotFoundException e) 
-            {                
-                return NotFound(e.Message);
-            }
-            catch(Exception e)
+            catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}");
+                return HandleException(e);
             }
         }
 
@@ -106,13 +91,9 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 await _tournamentsService.DeleteTournamentAsync(id);
                 return NoContent();
             }
-            catch (NotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
             catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}");
+                return HandleException(e);
             }
         }
     }

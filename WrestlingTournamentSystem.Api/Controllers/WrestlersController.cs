@@ -7,7 +7,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
 {
     [ApiController]
     [Route("api/v1/Tournaments/{tournamentId}/TournamentWeightCategories/{weightCategoryId}/[controller]")]
-    public class WrestlersController : ControllerBase
+    public class WrestlersController : BaseController
     {
         private readonly IWrestlerService _wrestlerService;
 
@@ -17,19 +17,15 @@ namespace WrestlingTournamentSystem.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<WrestlerReadDTO>>> GetTournamentWeightCategoryWrestlers(int tournamentId, int weightCategoryId)
+        public async Task<IActionResult> GetTournamentWeightCategoryWrestlers(int tournamentId, int weightCategoryId)
         {
             try
             {
                 return Ok(await _wrestlerService.GetTournamentWeightCategoryWrestlersAsync(tournamentId, weightCategoryId));
-            ;}
-            catch(NotFoundException e)
-            {
-                return NotFound(e.Message);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}");
+                return HandleException(e);
             }
         }
 
@@ -40,13 +36,9 @@ namespace WrestlingTournamentSystem.Api.Controllers
             {
                 return Ok(await _wrestlerService.GetTournamentWeightCategoryWrestlerAsync(tournamentId, weightCategoryId, wrestlerId));
             }
-            catch(NotFoundException e)
+            catch (Exception e)
             {
-                return NotFound(e.Message);
-            }
-            catch(Exception e)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}");
+                return HandleException(e);
             }
         }
         
@@ -61,17 +53,9 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 var wrestlerReadDTO = await _wrestlerService.CreateAndAddWrestlerToTournamentWeightCategory(tournamentId, weightCategoryId, wrestlerCreateDTO);
                 return Created("", wrestlerReadDTO);
             }
-            catch (NotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
-            catch (BusinessRuleValidationException e) 
-            {
-                return UnprocessableEntity(e.Message);
-            }
             catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}");
+                return HandleException(e);
             }
         }
 
@@ -83,13 +67,9 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 await _wrestlerService.DeleteWrestlerAsync(tournamentId, weightCategoryId, wrestlerId);
                 return NoContent();
             }
-            catch (NotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
             catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}");
+                return HandleException(e);
             }
         }
 
@@ -104,17 +84,9 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 var wrestlerReadDTO = await _wrestlerService.UpdateWrestlerAsync(tournamentId, weightCategoryId, wrestlerId, wrestlerUpdateDTO);
                 return Ok(wrestlerReadDTO);
             }
-            catch (NotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
-            catch (BusinessRuleValidationException e)
-            {
-                return UnprocessableEntity(e.Message);
-            }
             catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}");
+                return HandleException(e);
             }
         }
     }

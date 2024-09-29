@@ -9,7 +9,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
 {
     [ApiController]
     [Route("api/v1/Tournaments/{tournamentId}/[controller]")]
-    public class TournamentWeightCategoriesController : ControllerBase
+    public class TournamentWeightCategoriesController : BaseController
     {
         private readonly ITournamentWeightCategoryService _tournamentWeightCategoryService;
 
@@ -19,19 +19,15 @@ namespace WrestlingTournamentSystem.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TournamentWeightCategoryReadDTO>>> GetTournamentWeightCategories(int tournamentId)
+        public async Task<IActionResult> GetTournamentWeightCategories(int tournamentId)
         {
             try
             {
                 return Ok(await _tournamentWeightCategoryService.GetTournamentWeightCategoriesAsync(tournamentId));
             }
-            catch (NotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
             catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}");
+                return HandleException(e);
             }
         }
         [HttpGet("{weightCategoryId}")]
@@ -41,13 +37,9 @@ namespace WrestlingTournamentSystem.Api.Controllers
             {
                 return Ok(await _tournamentWeightCategoryService.GetTournamentWeightCategoryAsync(tournamentId, weightCategoryId));
             }
-            catch (NotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
             catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}" );
+                return HandleException(e);
             }
         }
 
@@ -59,13 +51,9 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 await _tournamentWeightCategoryService.DeleteTournamentWeightCategoryAsync(tournamentId, weightCategoryId);
                 return NoContent();
             }
-            catch (NotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
             catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}");
+                return HandleException(e);
             }
         }
 
@@ -83,13 +71,9 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 var tournamentWeightCategoryRead = await _tournamentWeightCategoryService.CreateTournamentWeightCategoryAsync(tournamentId, tournamentWeightCategoryCreateDTO);
                 return Created("", tournamentWeightCategoryRead);
             }
-            catch (NotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
             catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}");
+                return HandleException(e);
             }
         }
 
@@ -107,13 +91,9 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 var tournamentWeightCategoryRead = await _tournamentWeightCategoryService.UpdateTournamentWeightCategoryAsync(tournamentId, weightCategoryId, tournamentWeightCategoryUpdateDTO);
                 return Ok(tournamentWeightCategoryRead);
             }
-            catch (NotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
             catch (Exception e)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}");
+                return HandleException(e);
             }
         }
     }
