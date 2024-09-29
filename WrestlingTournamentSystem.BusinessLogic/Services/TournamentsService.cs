@@ -9,6 +9,7 @@ using WrestlingTournamentSystem.DataAccess.Interfaces;
 using AutoMapper;
 using WrestlingTournamentSystem.DataAccess.DTO.Tournament;
 using WrestlingTournamentSystem.DataAccess.Exceptions;
+using WrestlingTournamentSystem.BusinessLogic.Validation;
 
 namespace WrestlingTournamentSystem.BusinessLogic.Services
 {
@@ -17,16 +18,20 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
         private readonly ITournamentRepository _tournamentRepository;
         private readonly ITournamentStatusRepository _tournamentStatusRepository;
         private readonly IMapper _mapper;
-        public TournamentsService(ITournamentRepository tournamentRepository, ITournamentStatusRepository tournamentStatusRepository, IMapper mapper) 
+        private readonly IValidationService _validationService;
+        public TournamentsService(ITournamentRepository tournamentRepository, ITournamentStatusRepository tournamentStatusRepository, IMapper mapper, IValidationService validationService) 
         {
             _tournamentRepository = tournamentRepository;
             _tournamentStatusRepository = tournamentStatusRepository;
             _mapper = mapper;
+            _validationService = validationService;
         }
         public async Task<TournamentReadDTO> CreateTournamentAsync(TournamentCreateDTO tournamentCreateDTO)
         {
             if (tournamentCreateDTO == null)
                 throw new ArgumentNullException(nameof(tournamentCreateDTO));
+
+            _validationService.ValidateStartEndDates(tournamentCreateDTO.StartDate, tournamentCreateDTO.EndDate);
 
             var tournament = _mapper.Map<Tournament>(tournamentCreateDTO);
             var closedStatus = await _tournamentStatusRepository.GetClosedTournamentStatus();
@@ -85,6 +90,8 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 
             if (tournamentToUpdate == null)
                 throw new NotFoundException($"Tournament with id {tournamentId} was not found");
+
+            _validationService.ValidateStartEndDates(tournamentUpdateDTO.StartDate, tournamentUpdateDTO.EndDate);
 
             _mapper.Map(tournamentUpdateDTO, tournamentToUpdate);   
 

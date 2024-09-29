@@ -63,9 +63,6 @@ namespace WrestlingTournamentSystem.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            if (tournamentWeightCategoryCreateDTO.StartDate > tournamentWeightCategoryCreateDTO.EndDate)
-                return UnprocessableEntity("Start date must be before end date");
-
             try
             {
                 var tournamentWeightCategoryRead = await _tournamentWeightCategoryService.CreateTournamentWeightCategoryAsync(tournamentId, tournamentWeightCategoryCreateDTO);
@@ -82,9 +79,6 @@ namespace WrestlingTournamentSystem.Api.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
-            if (tournamentWeightCategoryUpdateDTO.StartDate > tournamentWeightCategoryUpdateDTO.EndDate)
-                return UnprocessableEntity("Start date must be before end date");
 
             try
             {

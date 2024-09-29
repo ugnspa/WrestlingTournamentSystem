@@ -10,6 +10,7 @@ using AutoMapper;
 using WrestlingTournamentSystem.DataAccess.Exceptions;
 using WrestlingTournamentSystem.DataAccess.Entities;
 using WrestlingTournamentSystem.DataAccess.Data;
+using WrestlingTournamentSystem.BusinessLogic.Validation;
 
 namespace WrestlingTournamentSystem.BusinessLogic.Services
 {
@@ -21,15 +22,16 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
         private readonly ITournamentWeightCategoryStatusRepository _tournamentWeightCategoryStatusRepository;
         private readonly IWeightCategoryRepository _weightCategoryRepository;
         private readonly IMapper _mapper;
+        private readonly IValidationService _validationService;
 
-        public TournamentWeightCategoryService(ITournamentWeightCategoryRepository tournamentWeightCategoryRepository, ITournamentRepository tournamentRepository, ITournamentWeightCategoryStatusRepository tournamentWeightCategoryStatusRepository, IWeightCategoryRepository weightCategoryRepository, IMapper mapper)
+        public TournamentWeightCategoryService(ITournamentWeightCategoryRepository tournamentWeightCategoryRepository, ITournamentRepository tournamentRepository, ITournamentWeightCategoryStatusRepository tournamentWeightCategoryStatusRepository, IWeightCategoryRepository weightCategoryRepository, IMapper mapper, IValidationService validationService)
         {
             _tournamentWeightCategoryRepository = tournamentWeightCategoryRepository;
             _tournamentRepository = tournamentRepository;
             _tournamentWeightCategoryStatusRepository = tournamentWeightCategoryStatusRepository;
             _weightCategoryRepository = weightCategoryRepository;
             _mapper = mapper;
-
+            _validationService = validationService;
         }
 
         public async Task<TournamentWeightCategoryReadDTO> CreateTournamentWeightCategoryAsync(int tournamentId, TournamentWeightCategoryCreateDTO tournamentWeightCategoryCreateDTO)
@@ -37,9 +39,9 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             if(tournamentWeightCategoryCreateDTO == null)
                 throw new ArgumentNullException(nameof(tournamentWeightCategoryCreateDTO));
 
-            var tournamentExists = await _tournamentRepository.TournamentExistsAsync(tournamentId);
+            var tournament = await _tournamentRepository.GetTournamentAsync(tournamentId);
 
-            if (!tournamentExists)
+            if (tournament == null)
                 throw new NotFoundException($"Tournament with id {tournamentId} does not exist");
 
             var weightCategoryExists = await _weightCategoryRepository.WeightCategoryExistsAsync(tournamentWeightCategoryCreateDTO.fk_WeightCategoryId);
@@ -51,6 +53,8 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 
             if (closedWeightCategoryStatus == null)
                 throw new NotFoundException("Failed to get closed tournament weight category status");
+
+            _validationService.ValidateTournamentWeightCategoryDates(tournament.StartDate, tournament.EndDate, tournamentWeightCategoryCreateDTO.StartDate, tournamentWeightCategoryCreateDTO.EndDate);
 
             var tournamentWeightCategory = _mapper.Map<TournamentWeightCategory>(tournamentWeightCategoryCreateDTO);
 
@@ -122,9 +126,9 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             if (tournamentWeightCategoryUpdateDTO == null)
                 throw new ArgumentNullException(nameof(tournamentWeightCategoryUpdateDTO));
 
-            var tournamentExists = await _tournamentRepository.TournamentExistsAsync(tournamentId);
+            var tournament = await _tournamentRepository.GetTournamentAsync(tournamentId);
 
-            if (!tournamentExists)
+            if (tournament == null)
                 throw new NotFoundException($"Tournament with id {tournamentId} does not exist");
 
             var tournamentWeightCategoryToUpdate = await _tournamentWeightCategoryRepository.GetTournamentWeightCategoryAsync(tournamentId, tournamentWeightCategoryId);
@@ -141,6 +145,8 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 
             if (!weightCategoryExists)
                 throw new NotFoundException($"Weight category with id {tournamentWeightCategoryUpdateDTO.fk_WeightCategoryId} does not exist");
+
+            _validationService.ValidateTournamentWeightCategoryDates(tournament.StartDate, tournament.EndDate, tournamentWeightCategoryUpdateDTO.StartDate, tournamentWeightCategoryUpdateDTO.EndDate);
 
             _mapper.Map(tournamentWeightCategoryUpdateDTO, tournamentWeightCategoryToUpdate);
 

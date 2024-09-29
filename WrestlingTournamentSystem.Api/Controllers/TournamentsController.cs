@@ -48,9 +48,6 @@ namespace WrestlingTournamentSystem.Api.Controllers
         {
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);  
-
-            if (tournamentCreateDTO.StartDate > tournamentCreateDTO.EndDate)
-                return UnprocessableEntity("Start date must be before end date");
             
             try
             {
@@ -68,9 +65,6 @@ namespace WrestlingTournamentSystem.Api.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-
-            if (tournamentUpdateDTO.StartDate > tournamentUpdateDTO.EndDate)
-                return UnprocessableEntity("Start date must be before end date");
 
             try
             {
