@@ -61,11 +61,15 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 var wrestlerReadDTO = await _wrestlerService.CreateAndAddWrestlerToTournamentWeightCategory(tournamentId, weightCategoryId, wrestlerCreateDTO);
                 return Created("", wrestlerReadDTO);
             }
-            catch(NotFoundException e)
+            catch (NotFoundException e)
             {
                 return NotFound(e.Message);
             }
-            catch(Exception e)
+            catch (BusinessRuleValidationException e) 
+            {
+                return UnprocessableEntity(e.Message);
+            }
+            catch (Exception e)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}");
             }
@@ -103,6 +107,10 @@ namespace WrestlingTournamentSystem.Api.Controllers
             catch (NotFoundException e)
             {
                 return NotFound(e.Message);
+            }
+            catch (BusinessRuleValidationException e)
+            {
+                return UnprocessableEntity(e.Message);
             }
             catch (Exception e)
             {

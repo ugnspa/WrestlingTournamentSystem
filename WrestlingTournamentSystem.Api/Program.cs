@@ -5,6 +5,7 @@ using WrestlingTournamentSystem.BusinessLogic.Interfaces;
 using WrestlingTournamentSystem.BusinessLogic.Services;
 using WrestlingTournamentSystem.DataAccess.Mappers;
 using WrestlingTournamentSystem.DataAccess.Repositories;
+using WrestlingTournamentSystem.BusinessLogic.Validation;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +17,15 @@ builder.Services.AddDbContext<WrestlingTournamentSystemDbContext>(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Wrestling Tournament System API",
+        Version = "v1",
+        Description = "API for managing wrestling tournaments and participants",
+    });
+});
 
 //Mappers
 builder.Services.AddAutoMapper(typeof(MappingProfile));
@@ -34,6 +43,10 @@ builder.Services.AddScoped<IWrestlerRepository, WrestlerRepository>();
 builder.Services.AddScoped<ITournamentsService, TournamentsService>();
 builder.Services.AddScoped<ITournamentWeightCategoryService, TournamentWeightCategoryService>();
 builder.Services.AddScoped<IWrestlerService, WrestlerService>();
+
+//Add Validation
+builder.Services.AddScoped<IValidationService, ValidationService>();
+
 
 
 var app = builder.Build();

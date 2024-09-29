@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WrestlingTournamentSystem.BusinessLogic.Interfaces;
+using WrestlingTournamentSystem.BusinessLogic.Validation;
 using WrestlingTournamentSystem.DataAccess.DTO.Wrestler;
 using WrestlingTournamentSystem.DataAccess.Entities;
 using WrestlingTournamentSystem.DataAccess.Exceptions;
@@ -19,13 +20,15 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
         private readonly ITournamentRepository _tournamentRepository;
         private readonly ITournamentWeightCategoryRepository _tournamentWeightCategoryRepository;
         private readonly IMapper _mapper;
-        public WrestlerService(IWrestlerRepository wrestlerRepository, IWrestlingStyleRepository wrestlingStyleRepository, ITournamentRepository tournamentRepository, ITournamentWeightCategoryRepository tournamentWeightCategoryRepository, IMapper mapper)
+        private readonly IValidationService _validationService;
+        public WrestlerService(IWrestlerRepository wrestlerRepository, IWrestlingStyleRepository wrestlingStyleRepository, ITournamentRepository tournamentRepository, ITournamentWeightCategoryRepository tournamentWeightCategoryRepository, IMapper mapper, IValidationService validationService)
         {
             _wrestlerRepository = wrestlerRepository;
             _wrestlingStyleRepository = wrestlingStyleRepository;
             _tournamentRepository = tournamentRepository;
             _tournamentWeightCategoryRepository = tournamentWeightCategoryRepository;
             _mapper = mapper;
+            _validationService = validationService;
         }
 
         private async Task ValidateTournamentAndWeightCategory(int tournamentId, int tournamentWeightCategoryId)
@@ -40,6 +43,19 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             if (tournamentWeightCategory == null)
             {
                 throw new NotFoundException($"Tournament does not have weight category with id {tournamentWeightCategoryId}");
+            }
+        }
+
+        private void ValidateBirthDate(DateTime birthDate)
+        {
+            if (birthDate > DateTime.Now)
+            {
+                throw new BusinessRuleValidationException("Birth date cannot be in the future");
+            }
+
+            if (birthDate < new DateTime(1900, 1, 1))
+            {
+                throw new BusinessRuleValidationException("Birth date cannot be earlier than January 1, 1900.");
             }
         }
 
@@ -58,6 +74,8 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             {
                 throw new NotFoundException($"Wrestling style with id {wrestlerCreateDTO.StyleId} does not exist");
             }
+
+            _validationService.ValidateBirthDate(wrestlerCreateDTO.BirthDate);
 
             var wrestler = _mapper.Map<Wrestler>(wrestlerCreateDTO);
             //wrestler.PhotoUrl = AzureBlobService.DefaultWrestlerPhotoUrl; //Add default photo 
@@ -120,6 +138,8 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 
             if (!wrestlingStyleExists)
                 throw new NotFoundException($"Wrestling style with id {wrestlerUpdateDTO.StyleId} does not exist");
+
+            _validationService.ValidateBirthDate(wrestlerUpdateDTO.BirthDate);
 
             _mapper.Map(wrestlerUpdateDTO, tounamentWeightCategoryWrestler);
 
