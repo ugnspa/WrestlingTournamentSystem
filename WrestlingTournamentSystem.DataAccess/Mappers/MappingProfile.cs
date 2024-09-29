@@ -34,6 +34,7 @@ namespace WrestlingTournamentSystem.DataAccess.Mappers
             CreateMap<Wrestler, WrestlerReadDTO>()
                 .ForMember(dest => dest.Style, opt => opt.MapFrom(src => src.WrestlingStyle.Name));
             CreateMap<WrestlerCreateDTO, Wrestler>();
+            CreateMap<WrestlerUpdateDTO, Wrestler>();
 
         }
     }

@@ -88,5 +88,26 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}");
             }
         }
+
+        [HttpPut("{wrestlerId}")]
+        public async Task<IActionResult> UpdateWrestler(int tournamentId, int weightCategoryId, int wrestlerId, WrestlerUpdateDTO wrestlerUpdateDTO)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var wrestlerReadDTO = await _wrestlerService.UpdateWrestlerAsync(tournamentId, weightCategoryId, wrestlerId, wrestlerUpdateDTO);
+                return Ok(wrestlerReadDTO);
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error {e.Message}");
+            }
+        }
     }
 }

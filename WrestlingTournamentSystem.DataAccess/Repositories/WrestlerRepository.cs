@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WrestlingTournamentSystem.DataAccess.Data;
 using WrestlingTournamentSystem.DataAccess.Entities;
+using WrestlingTournamentSystem.DataAccess.Exceptions;
 using WrestlingTournamentSystem.DataAccess.Interfaces;
 
 namespace WrestlingTournamentSystem.DataAccess.Repositories
@@ -25,6 +26,7 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
             return await _context.TournamentWeightCategories
                  .Where(twc => twc.Id == tournamentWeightCategoryId && twc.fk_TournamentId == tournamentId)
                  .SelectMany(twc => twc.Wrestlers)
+                 .Include(w => w.WrestlingStyle)
                  .FirstOrDefaultAsync(w => w.Id == wrestlerId);
         }
 
@@ -33,6 +35,7 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
             return await _context.TournamentWeightCategories
                 .Where(twc => twc.Id == tournamentWeightCategoryId && twc.fk_TournamentId == tournamentId)
                 .SelectMany(twc => twc.Wrestlers)
+                .Include(w => w.WrestlingStyle)
                 .ToListAsync();
         }
 
@@ -56,6 +59,27 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
         {
             _context.Wrestlers.Remove(wrestler);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<Wrestler?> UpdateWrestlerAsync(Wrestler wrestler)
+        {
+            var wrestlerToUpdate = _context.Wrestlers.Find(wrestler.Id);
+
+            if (wrestlerToUpdate == null)
+                throw new NotFoundException($"Wrestler with id {wrestler.Id} was not found");
+
+            _context.Entry(wrestlerToUpdate).CurrentValues.SetValues(wrestler);
+
+            await _context.SaveChangesAsync();
+
+            return await GetWrestlerByIdAsync(wrestlerToUpdate.Id);
+        }
+
+        public async Task<Wrestler?> GetWrestlerByIdAsync(int wrestlerId)
+        {
+            return await _context.Wrestlers
+                .Include(w => w.WrestlingStyle)
+                .FirstOrDefaultAsync(w => w.Id == wrestlerId);
         }
     }
 }

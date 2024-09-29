@@ -104,7 +104,31 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
                 throw new NotFoundException($"Tournament weight category does not have wrestler with id {wrestlerId}");
             }
 
-            await _wrestlerRepository.DeleteWrestlerAsync(wrestler);
+            await _wrestlerRepository.DeleteWrestlerAsync(wrestler); 
+        }
+
+        public async Task<WrestlerReadDTO?> UpdateWrestlerAsync(int tournamentId, int tournamentWeightCategoryId, int wrestlerId, WrestlerUpdateDTO wrestlerUpdateDTO)
+        {
+            await ValidateTournamentAndWeightCategory(tournamentId, tournamentWeightCategoryId);
+
+            var tounamentWeightCategoryWrestler = await _wrestlerRepository.GetTournamentWeightCategoryWrestlerAsync(tournamentId, tournamentWeightCategoryId, wrestlerId);
+
+            if (tounamentWeightCategoryWrestler == null)
+                throw new NotFoundException($"Tournament weight category does not have wrestler with id {wrestlerId}");
+            
+            var wrestlingStyleExists = await _wrestlingStyleRepository.WrestlingStyleExistsAsync(wrestlerUpdateDTO.StyleId);
+
+            if (!wrestlingStyleExists)
+                throw new NotFoundException($"Wrestling style with id {wrestlerUpdateDTO.StyleId} does not exist");
+
+            _mapper.Map(wrestlerUpdateDTO, tounamentWeightCategoryWrestler);
+
+            var result = await _wrestlerRepository.UpdateWrestlerAsync(tounamentWeightCategoryWrestler);
+
+            if (result == null)
+                throw new Exception($"Failed to update wrestler with id {wrestlerId}");
+
+            return _mapper.Map<WrestlerReadDTO>(result);
         }
     }
 }
