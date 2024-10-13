@@ -52,7 +52,8 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
 
             tournamentWeightCategory.Wrestlers.Add(wrestler);
             await _context.SaveChangesAsync();
-            return wrestler;
+
+            return await GetWrestlerByIdAsync(wrestler.Id);
         }
 
         public async Task DeleteWrestlerAsync(Wrestler wrestler)
