@@ -6,6 +6,7 @@ using WrestlingTournamentSystem.BusinessLogic.Services;
 using WrestlingTournamentSystem.DataAccess.Mappers;
 using WrestlingTournamentSystem.DataAccess.Repositories;
 using WrestlingTournamentSystem.BusinessLogic.Validation;
+using System.Reflection;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +26,10 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1",
         Description = "API for managing wrestling tournaments and participants",
     });
+
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
 });
 
 //Mappers
