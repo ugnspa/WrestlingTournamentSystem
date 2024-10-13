@@ -1,0 +1,869 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Wrestling Tournament System API",
+    "description": "API for managing wrestling tournaments and participants",
+    "version": "v1"
+  },
+  "paths": {
+    "/api/v1/Tournaments": {
+      "get": {
+        "tags": [
+          "Tournaments"
+        ],
+        "summary": "Retrieves all tournaments.",
+        "responses": {
+          "200": {
+            "description": "Returns a list of tournaments."
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Tournaments"
+        ],
+        "summary": "Creates a new tournament with the given details.",
+        "requestBody": {
+          "description": "The tournament creation details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TournamentCreateDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TournamentCreateDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TournamentCreateDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "A newly created tournament if details are correct."
+          },
+          "400": {
+            "description": "If the details are not correct."
+          },
+          "422": {
+            "description": "If end date is less than start date."
+          },
+          "404": {
+            "description": "If tournament status or tournament was not found."
+          }
+        }
+      }
+    },
+    "/api/v1/Tournaments/{id}": {
+      "get": {
+        "tags": [
+          "Tournaments"
+        ],
+        "summary": "Retrieves a specific tournament by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the tournament to retrieve.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "If the tournament is found."
+          },
+          "404": {
+            "description": "If the tournament is not found."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Tournaments"
+        ],
+        "summary": "Deletes a specific tournament by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The ID of the tournament to delete.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "204": {
+            "description": "If the tournament is successfully deleted."
+          },
+          "404": {
+            "description": "If the tournament is not found."
+          }
+        }
+      }
+    },
+    "/api/v1/Tournaments/{tournamentId}": {
+      "put": {
+        "tags": [
+          "Tournaments"
+        ],
+        "summary": "Updates an existing tournament with the specified ID.",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "description": "The ID of the tournament to update.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The new details to update the tournament.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TournamentUpdateDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TournamentUpdateDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TournamentUpdateDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "An updated tournament if details are correct."
+          },
+          "400": {
+            "description": "If the details are not correct."
+          },
+          "422": {
+            "description": "If end date is less than start date."
+          },
+          "404": {
+            "description": "If tournament status or tournament was not found."
+          }
+        }
+      }
+    },
+    "/api/v1/Tournaments/{tournamentId}/TournamentWeightCategories": {
+      "get": {
+        "tags": [
+          "TournamentWeightCategories"
+        ],
+        "summary": "Retrieves all weight categories for a given tournament.",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "description": "The ID of the tournament to retrieve weight categories for.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a list of weight categories for the tournament."
+          },
+          "404": {
+            "description": "If the tournament is not found."
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "TournamentWeightCategories"
+        ],
+        "summary": "Creates a new weight category within a tournament.",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "description": "The tournament ID.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The weight category creation details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TournamentWeightCategoryCreateDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TournamentWeightCategoryCreateDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TournamentWeightCategoryCreateDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "A newly created weight category."
+          },
+          "400": {
+            "description": "If the details are incorrect."
+          },
+          "422": {
+            "description": "If the end date is less than start date or dates are out of tournament date range."
+          },
+          "404": {
+            "description": "If the tournament or status is not found."
+          }
+        }
+      }
+    },
+    "/api/v1/Tournaments/{tournamentId}/TournamentWeightCategories/{weightCategoryId}": {
+      "get": {
+        "tags": [
+          "TournamentWeightCategories"
+        ],
+        "summary": "Retrieves a specific weight category by ID within a tournament.",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "description": "The tournament ID.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "weightCategoryId",
+            "in": "path",
+            "description": "The weight category ID to retrieve.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The weight category details if found."
+          },
+          "404": {
+            "description": "If the weight category or tournament is not found."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "TournamentWeightCategories"
+        ],
+        "summary": "Deletes a specific weight category from a tournament.",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "description": "The tournament ID.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "weightCategoryId",
+            "in": "path",
+            "description": "The weight category ID to delete.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "204": {
+            "description": "If the weight category is successfully deleted."
+          },
+          "404": {
+            "description": "If the weight category or tournament is not found."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "TournamentWeightCategories"
+        ],
+        "summary": "Updates a specific weight category within a tournament.",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "description": "The tournament ID.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "weightCategoryId",
+            "in": "path",
+            "description": "The weight category ID to update.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The new details for the weight category.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TournamentWeightCategoryUpdateDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TournamentWeightCategoryUpdateDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TournamentWeightCategoryUpdateDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "An updated weight category if details are correct."
+          },
+          "400": {
+            "description": "If the details are not correct."
+          },
+          "422": {
+            "description": "If the end date is less than start date or dates are out of tournament date range."
+          },
+          "404": {
+            "description": "If the tournament, weight category, or status is not found."
+          }
+        }
+      }
+    },
+    "/api/v1/Tournaments/{tournamentId}/TournamentWeightCategories/{weightCategoryId}/Wrestlers": {
+      "get": {
+        "tags": [
+          "Wrestlers"
+        ],
+        "summary": "Gets all wrestlers within a specific tournament and weight category.",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "description": "The tournament's identifier.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "weightCategoryId",
+            "in": "path",
+            "description": "The weight category's identifier.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Returns a list of wrestlers in the specified tournament and weight category."
+          },
+          "404": {
+            "description": "If the tournament or weight category is not found."
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Wrestlers"
+        ],
+        "summary": "Adds a new wrestler to a tournament weight category.",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "description": "The tournament's identifier.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "weightCategoryId",
+            "in": "path",
+            "description": "The weight category's identifier.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The wrestler creation data transfer object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WrestlerCreateDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WrestlerCreateDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/WrestlerCreateDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "A newly created wrestler within the specified tournament and weight category."
+          },
+          "400": {
+            "description": "If the details are incorrect."
+          },
+          "422": {
+            "description": "If the birthday is in the future."
+          },
+          "404": {
+            "description": "If the tournament or weight category is not found."
+          }
+        }
+      }
+    },
+    "/api/v1/Tournaments/{tournamentId}/TournamentWeightCategories/{weightCategoryId}/Wrestlers/{wrestlerId}": {
+      "get": {
+        "tags": [
+          "Wrestlers"
+        ],
+        "summary": "Retrieves a specific wrestler within a tournament and weight category.",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "description": "The tournament's identifier.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "weightCategoryId",
+            "in": "path",
+            "description": "The weight category's identifier.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "wrestlerId",
+            "in": "path",
+            "description": "The wrestler's identifier.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Details of the requested wrestler."
+          },
+          "404": {
+            "description": "If the wrestler, tournament, or weight category is not found."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Wrestlers"
+        ],
+        "summary": "Deletes a wrestler from a tournament weight category.",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "description": "The tournament's identifier.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "weightCategoryId",
+            "in": "path",
+            "description": "The weight category's identifier.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "wrestlerId",
+            "in": "path",
+            "description": "The wrestler's identifier to delete.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "204": {
+            "description": "If the wrestler is successfully deleted."
+          },
+          "404": {
+            "description": "If the wrestler, tournament, or weight category is not found."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Wrestlers"
+        ],
+        "summary": "Updates the details of an existing wrestler in a tournament weight category.",
+        "parameters": [
+          {
+            "name": "tournamentId",
+            "in": "path",
+            "description": "The tournament's identifier.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "weightCategoryId",
+            "in": "path",
+            "description": "The weight category's identifier.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "wrestlerId",
+            "in": "path",
+            "description": "The wrestler's identifier to update.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "The wrestler update data transfer object.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WrestlerUpdateDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WrestlerUpdateDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/WrestlerUpdateDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "An updated wrestler if successful."
+          },
+          "400": {
+            "description": "If the details are incorrect."
+          },
+          "422": {
+            "description": "If the birthday is in the future."
+          },
+          "404": {
+            "description": "If the wrestler, tournament, or weight category is not found."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "TournamentCreateDTO": {
+        "required": [
+          "endDate",
+          "location",
+          "name",
+          "startDate"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "location": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TournamentUpdateDTO": {
+        "required": [
+          "endDate",
+          "location",
+          "name",
+          "startDate",
+          "statusId"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "location": {
+            "maxLength": 255,
+            "minLength": 0,
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "statusId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TournamentWeightCategoryCreateDTO": {
+        "required": [
+          "endDate",
+          "fk_WeightCategoryId",
+          "startDate"
+        ],
+        "type": "object",
+        "properties": {
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "fk_WeightCategoryId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TournamentWeightCategoryUpdateDTO": {
+        "required": [
+          "endDate",
+          "fk_WeightCategoryId",
+          "startDate",
+          "statusId"
+        ],
+        "type": "object",
+        "properties": {
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "statusId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fk_WeightCategoryId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "WrestlerCreateDTO": {
+        "required": [
+          "birthDate",
+          "country",
+          "name",
+          "styleId",
+          "surname"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
+          },
+          "surname": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
+          },
+          "country": {
+            "maxLength": 60,
+            "minLength": 0,
+            "type": "string"
+          },
+          "birthDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "styleId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "WrestlerUpdateDTO": {
+        "required": [
+          "birthDate",
+          "country",
+          "name",
+          "styleId",
+          "surname"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
+          },
+          "surname": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
+          },
+          "country": {
+            "maxLength": 60,
+            "minLength": 0,
+            "type": "string"
+          },
+          "birthDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "photoUrl": {
+            "maxLength": 2048,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "styleId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}
