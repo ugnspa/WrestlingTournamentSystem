@@ -11,5 +11,6 @@ namespace WrestlingTournamentSystem.BusinessLogic.Interfaces
     public interface IAccountService
     {
         public Task Register(RegisterUserDTO registerUserDTO);
+        public Task<SuccessfulLoginDTO> Login(LoginUserDTO loginUserDTO);
     }
 }

@@ -16,6 +16,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
         }
 
         [HttpPost]
+        [Route("Register")]
         public async Task<IActionResult> Register(RegisterUserDTO registerUserDTO)
         {
             if(!ModelState.IsValid)
@@ -25,6 +26,24 @@ namespace WrestlingTournamentSystem.Api.Controllers
             {
                 await _accountsService.Register(registerUserDTO);
                 return Created();
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
+        }
+
+        [HttpPost]
+        [Route("Login")]
+        public async Task<IActionResult> Login(LoginUserDTO loginUserDTO)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var loginDTO = await _accountsService.Login(loginUserDTO);
+                return Ok(loginDTO);
             }
             catch (Exception ex)
             {

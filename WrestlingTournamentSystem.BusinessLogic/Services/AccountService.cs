@@ -18,12 +18,14 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 {
     public class AccountService : IAccountService
     {
+        private readonly JwtTokenService _jwtTokenService;
         private readonly IAccountRepository _accountRepository;
         private readonly IValidationService _validationService;
         private readonly IMapper _mapper;
 
-        public AccountService(UserManager<User> userManager, IValidationService validationService, IMapper mapper, IAccountRepository accountRepository)
+        public AccountService(UserManager<User> userManager, JwtTokenService jwtTokenService, IValidationService validationService, IMapper mapper, IAccountRepository accountRepository)
         {
+            _jwtTokenService = jwtTokenService;
             _validationService = validationService;
             _mapper = mapper;
             _accountRepository = accountRepository;
@@ -40,7 +42,26 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 
             var newUser = _mapper.Map<User>(registerUserDTO);
 
-            await _accountRepository.CreateUser(newUser, registerUserDTO.Password);
+            await _accountRepository.CreateUserAsync(newUser, registerUserDTO.Password);
+        }
+
+        public async Task<SuccessfulLoginDTO> Login(LoginUserDTO loginUserDTO)
+        {
+            var user = await _accountRepository.FindByUsernameAsync(loginUserDTO.UserName);
+
+            if (user == null)
+                throw new BusinessRuleValidationException("Invalid username or password");
+
+            var isPasswordValid = await _accountRepository.IsPasswordValidAsync(user, loginUserDTO.Password);
+
+            if (!isPasswordValid)
+                throw new BusinessRuleValidationException("Invalid username or password");
+
+            var userRoles = await _accountRepository.GetUserRolesAsync(user);
+
+            var accessToken = _jwtTokenService.CreateAccessToken(user.UserName, user.Id, userRoles);
+
+            return new SuccessfulLoginDTO(accessToken);
         }
     }
 }

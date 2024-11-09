@@ -23,7 +23,7 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
             _context = context;
             _userManager = userManager;
         }
-        public async Task CreateUser(User user, string password)
+        public async Task CreateUserAsync(User user, string password)
         {
             using var transaction = await _context.Database.BeginTransactionAsync();
 
@@ -52,6 +52,14 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
             return await _userManager.FindByNameAsync(userName);
         }
 
+        public async Task<bool> IsPasswordValidAsync(User user, string password)
+        {
+            return await _userManager.CheckPasswordAsync(user, password);
+        }
 
+        public async Task<IList<string>> GetUserRolesAsync(User user)
+        {
+            return await _userManager.GetRolesAsync(user);
+        }
     }
 }
