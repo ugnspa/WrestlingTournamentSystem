@@ -7,12 +7,20 @@ namespace WrestlingTournamentSystem.Api.Controllers
     {
         protected IActionResult HandleException(Exception ex)
         {
-            return ex switch
+            var statusCode = ex switch
             {
-                NotFoundException => NotFound(ex.Message),
-                BusinessRuleValidationException => UnprocessableEntity(ex.Message),
-                _ => StatusCode(StatusCodes.Status500InternalServerError, $"Internal Server Error: {ex.Message}")
+                NotFoundException => StatusCodes.Status404NotFound,
+                BusinessRuleValidationException => StatusCodes.Status422UnprocessableEntity,
+                _ => StatusCodes.Status500InternalServerError
             };
+
+            var respone = new
+            {
+                status = statusCode,
+                title = statusCode == StatusCodes.Status500InternalServerError ? "Internal Server Error" : ex.Message
+            };
+
+            return StatusCode(statusCode, respone);
         }
     }
 }
