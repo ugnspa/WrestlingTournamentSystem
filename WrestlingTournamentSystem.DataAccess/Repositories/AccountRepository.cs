@@ -33,7 +33,7 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
                 if (!createUserResult.Succeeded)
                     throw new BusinessRuleValidationException(createUserResult.Errors.First().Description);
 
-                var addRoleResult = await _userManager.AddToRoleAsync(user, UserRoles.Coach.ToString());
+                var addRoleResult = await _userManager.AddToRoleAsync(user, UserRoles.Coach);
                 if (!addRoleResult.Succeeded)
                     throw new BusinessRuleValidationException(addRoleResult.Errors.First().Description);
 

@@ -54,7 +54,7 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ITournamentsService, TournamentsService>();
 builder.Services.AddScoped<ITournamentWeightCategoryService, TournamentWeightCategoryService>();
 builder.Services.AddScoped<IWrestlerService, WrestlerService>();
-builder.Services.AddScoped<JwtTokenService>(provider =>
+builder.Services.AddTransient<JwtTokenService>(provider =>
 {
     var configuration = provider.GetRequiredService<IConfiguration>();
 
@@ -67,6 +67,7 @@ builder.Services.AddScoped<JwtTokenService>(provider =>
     return new JwtTokenService(key, issuer, audience);
 });
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<DatabaseSeeder>();
 
 //Add Validation
 builder.Services.AddScoped<IValidationService, ValidationService>();
@@ -94,6 +95,12 @@ builder.Services.AddAuthentication(option =>
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+//Seed database
+using var scope = app.Services.CreateScope();
+var context = scope.ServiceProvider.GetRequiredService<WrestlingTournamentSystemDbContext>();
+var dbSeeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
+await dbSeeder.SeedAsync();
 
 if (app.Environment.IsDevelopment())
 {
