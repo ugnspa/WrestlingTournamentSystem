@@ -26,7 +26,7 @@
 ## **Naudojamos technologijos:**
 
 - **Backend**: .NET Core
-- **Frontend**: Vue.js
+- **Frontend**: React
 - **Duomenų bazė**: MSSQL
 - **Azure servisai**: „Key Vault“ ir „Azure Storage“
 - **Hostingas**: Azure
