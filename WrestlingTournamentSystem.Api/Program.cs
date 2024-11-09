@@ -7,6 +7,11 @@ using WrestlingTournamentSystem.DataAccess.Mappers;
 using WrestlingTournamentSystem.DataAccess.Repositories;
 using WrestlingTournamentSystem.BusinessLogic.Validation;
 using System.Reflection;
+using WrestlingTournamentSystem.DataAccess.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -52,7 +57,27 @@ builder.Services.AddScoped<IWrestlerService, WrestlerService>();
 //Add Validation
 builder.Services.AddScoped<IValidationService, ValidationService>();
 
+//Add Identity
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<WrestlingTournamentSystemDbContext>()
+    .AddDefaultTokenProviders();
 
+//Add Authentication
+builder.Services.AddAuthentication(option =>
+{
+    option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(option =>
+{
+    option.MapInboundClaims = false;
+    option.TokenValidationParameters.ValidAudience = builder.Configuration["JWT:ValidAudience"];
+    option.TokenValidationParameters.ValidIssuer = builder.Configuration["JWT:ValidIssuer"];
+    option.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]));
+});
+
+//Add Authorization
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -67,5 +92,9 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.Run();

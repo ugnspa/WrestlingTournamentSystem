@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WrestlingTournamentSystem.DataAccess.Entities;
 
 namespace WrestlingTournamentSystem.DataAccess.Data
 {
-    public class WrestlingTournamentSystemDbContext : DbContext
+    public class WrestlingTournamentSystemDbContext : IdentityDbContext<User>
     {
         public WrestlingTournamentSystemDbContext(DbContextOptions<WrestlingTournamentSystemDbContext> options) : base(options)
         {
