@@ -62,5 +62,13 @@ namespace WrestlingTournamentSystem.BusinessLogic.Validation
                 throw new BusinessRuleValidationException($"Weight category dates must be within the tournament's start ({tournamentStartDate.Value.Date}) and end ({tournamentEndDate.Value.Date}) dates.");
             }
         }
+
+        public void ValidateRegisterPassword(string password, string confirmPassword)
+        {
+            if (password != confirmPassword)
+            {
+                throw new BusinessRuleValidationException("Passwords do not match.");
+            }
+        }
     }
 }

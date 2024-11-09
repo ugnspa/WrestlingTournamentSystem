@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using WrestlingTournamentSystem.DataAccess.DTO.Tournament;
 using WrestlingTournamentSystem.DataAccess.DTO.TournamentWeightCategory;
+using WrestlingTournamentSystem.DataAccess.DTO.User;
 using WrestlingTournamentSystem.DataAccess.DTO.Wrestler;
 using WrestlingTournamentSystem.DataAccess.Entities;
 
@@ -36,6 +37,8 @@ namespace WrestlingTournamentSystem.DataAccess.Mappers
             CreateMap<WrestlerCreateDTO, Wrestler>();
             CreateMap<WrestlerUpdateDTO, Wrestler>();
 
+            //User
+            CreateMap<RegisterUserDTO, User>();
         }
     }
 }

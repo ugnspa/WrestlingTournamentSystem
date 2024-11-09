@@ -48,11 +48,25 @@ builder.Services.AddScoped<IWeightCategoryRepository, WeightCategoryRepository>(
 builder.Services.AddScoped<ITournamentWeightCategoryStatusRepository, TournamentWeightCategoryStatusRepository>();
 builder.Services.AddScoped<IWrestlingStyleRepository, WrestlingStyleRepository>();
 builder.Services.AddScoped<IWrestlerRepository, WrestlerRepository>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 
 //Add services
 builder.Services.AddScoped<ITournamentsService, TournamentsService>();
 builder.Services.AddScoped<ITournamentWeightCategoryService, TournamentWeightCategoryService>();
 builder.Services.AddScoped<IWrestlerService, WrestlerService>();
+builder.Services.AddScoped<JwtTokenService>(provider =>
+{
+    var configuration = provider.GetRequiredService<IConfiguration>();
+
+    var secret = configuration["JWT:Secret"];
+    var issuer = configuration["JWT:ValidIssuer"];
+    var audience = configuration["JWT:ValidAudience"];
+
+    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
+
+    return new JwtTokenService(key, issuer, audience);
+});
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 //Add Validation
 builder.Services.AddScoped<IValidationService, ValidationService>();
