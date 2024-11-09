@@ -43,7 +43,7 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
             {
                 await transaction.RollbackAsync();
 
-                throw new Exception("An error occurred while processing your request.");
+                throw new Exception("An error occurred creating User and adding Roles.");
             }
         }
 
