@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,16 +14,21 @@ namespace WrestlingTournamentSystem.DataAccess.Data
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        public DatabaseSeeder(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        private readonly WrestlingTournamentSystemDbContext _context;
+        public DatabaseSeeder(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, WrestlingTournamentSystemDbContext context)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _context = context;
         }
 
         public async Task SeedAsync()
         {
             await AddDefaultRolesAsync();
             await AddAdminUserAsync();
+            await AddTournamentStatusesAsync();
+            await AddWrestlingStylesAsync();
+            await AddTournamentWeightCategoryStatusesAsync();
         }
 
         private async Task AddAdminUserAsync()
@@ -56,6 +62,58 @@ namespace WrestlingTournamentSystem.DataAccess.Data
                 {
                     await _roleManager.CreateAsync(new IdentityRole(role));
                 }
+            }
+        }
+
+        private async Task AddTournamentStatusesAsync()
+        {
+            if (!await _context.TournamentStatuses.AnyAsync())
+            {
+                var statuses = new[]
+                {
+                    new TournamentStatus { Id = 1, Name = "Closed" },
+                    new TournamentStatus { Id = 2, Name = "Registration" },
+                    new TournamentStatus { Id = 3, Name = "In Progress" },
+                    new TournamentStatus { Id = 4, Name = "Finished" }
+                };
+
+                _context.TournamentStatuses.AddRange(statuses);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        private async Task AddWrestlingStylesAsync()
+        {
+            if (!await _context.WrestlingStyles.AnyAsync())
+            {
+                var styles = new[]
+                {
+                    new WrestlingStyle { Id = 1, Name = "GR" },
+                    new WrestlingStyle { Id = 2, Name = "FS" },
+                    new WrestlingStyle { Id = 3, Name = "WW" },
+                    new WrestlingStyle { Id = 4, Name = "BW" }
+                };
+
+                _context.WrestlingStyles.AddRange(styles);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        private async Task AddTournamentWeightCategoryStatusesAsync()
+        {
+            if (!await _context.TournamentWeightCategoryStatuses.AnyAsync())
+            {
+                var weightCategoryStatuses = new[]
+                {
+                    new TournamentWeightCategoryStatus { Id = 1, Name = "Closed" },
+                    new TournamentWeightCategoryStatus { Id = 2, Name = "Registration" },
+                    new TournamentWeightCategoryStatus { Id = 3, Name = "Weigh-In" },
+                    new TournamentWeightCategoryStatus { Id = 4, Name = "In Progress" },
+                    new TournamentWeightCategoryStatus { Id = 5, Name = "Finished" }
+                };
+
+                _context.TournamentWeightCategoryStatuses.AddRange(weightCategoryStatuses);
+                await _context.SaveChangesAsync();
             }
         }
     }

@@ -26,39 +26,6 @@ namespace WrestlingTournamentSystem.DataAccess.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            modelBuilder.Entity<TournamentStatus>(entity =>
-            {
-                entity.HasData(
-                    new TournamentStatus { Id = 1 , Name = "Closed" },
-                    new TournamentStatus { Id = 2 , Name = "Registration" },
-                    new TournamentStatus { Id = 3, Name = "In Progress" },
-                    new TournamentStatus { Id = 4, Name = "Finished" }
-                );
-            });
-
-            modelBuilder.Entity<WrestlingStyle>(entity =>
-            {
-                entity.HasData(
-                        new WrestlingStyle { Id = 1, Name = "GR" },
-                        new WrestlingStyle { Id = 2, Name = "FS" },
-                        new WrestlingStyle { Id = 3, Name = "WW" },
-                        new WrestlingStyle { Id = 4, Name = "BW" }
-                    );
-
-            });
-
-            modelBuilder.Entity<TournamentWeightCategoryStatus>(entity =>
-            {
-                entity.HasData(
-                        new TournamentWeightCategoryStatus { Id = 1, Name = "Closed" },
-                        new TournamentWeightCategoryStatus { Id = 2, Name = "Registration" },
-                        new TournamentWeightCategoryStatus { Id = 3, Name = "Weigh-In" },
-                        new TournamentWeightCategoryStatus { Id = 4, Name = "In Progress" },
-                        new TournamentWeightCategoryStatus { Id = 5, Name = "Finished" }
-                    );
-
-            });
-
             modelBuilder.Entity<User>(entity =>
             {
                 entity.HasMany(u => u.Tournaments).WithOne(t => t.Organiser).HasForeignKey(t => t.OrganiserId).OnDelete(DeleteBehavior.NoAction);
