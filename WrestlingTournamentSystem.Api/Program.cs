@@ -7,11 +7,11 @@ using WrestlingTournamentSystem.DataAccess.Mappers;
 using WrestlingTournamentSystem.DataAccess.Repositories;
 using WrestlingTournamentSystem.BusinessLogic.Validation;
 using System.Reflection;
-using WrestlingTournamentSystem.DataAccess.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using WrestlingTournamentSystem.DataAccess.Entities;
 
 
 var builder = WebApplication.CreateBuilder(args);

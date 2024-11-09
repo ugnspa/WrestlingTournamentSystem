@@ -22,5 +22,9 @@ namespace WrestlingTournamentSystem.DataAccess.Entities
         [Required]
         [StringLength(50)]
         public string City { get; set; } = null!;
+
+        //navigation properties 
+        public ICollection<Tournament> Tournaments { get; set; } = new List<Tournament>();
+        public ICollection<Wrestler> Wrestlers { get; set; } = new List<Wrestler>();
     }
 }

@@ -30,6 +30,11 @@ namespace WrestlingTournamentSystem.DataAccess.Entities
 
         // Navigation properties
         [Required]
+        public string OrganiserId { get; set; } = null!;
+        public User Organiser { get; set; } = null!;
+
+
+        [Required]
         public int StatusId { get; set; }
         public TournamentStatus TournamentStatus { get; set; } = null!;
 

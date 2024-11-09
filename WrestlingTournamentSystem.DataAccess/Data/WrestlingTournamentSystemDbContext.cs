@@ -22,7 +22,7 @@ namespace WrestlingTournamentSystem.DataAccess.Data
         public DbSet<WrestlingStyle> WrestlingStyles { get; set; }
         public DbSet<WeightCategory> WeightCategories { get; set; }
         public DbSet<Wrestler> Wrestlers { get; set; }
-
+ 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -57,6 +57,12 @@ namespace WrestlingTournamentSystem.DataAccess.Data
                         new TournamentWeightCategoryStatus { Id = 5, Name = "Finished" }
                     );
 
+            });
+
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasMany(u => u.Tournaments).WithOne(t => t.Organiser).HasForeignKey(t => t.OrganiserId).OnDelete(DeleteBehavior.NoAction);
+                entity.HasMany(entity => entity.Wrestlers).WithOne(w => w.Coach).HasForeignKey(w => w.CoachId).OnDelete(DeleteBehavior.NoAction);
             });
 
             modelBuilder.Entity<Tournament>(entity =>
