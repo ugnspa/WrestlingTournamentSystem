@@ -37,9 +37,8 @@ namespace WrestlingTournamentSystem.DataAccess.Entities
         public int StyleId { get; set; }
         public WrestlingStyle WrestlingStyle { get; set; } = null!;
 
-        [Required]
-        public string CoachId { get; set; } = null!;
-        public User Coach { get; set; } = null!;
+        public string? CoachId { get; set; }
+        public User? Coach { get; set; } = null!;
 
         public ICollection<TournamentWeightCategory> TournamentWeightCategories { get; set; } = new List<TournamentWeightCategory>();
     }

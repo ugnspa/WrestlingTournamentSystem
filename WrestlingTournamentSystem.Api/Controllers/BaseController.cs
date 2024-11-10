@@ -12,6 +12,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
             {
                 NotFoundException => StatusCodes.Status404NotFound,
                 BusinessRuleValidationException => StatusCodes.Status422UnprocessableEntity,
+                ForbiddenException => StatusCodes.Status403Forbidden,
                 _ => StatusCodes.Status500InternalServerError
             };
 

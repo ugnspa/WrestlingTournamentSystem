@@ -50,7 +50,7 @@ namespace WrestlingTournamentSystem.DataAccess.Data
                 var createAdminResult = await _userManager.CreateAsync(newAdminUser, "Password1!"); //Change to env
                 if (createAdminResult.Succeeded) 
                 {
-                    await _userManager.AddToRolesAsync(newAdminUser, UserRoles.All);
+                    await _userManager.AddToRoleAsync(newAdminUser, UserRoles.Admin);
                 }
             }
         }
@@ -172,6 +172,34 @@ namespace WrestlingTournamentSystem.DataAccess.Data
                 if (existingStatus == null)
                 {
                     _context.TournamentWeightCategoryStatuses.Add(status);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task AddPrimaryWeightCategoriesAsync()
+        {
+            var primaryWeightCategories = new[]
+            {
+                    new WeightCategory { Id = 1, Weight = 60, Age = "Seniors", PrimaryCategory = true, StyleId = 1 },
+                    new WeightCategory { Id = 2, Weight = 63, Age = "Seniors", PrimaryCategory = true, StyleId = 1 },
+                    new WeightCategory { Id = 3, Weight = 67, Age = "Seniors", PrimaryCategory = true, StyleId = 1 },
+                    new WeightCategory { Id = 4, Weight = 72, Age = "Seniors", PrimaryCategory = true, StyleId = 1 },
+                    new WeightCategory { Id = 5, Weight = 77, Age = "Seniors", PrimaryCategory = true, StyleId = 1 },
+                    new WeightCategory { Id = 6, Weight = 82, Age = "Seniors", PrimaryCategory = true, StyleId = 1 },
+                    new WeightCategory { Id = 7, Weight = 87, Age = "Seniors", PrimaryCategory = true, StyleId = 1 },
+                    new WeightCategory { Id = 8, Weight = 92, Age = "Seniors", PrimaryCategory = true, StyleId = 1 },
+                    new WeightCategory { Id = 9, Weight = 97, Age = "Seniors", PrimaryCategory = true, StyleId = 1 },
+                    new WeightCategory { Id = 10, Weight = 130, Age = "Seniors", PrimaryCategory = true, StyleId = 1 }
+            };
+
+            foreach (var wc in primaryWeightCategories)
+            {
+                var existingStatus = await _context.TournamentWeightCategoryStatuses.FindAsync(wc.Id);
+                if (existingStatus == null)
+                {
+                    _context.WeightCategories.Add(wc);
                 }
             }
 

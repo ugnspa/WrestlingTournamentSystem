@@ -31,19 +31,18 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             _validationService = validationService;
         }
 
-        private async Task ValidateTournamentAndWeightCategory(int tournamentId, int tournamentWeightCategoryId)
+        private async Task ValidateTournamentAndWeightCategory(int tournamentId, int tournamentWeightCategoryId, bool isAdmin = false, string userId = "")
         {
-            var tournamentExists = await _tournamentRepository.TournamentExistsAsync(tournamentId);
-            if (!tournamentExists)
-            {
+            var tournament = await _tournamentRepository.GetTournamentAsync(tournamentId);
+            if (tournament == null)
                 throw new NotFoundException($"Tournament with id {tournamentId} does not exist");
-            }
+
+            if (tournament.OrganiserId != userId && !isAdmin)
+                throw new ForbiddenException("You are not allowed to perform this action for this tournament");
 
             var tournamentWeightCategory = await _tournamentWeightCategoryRepository.GetTournamentWeightCategoryAsync(tournamentId, tournamentWeightCategoryId);
             if (tournamentWeightCategory == null)
-            {
                 throw new NotFoundException($"Tournament does not have weight category with id {tournamentWeightCategoryId}");
-            }
         }
 
         private void ValidateBirthDate(DateTime birthDate)
@@ -59,14 +58,14 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             }
         }
 
-        public async Task<WrestlerReadDTO?> CreateAndAddWrestlerToTournamentWeightCategory(int tournamentId, int tournamentWeightCategoryId, WrestlerCreateDTO wrestlerCreateDTO)
+        public async Task<WrestlerReadDTO?> CreateAndAddWrestlerToTournamentWeightCategory(bool isAdmin, string userId, int tournamentId, int tournamentWeightCategoryId, WrestlerCreateDTO wrestlerCreateDTO)
         {
             if(wrestlerCreateDTO == null)
             {
                 throw new ArgumentNullException(nameof(wrestlerCreateDTO));
             }
 
-            await ValidateTournamentAndWeightCategory(tournamentId, tournamentWeightCategoryId);
+            await ValidateTournamentAndWeightCategory( tournamentId, tournamentWeightCategoryId, isAdmin, userId);
 
             var wrestlingStyleExists = await _wrestlingStyleRepository.WrestlingStyleExistsAsync(wrestlerCreateDTO.StyleId);
 
@@ -111,9 +110,9 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             return _mapper.Map<IEnumerable<WrestlerReadDTO>>(await _wrestlerRepository.GetTournamentWeightCategoryWrestlersAsync(tournamentId, tournamentWeightCategoryId));
         }
 
-        public async Task DeleteWrestlerAsync(int tournamentId, int tournamentWeightCategoryId, int wrestlerId)
+        public async Task DeleteWrestlerAsync(bool isAdmin, string userId, int tournamentId, int tournamentWeightCategoryId, int wrestlerId)
         {
-            await ValidateTournamentAndWeightCategory(tournamentId, tournamentWeightCategoryId);
+            await ValidateTournamentAndWeightCategory(tournamentId, tournamentWeightCategoryId, isAdmin, userId);
 
             var wrestler = await _wrestlerRepository.GetTournamentWeightCategoryWrestlerAsync(tournamentId, tournamentWeightCategoryId, wrestlerId);
             
@@ -125,9 +124,9 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             await _wrestlerRepository.DeleteWrestlerAsync(wrestler); 
         }
 
-        public async Task<WrestlerReadDTO?> UpdateWrestlerAsync(int tournamentId, int tournamentWeightCategoryId, int wrestlerId, WrestlerUpdateDTO wrestlerUpdateDTO)
+        public async Task<WrestlerReadDTO?> UpdateWrestlerAsync(bool isAdmin, string userId, int tournamentId, int tournamentWeightCategoryId, int wrestlerId, WrestlerUpdateDTO wrestlerUpdateDTO)
         {
-            await ValidateTournamentAndWeightCategory(tournamentId, tournamentWeightCategoryId);
+            await ValidateTournamentAndWeightCategory(tournamentId, tournamentWeightCategoryId, isAdmin, userId);
 
             var tounamentWeightCategoryWrestler = await _wrestlerRepository.GetTournamentWeightCategoryWrestlerAsync(tournamentId, tournamentWeightCategoryId, wrestlerId);
 

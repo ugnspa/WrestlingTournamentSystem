@@ -14,6 +14,5 @@ namespace WrestlingTournamentSystem.DataAccess.Interfaces
         public Task<Tournament?> CreateTournamentAsync(Tournament tournament);
         public Task<Tournament?> UpdateTournamentAsync(Tournament tournament);
         public Task DeleteTournamentAsync(Tournament tournament);
-        public Task<bool> TournamentExistsAsync(int id);
     }
 }

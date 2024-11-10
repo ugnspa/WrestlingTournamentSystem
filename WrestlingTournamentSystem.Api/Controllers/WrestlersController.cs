@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using WrestlingTournamentSystem.BusinessLogic.Interfaces;
 using WrestlingTournamentSystem.DataAccess.DTO.Wrestler;
 using WrestlingTournamentSystem.DataAccess.Helpers.Exceptions;
+using WrestlingTournamentSystem.DataAccess.Helpers.Responses;
 using WrestlingTournamentSystem.DataAccess.Helpers.Roles;
 
 namespace WrestlingTournamentSystem.Api.Controllers
@@ -60,7 +63,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
         }
 
         /// <summary>
-        /// Adds a new wrestler to a tournament weight category.
+        /// Adds a new wrestler to a tournament weight category without coach details.
         /// </summary>
         /// <param name="tournamentId">The tournament's identifier.</param>
         /// <param name="weightCategoryId">The weight category's identifier.</param>
@@ -70,7 +73,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
         /// <response code="422">If the birthday is in the future.</response>
         /// <response code="404">If the tournament or weight category is not found.</response>
         [HttpPost]
-        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser + "," + UserRoles.Coach)]
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser)]
         public async Task<IActionResult> CreateAndAddWrestlerToTournamentWeightCategory(int tournamentId, int weightCategoryId, WrestlerCreateDTO wrestlerCreateDTO)
         {
             if(!ModelState.IsValid)
@@ -78,7 +81,14 @@ namespace WrestlingTournamentSystem.Api.Controllers
 
             try
             {
-                var wrestlerReadDTO = await _wrestlerService.CreateAndAddWrestlerToTournamentWeightCategory(tournamentId, weightCategoryId, wrestlerCreateDTO);
+                var userId = HttpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized(new ErrorResponse(StatusCodes.Status401Unauthorized, "User ID is missing from the token."));
+
+                var isAdmin = HttpContext.User.IsInRole(UserRoles.Admin);
+
+                var wrestlerReadDTO = await _wrestlerService.CreateAndAddWrestlerToTournamentWeightCategory(isAdmin, userId, tournamentId, weightCategoryId, wrestlerCreateDTO);
                 return Created("", wrestlerReadDTO);
             }
             catch (Exception e)
@@ -96,12 +106,19 @@ namespace WrestlingTournamentSystem.Api.Controllers
         /// <response code="204">If the wrestler is successfully deleted.</response>
         /// <response code="404">If the wrestler, tournament, or weight category is not found.</response>
         [HttpDelete("{wrestlerId}")]
-        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser + "," + UserRoles.Coach)]
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser)]
         public async Task<IActionResult> DeleteWrestler(int tournamentId, int weightCategoryId, int wrestlerId)
         {
             try
             {
-                await _wrestlerService.DeleteWrestlerAsync(tournamentId, weightCategoryId, wrestlerId);
+                var userId = HttpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized(new ErrorResponse(StatusCodes.Status401Unauthorized, "User ID is missing from the token."));
+
+                var isAdmin = HttpContext.User.IsInRole(UserRoles.Admin);
+
+                await _wrestlerService.DeleteWrestlerAsync(isAdmin, userId, tournamentId, weightCategoryId, wrestlerId);
                 return NoContent();
             }
             catch (Exception e)
@@ -122,7 +139,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
         /// <response code="422">If the birthday is in the future.</response>
         /// <response code="404">If the wrestler, tournament, or weight category is not found.</response>
         [HttpPut("{wrestlerId}")]
-        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser + "," + UserRoles.Coach)]
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser)]
         public async Task<IActionResult> UpdateWrestler(int tournamentId, int weightCategoryId, int wrestlerId, WrestlerUpdateDTO wrestlerUpdateDTO)
         {
             if (!ModelState.IsValid)
@@ -130,7 +147,14 @@ namespace WrestlingTournamentSystem.Api.Controllers
 
             try
             {
-                var wrestlerReadDTO = await _wrestlerService.UpdateWrestlerAsync(tournamentId, weightCategoryId, wrestlerId, wrestlerUpdateDTO);
+                var userId = HttpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized(new ErrorResponse(StatusCodes.Status401Unauthorized, "User ID is missing from the token."));
+
+                var isAdmin = HttpContext.User.IsInRole(UserRoles.Admin);
+
+                var wrestlerReadDTO = await _wrestlerService.UpdateWrestlerAsync(isAdmin, userId, tournamentId, weightCategoryId, wrestlerId, wrestlerUpdateDTO);
                 return Ok(wrestlerReadDTO);
             }
             catch (Exception e)

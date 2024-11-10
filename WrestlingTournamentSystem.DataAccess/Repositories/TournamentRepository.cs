@@ -44,11 +44,6 @@ namespace WrestlingTournamentSystem.DataAccess.Data
             return await _context.Tournaments.Include(t => t.TournamentStatus).ToListAsync();
         }
 
-        public async Task<bool> TournamentExistsAsync(int id)
-        {
-            return await _context.Tournaments.AnyAsync(t => t.Id == id);
-        }
-
         public async Task<Tournament?> UpdateTournamentAsync(Tournament tournament)
         {
             var tournamentToUpdate = _context.Tournaments.Find(tournament.Id);

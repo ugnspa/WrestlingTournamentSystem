@@ -99,8 +99,19 @@ builder.Services.AddAuthentication(option =>
             context.Response.ContentType = "application/json";
 
             var errorResponse = new ErrorResponse(StatusCodes.Status401Unauthorized, "Unauthorized access");
-
             var errorJson = JsonSerializer.Serialize(errorResponse);
+
+            return context.Response.WriteAsync(errorJson);
+        },
+
+        OnForbidden = context =>
+        {
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            context.Response.ContentType = "application/json";
+
+            var errorResponse = new ErrorResponse(StatusCodes.Status403Forbidden, "Forbidden: You do not have the required permissions.");
+            var errorJson = JsonSerializer.Serialize(errorResponse);
+
             return context.Response.WriteAsync(errorJson);
         }
     };
