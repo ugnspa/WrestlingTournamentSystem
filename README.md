@@ -12,13 +12,10 @@
 1. **Varžybų organizatorius**  
    Asmuo, atsakingas už varžybų ir jų svorio kategorijų kūrimą bei imtynininkų priskyrimą tam tikroms svorio kategorijoms.
 
-2. **Treneris**  
-   Treneris gali pridėti imtynininkus į jau sukurtų varžybų svorio kategorijas. Varžybų organizatorius turi patvirtinti pridėjimą.
-
-3. **Svečias**  
+2. **Svečias**  
    Naudotojas, kuris gali tik **peržiūrėti** informaciją apie renginius, svorio kategorijas ir imtynininkus. Neturi teisės kurti ar redaguoti informacijos, tačiau gali gauti išsamią informaciją apie vykstančias arba planuojamas varžybas bei juose dalyvaujančius imtynininkus.
 
-4. **Administratorius**  
+3. **Administratorius**  
    Asmuo, turintis **visas teises** sistemoje, įskaitant varžybų, svorio kategorijų ir imtynininkų valdymą.
 
 ---
