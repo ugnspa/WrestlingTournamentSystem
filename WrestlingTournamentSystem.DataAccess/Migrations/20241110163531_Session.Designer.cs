@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WrestlingTournamentSystem.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using WrestlingTournamentSystem.DataAccess.Data;
 namespace WrestlingTournamentSystem.DataAccess.Migrations
 {
     [DbContext(typeof(WrestlingTournamentSystemDbContext))]
-    partial class WrestlingTournamentSystemDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241110163531_Session")]
+    partial class Session
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -431,6 +434,7 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CoachId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Country")
@@ -621,7 +625,8 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
                     b.HasOne("WrestlingTournamentSystem.DataAccess.Entities.User", "Coach")
                         .WithMany("Wrestlers")
                         .HasForeignKey("CoachId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("WrestlingTournamentSystem.DataAccess.Entities.WrestlingStyle", "WrestlingStyle")
                         .WithMany()

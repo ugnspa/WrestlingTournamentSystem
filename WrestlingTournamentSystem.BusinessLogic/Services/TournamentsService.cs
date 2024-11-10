@@ -8,8 +8,8 @@ using WrestlingTournamentSystem.DataAccess.Entities;
 using WrestlingTournamentSystem.DataAccess.Interfaces;
 using AutoMapper;
 using WrestlingTournamentSystem.DataAccess.DTO.Tournament;
-using WrestlingTournamentSystem.DataAccess.Exceptions;
 using WrestlingTournamentSystem.BusinessLogic.Validation;
+using WrestlingTournamentSystem.DataAccess.Helpers.Exceptions;
 
 namespace WrestlingTournamentSystem.BusinessLogic.Services
 {
@@ -26,14 +26,20 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             _mapper = mapper;
             _validationService = validationService;
         }
-        public async Task<TournamentReadDTO> CreateTournamentAsync(TournamentCreateDTO tournamentCreateDTO)
+        public async Task<TournamentReadDTO> CreateTournamentAsync(string userId, TournamentCreateDTO tournamentCreateDTO)
         {
             if (tournamentCreateDTO == null)
                 throw new ArgumentNullException(nameof(tournamentCreateDTO));
 
+            if(String.IsNullOrEmpty(userId))
+                throw new ArgumentNullException(nameof(userId));
+
             _validationService.ValidateStartEndDates(tournamentCreateDTO.StartDate, tournamentCreateDTO.EndDate);
 
             var tournament = _mapper.Map<Tournament>(tournamentCreateDTO);
+
+            tournament.OrganiserId = userId;
+
             var closedStatus = await _tournamentStatusRepository.GetClosedTournamentStatus();
 
             if (closedStatus == null)
@@ -49,12 +55,15 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             return _mapper.Map<TournamentReadDTO>(result);
         }
 
-        public async Task DeleteTournamentAsync(int id)
+        public async Task DeleteTournamentAsync(bool isAdmin, string userId, int id)
         {
             var tournament = await _tournamentRepository.GetTournamentAsync(id);
 
             if (tournament == null)
                 throw new NotFoundException($"Tournament with id {id} was not found");
+
+            if (tournament.OrganiserId != userId && !isAdmin)
+                throw new ForbiddenException("You are not allowed to delete this tournament");
 
             await _tournamentRepository.DeleteTournamentAsync(tournament);
         }
@@ -76,7 +85,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             return _mapper.Map<IEnumerable<TournamentReadDTO>>(tournaments);
         }
 
-        public async Task<TournamentReadDTO> UpdateTournamentAsync(int tournamentId, TournamentUpdateDTO tournamentUpdateDTO)
+        public async Task<TournamentReadDTO> UpdateTournamentAsync(bool isAdmin, string userId, int tournamentId, TournamentUpdateDTO tournamentUpdateDTO)
         {
             if (tournamentUpdateDTO == null)
                 throw new ArgumentNullException(nameof(tournamentUpdateDTO));
@@ -90,6 +99,9 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 
             if (tournamentToUpdate == null)
                 throw new NotFoundException($"Tournament with id {tournamentId} was not found");
+
+            if (tournamentToUpdate.OrganiserId != userId && !isAdmin)
+                throw new ForbiddenException("You are not allowed to update this tournament");
 
             _validationService.ValidateStartEndDates(tournamentUpdateDTO.StartDate, tournamentUpdateDTO.EndDate);
 

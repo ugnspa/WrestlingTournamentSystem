@@ -26,5 +26,7 @@ namespace WrestlingTournamentSystem.DataAccess.DTO.Wrestler
 
         [Required]
         public int StyleId { get; set; }
+
+        public string? CoachId { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WrestlingTournamentSystem.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using WrestlingTournamentSystem.DataAccess.Data;
 namespace WrestlingTournamentSystem.DataAccess.Migrations
 {
     [DbContext(typeof(WrestlingTournamentSystemDbContext))]
-    partial class WrestlingTournamentSystemDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241109170517_Identity")]
+    partial class Identity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -170,36 +173,6 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
                     b.ToTable("WrestlersTournamentsWeightCategories");
                 });
 
-            modelBuilder.Entity("WrestlingTournamentSystem.DataAccess.Entities.Session", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTimeOffset>("ExpiresAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<DateTimeOffset>("InitiatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<bool>("IsRevoked")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("LastRefreshToken")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Sessions");
-                });
-
             modelBuilder.Entity("WrestlingTournamentSystem.DataAccess.Entities.Tournament", b =>
                 {
                     b.Property<int>("Id")
@@ -256,6 +229,28 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TournamentStatuses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Closed"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Registration"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "In Progress"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Finished"
+                        });
                 });
 
             modelBuilder.Entity("WrestlingTournamentSystem.DataAccess.Entities.TournamentWeightCategory", b =>
@@ -308,6 +303,33 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TournamentWeightCategoryStatuses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Closed"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Registration"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Weigh-In"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "In Progress"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Finished"
+                        });
                 });
 
             modelBuilder.Entity("WrestlingTournamentSystem.DataAccess.Entities.User", b =>
@@ -431,6 +453,7 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("CoachId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Country")
@@ -480,6 +503,28 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("WrestlingStyles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "GR"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "FS"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "WW"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "BW"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -548,17 +593,6 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WrestlingTournamentSystem.DataAccess.Entities.Session", b =>
-                {
-                    b.HasOne("WrestlingTournamentSystem.DataAccess.Entities.User", "User")
-                        .WithMany("Sessions")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("WrestlingTournamentSystem.DataAccess.Entities.Tournament", b =>
                 {
                     b.HasOne("WrestlingTournamentSystem.DataAccess.Entities.User", "Organiser")
@@ -621,7 +655,8 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
                     b.HasOne("WrestlingTournamentSystem.DataAccess.Entities.User", "Coach")
                         .WithMany("Wrestlers")
                         .HasForeignKey("CoachId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("WrestlingTournamentSystem.DataAccess.Entities.WrestlingStyle", "WrestlingStyle")
                         .WithMany()
@@ -641,8 +676,6 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
 
             modelBuilder.Entity("WrestlingTournamentSystem.DataAccess.Entities.User", b =>
                 {
-                    b.Navigation("Sessions");
-
                     b.Navigation("Tournaments");
 
                     b.Navigation("Wrestlers");

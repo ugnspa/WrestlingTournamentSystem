@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WrestlingTournamentSystem.DataAccess.Entities;
-using WrestlingTournamentSystem.DataAccess.Exceptions;
+using WrestlingTournamentSystem.DataAccess.Helpers.Exceptions;
 using WrestlingTournamentSystem.DataAccess.Interfaces;
 
 namespace WrestlingTournamentSystem.DataAccess.Data
@@ -42,11 +42,6 @@ namespace WrestlingTournamentSystem.DataAccess.Data
         public async Task<IEnumerable<Tournament>> GetTournamentsAsync()
         {
             return await _context.Tournaments.Include(t => t.TournamentStatus).ToListAsync();
-        }
-
-        public async Task<bool> TournamentExistsAsync(int id)
-        {
-            return await _context.Tournaments.AnyAsync(t => t.Id == id);
         }
 
         public async Task<Tournament?> UpdateTournamentAsync(Tournament tournament)

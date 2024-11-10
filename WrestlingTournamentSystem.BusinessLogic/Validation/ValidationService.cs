@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WrestlingTournamentSystem.DataAccess.Exceptions;
+using WrestlingTournamentSystem.DataAccess.Helpers.Exceptions;
 
 namespace WrestlingTournamentSystem.BusinessLogic.Validation
 {
@@ -60,6 +60,14 @@ namespace WrestlingTournamentSystem.BusinessLogic.Validation
             if (weightCategoryStartDate < tournamentStartDate || weightCategoryEndDate > tournamentEndDate)
             {
                 throw new BusinessRuleValidationException($"Weight category dates must be within the tournament's start ({tournamentStartDate.Value.Date}) and end ({tournamentEndDate.Value.Date}) dates.");
+            }
+        }
+
+        public void ValidateRegisterPassword(string password, string confirmPassword)
+        {
+            if (password != confirmPassword)
+            {
+                throw new BusinessRuleValidationException("Passwords do not match.");
             }
         }
     }

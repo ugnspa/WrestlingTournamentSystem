@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WrestlingTournamentSystem.DataAccess.Exceptions;
+using WrestlingTournamentSystem.DataAccess.Helpers.Exceptions;
+using WrestlingTournamentSystem.DataAccess.Helpers.Responses;
 
 namespace WrestlingTournamentSystem.Api.Controllers
 {
@@ -11,16 +12,13 @@ namespace WrestlingTournamentSystem.Api.Controllers
             {
                 NotFoundException => StatusCodes.Status404NotFound,
                 BusinessRuleValidationException => StatusCodes.Status422UnprocessableEntity,
+                ForbiddenException => StatusCodes.Status403Forbidden,
                 _ => StatusCodes.Status500InternalServerError
             };
 
-            var respone = new
-            {
-                status = statusCode,
-                title = statusCode == StatusCodes.Status500InternalServerError ? "Internal Server Error" : ex.Message
-            };
+            var title = statusCode == StatusCodes.Status500InternalServerError ? "Internal Server Error" : ex.Message;
 
-            return StatusCode(statusCode, respone);
+            return StatusCode(statusCode, new ErrorResponse(statusCode, title));
         }
     }
 }

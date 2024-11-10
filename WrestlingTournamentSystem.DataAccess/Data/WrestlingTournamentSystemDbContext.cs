@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WrestlingTournamentSystem.DataAccess.Entities;
 
 namespace WrestlingTournamentSystem.DataAccess.Data
 {
-    public class WrestlingTournamentSystemDbContext : DbContext
+    public class WrestlingTournamentSystemDbContext : IdentityDbContext<User>
     {
         public WrestlingTournamentSystemDbContext(DbContextOptions<WrestlingTournamentSystemDbContext> options) : base(options)
         {
@@ -21,41 +22,16 @@ namespace WrestlingTournamentSystem.DataAccess.Data
         public DbSet<WrestlingStyle> WrestlingStyles { get; set; }
         public DbSet<WeightCategory> WeightCategories { get; set; }
         public DbSet<Wrestler> Wrestlers { get; set; }
-
+        public DbSet<Session> Sessions { get; set; }
+ 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            modelBuilder.Entity<TournamentStatus>(entity =>
+            modelBuilder.Entity<User>(entity =>
             {
-                entity.HasData(
-                    new TournamentStatus { Id = 1 , Name = "Closed" },
-                    new TournamentStatus { Id = 2 , Name = "Registration" },
-                    new TournamentStatus { Id = 3, Name = "In Progress" },
-                    new TournamentStatus { Id = 4, Name = "Finished" }
-                );
-            });
-
-            modelBuilder.Entity<WrestlingStyle>(entity =>
-            {
-                entity.HasData(
-                        new WrestlingStyle { Id = 1, Name = "GR" },
-                        new WrestlingStyle { Id = 2, Name = "FS" },
-                        new WrestlingStyle { Id = 3, Name = "WW" },
-                        new WrestlingStyle { Id = 4, Name = "BW" }
-                    );
-
-            });
-
-            modelBuilder.Entity<TournamentWeightCategoryStatus>(entity =>
-            {
-                entity.HasData(
-                        new TournamentWeightCategoryStatus { Id = 1, Name = "Closed" },
-                        new TournamentWeightCategoryStatus { Id = 2, Name = "Registration" },
-                        new TournamentWeightCategoryStatus { Id = 3, Name = "Weigh-In" },
-                        new TournamentWeightCategoryStatus { Id = 4, Name = "In Progress" },
-                        new TournamentWeightCategoryStatus { Id = 5, Name = "Finished" }
-                    );
-
+                entity.HasMany(u => u.Tournaments).WithOne(t => t.Organiser).HasForeignKey(t => t.OrganiserId).OnDelete(DeleteBehavior.NoAction);
+                entity.HasMany(entity => entity.Wrestlers).WithOne(w => w.Coach).HasForeignKey(w => w.CoachId).OnDelete(DeleteBehavior.NoAction);
+                entity.HasMany(entity => entity.Sessions).WithOne(s => s.User).HasForeignKey(s => s.UserId).OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Tournament>(entity =>
