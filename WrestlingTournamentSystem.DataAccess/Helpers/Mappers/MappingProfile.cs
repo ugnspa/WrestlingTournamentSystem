@@ -10,7 +10,7 @@ using WrestlingTournamentSystem.DataAccess.DTO.User;
 using WrestlingTournamentSystem.DataAccess.DTO.Wrestler;
 using WrestlingTournamentSystem.DataAccess.Entities;
 
-namespace WrestlingTournamentSystem.DataAccess.Mappers
+namespace WrestlingTournamentSystem.DataAccess.Helpers.Mappers
 {
     public class MappingProfile : Profile
     {

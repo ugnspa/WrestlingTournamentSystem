@@ -3,7 +3,6 @@ using WrestlingTournamentSystem.DataAccess.Data;
 using WrestlingTournamentSystem.DataAccess.Interfaces;
 using WrestlingTournamentSystem.BusinessLogic.Interfaces;
 using WrestlingTournamentSystem.BusinessLogic.Services;
-using WrestlingTournamentSystem.DataAccess.Mappers;
 using WrestlingTournamentSystem.DataAccess.Repositories;
 using WrestlingTournamentSystem.BusinessLogic.Validation;
 using System.Reflection;
@@ -12,6 +11,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using WrestlingTournamentSystem.DataAccess.Entities;
+using WrestlingTournamentSystem.DataAccess.Helpers.Mappers;
+using WrestlingTournamentSystem.DataAccess.Helpers.Settings;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,6 +38,8 @@ builder.Services.AddSwaggerGen(c =>
     c.IncludeXmlComments(xmlPath);
 });
 
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
+
 //Mappers
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
@@ -54,18 +57,7 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ITournamentsService, TournamentsService>();
 builder.Services.AddScoped<ITournamentWeightCategoryService, TournamentWeightCategoryService>();
 builder.Services.AddScoped<IWrestlerService, WrestlerService>();
-builder.Services.AddTransient<JwtTokenService>(provider =>
-{
-    var configuration = provider.GetRequiredService<IConfiguration>();
-
-    var secret = configuration["JWT:Secret"];
-    var issuer = configuration["JWT:ValidIssuer"];
-    var audience = configuration["JWT:ValidAudience"];
-
-    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret));
-
-    return new JwtTokenService(key, issuer, audience);
-});
+builder.Services.AddTransient<JwtTokenService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<DatabaseSeeder>();
 
@@ -85,10 +77,12 @@ builder.Services.AddAuthentication(option =>
     option.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(option =>
 {
+    var jwtSettings = builder.Configuration.GetSection("Jwt").Get<JwtSettings>();
+
     option.MapInboundClaims = false;
-    option.TokenValidationParameters.ValidAudience = builder.Configuration["JWT:ValidAudience"];
-    option.TokenValidationParameters.ValidIssuer = builder.Configuration["JWT:ValidIssuer"];
-    option.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Secret"]));
+    option.TokenValidationParameters.ValidAudience = jwtSettings.Audience;
+    option.TokenValidationParameters.ValidIssuer = jwtSettings.Issuer;
+    option.TokenValidationParameters.IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Secret));
 });
 
 //Add Authorization

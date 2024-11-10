@@ -8,8 +8,8 @@ using WrestlingTournamentSystem.DataAccess.Entities;
 using WrestlingTournamentSystem.DataAccess.Interfaces;
 using AutoMapper;
 using WrestlingTournamentSystem.DataAccess.DTO.Tournament;
-using WrestlingTournamentSystem.DataAccess.Exceptions;
 using WrestlingTournamentSystem.BusinessLogic.Validation;
+using WrestlingTournamentSystem.DataAccess.Helpers.Exceptions;
 
 namespace WrestlingTournamentSystem.BusinessLogic.Services
 {

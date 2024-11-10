@@ -7,9 +7,8 @@ using WrestlingTournamentSystem.DataAccess.DTO.TournamentWeightCategory;
 using WrestlingTournamentSystem.BusinessLogic.Interfaces;
 using WrestlingTournamentSystem.DataAccess.Interfaces;
 using AutoMapper;
-using WrestlingTournamentSystem.DataAccess.Exceptions;
+using WrestlingTournamentSystem.DataAccess.Helpers.Exceptions;
 using WrestlingTournamentSystem.DataAccess.Entities;
-using WrestlingTournamentSystem.DataAccess.Data;
 using WrestlingTournamentSystem.BusinessLogic.Validation;
 
 namespace WrestlingTournamentSystem.BusinessLogic.Services

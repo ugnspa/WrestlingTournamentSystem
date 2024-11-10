@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 using WrestlingTournamentSystem.DataAccess.Data;
 using WrestlingTournamentSystem.DataAccess.DTO.User;
 using WrestlingTournamentSystem.DataAccess.Entities;
-using WrestlingTournamentSystem.DataAccess.Enums;
-using WrestlingTournamentSystem.DataAccess.Exceptions;
+using WrestlingTournamentSystem.DataAccess.Helpers.Exceptions;
+using WrestlingTournamentSystem.DataAccess.Helpers.Roles;
 using WrestlingTournamentSystem.DataAccess.Interfaces;
 
 namespace WrestlingTournamentSystem.DataAccess.Repositories
@@ -60,6 +60,11 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
         public async Task<IList<string>> GetUserRolesAsync(User user)
         {
             return await _userManager.GetRolesAsync(user);
+        }
+
+        public Task<User?> FindByIdAsync(string userId)
+        {
+            return _userManager.FindByIdAsync(userId);
         }
     }
 }

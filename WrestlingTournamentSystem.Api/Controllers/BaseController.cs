@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WrestlingTournamentSystem.DataAccess.Exceptions;
+using WrestlingTournamentSystem.DataAccess.Helpers;
+using WrestlingTournamentSystem.DataAccess.Helpers.Exceptions;
 
 namespace WrestlingTournamentSystem.Api.Controllers
 {
@@ -14,13 +15,9 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 _ => StatusCodes.Status500InternalServerError
             };
 
-            var respone = new
-            {
-                status = statusCode,
-                title = statusCode == StatusCodes.Status500InternalServerError ? "Internal Server Error" : ex.Message
-            };
+            var title = statusCode == StatusCodes.Status500InternalServerError ? "Internal Server Error" : ex.Message;
 
-            return StatusCode(statusCode, respone);
+            return StatusCode(statusCode, new ErrorResponse(statusCode, title));
         }
     }
 }

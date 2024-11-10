@@ -7,7 +7,7 @@ using WrestlingTournamentSystem.DataAccess.Interfaces;
 using WrestlingTournamentSystem.DataAccess.Data;
 using WrestlingTournamentSystem.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;
-using WrestlingTournamentSystem.DataAccess.Exceptions;
+using WrestlingTournamentSystem.DataAccess.Helpers.Exceptions;
 
 namespace WrestlingTournamentSystem.DataAccess.Repositories
 {

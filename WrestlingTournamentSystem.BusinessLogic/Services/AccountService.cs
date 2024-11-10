@@ -1,17 +1,19 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using WrestlingTournamentSystem.BusinessLogic.Interfaces;
 using WrestlingTournamentSystem.BusinessLogic.Validation;
 using WrestlingTournamentSystem.DataAccess.DTO.User;
 using WrestlingTournamentSystem.DataAccess.Entities;
-using WrestlingTournamentSystem.DataAccess.Enums;
-using WrestlingTournamentSystem.DataAccess.Exceptions;
+using WrestlingTournamentSystem.DataAccess.Helpers.Exceptions;
 using WrestlingTournamentSystem.DataAccess.Interfaces;
 
 namespace WrestlingTournamentSystem.BusinessLogic.Services
@@ -23,7 +25,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
         private readonly IValidationService _validationService;
         private readonly IMapper _mapper;
 
-        public AccountService(UserManager<User> userManager, JwtTokenService jwtTokenService, IValidationService validationService, IMapper mapper, IAccountRepository accountRepository)
+        public AccountService(JwtTokenService jwtTokenService, IValidationService validationService, IMapper mapper, IAccountRepository accountRepository)
         {
             _jwtTokenService = jwtTokenService;
             _validationService = validationService;
@@ -59,9 +61,40 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 
             var userRoles = await _accountRepository.GetUserRolesAsync(user);
 
-            var accessToken = _jwtTokenService.CreateAccessToken(user.UserName, user.Id, userRoles);
+            var accessToken = _jwtTokenService.CreateAccessToken(user.UserName!, user.Id, userRoles);
 
-            return new SuccessfulLoginDTO(accessToken);
+            return new SuccessfulLoginDTO(user.Id, accessToken);
+        }
+
+        public async Task<string> CreateRefreshToken(string userId)
+        {
+            var user = await _accountRepository.FindByIdAsync(userId);
+
+            if (user == null)
+                throw new NotFoundException("User was not found");
+
+            return _jwtTokenService.CreateRefreshToken(user.Id);
+        }
+
+        public async Task<SuccessfulLoginDTO> GetAccessTokenFromRefreshToken(string? refreshToken)
+        {
+            if (string.IsNullOrEmpty(refreshToken) || 
+                !_jwtTokenService.TryParseRefreshToken(refreshToken, out var claims) ||
+                claims?.FindFirstValue(JwtRegisteredClaimNames.Sub) is not string userId)
+            {
+                throw new BusinessRuleValidationException("Invalid refresh token");
+            }
+
+            var user = await _accountRepository.FindByIdAsync(userId);
+
+            if(user == null)  
+                throw new BusinessRuleValidationException("Invalid refresh token");
+
+            var userRoles = await _accountRepository.GetUserRolesAsync(user);
+
+            var accessToken = _jwtTokenService.CreateAccessToken(user.UserName!, user.Id, userRoles);
+
+            return new SuccessfulLoginDTO(user.Id, accessToken);
         }
     }
 }

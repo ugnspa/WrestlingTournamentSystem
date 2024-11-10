@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WrestlingTournamentSystem.DataAccess.Enums
+namespace WrestlingTournamentSystem.DataAccess.Helpers.Roles
 {
     public class UserRoles
     {

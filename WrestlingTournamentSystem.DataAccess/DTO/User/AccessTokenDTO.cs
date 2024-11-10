@@ -6,14 +6,11 @@ using System.Threading.Tasks;
 
 namespace WrestlingTournamentSystem.DataAccess.DTO.User
 {
-    public class SuccessfulLoginDTO
+    public class AccessTokenDTO
     {
-        public string UserId { get; set; }
         public string AccessToken { get; set; }
-
-        public SuccessfulLoginDTO(string userId, string accessToken)
+        public AccessTokenDTO(string accessToken)
         {
-            UserId = userId;
             AccessToken = accessToken;
         }
     }
