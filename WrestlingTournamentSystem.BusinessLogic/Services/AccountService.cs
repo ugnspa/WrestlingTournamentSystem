@@ -108,5 +108,22 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 
             return sessionId;
         }
+
+        public async Task<IEnumerable<CoachReadDTO>> GetCoachesAsync()
+        {
+            var coaches = await _accountRepository.GetCoaches();
+
+            return _mapper.Map<IEnumerable<CoachReadDTO>>(coaches);
+        }
+
+        public async Task<CoachReadDTO> GetCoachWithWrestlersAsync(string userId)
+        {
+            var coach = await _accountRepository.GetCoachWithWrestlersAsync(userId);
+
+            if(coach == null)
+                throw new NotFoundException("Coach was not found");
+
+            return _mapper.Map<CoachReadDTO>(coach);
+        }
     }
 }

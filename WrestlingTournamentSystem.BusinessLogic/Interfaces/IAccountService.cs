@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WrestlingTournamentSystem.DataAccess.DTO.User;
+using WrestlingTournamentSystem.DataAccess.Entities;
 
 namespace WrestlingTournamentSystem.BusinessLogic.Interfaces
 {
@@ -15,5 +16,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Interfaces
         public Task<string> CreateRefreshToken(Guid sessionId, string userId);
         public Task<SuccessfulLoginDTO> GetAccessTokenFromRefreshToken(string? refreshToken);
         public string GetSessionIdFromRefreshToken(string? refreshToken);
+        public Task<IEnumerable<CoachReadDTO>> GetCoachesAsync();
+        public Task<CoachReadDTO> GetCoachWithWrestlersAsync(string userId);
     }
 }

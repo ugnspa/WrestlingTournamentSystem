@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,6 +66,34 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
         public Task<User?> FindByIdAsync(string userId)
         {
             return _userManager.FindByIdAsync(userId);
+        }
+
+        public async Task<IEnumerable<User>> GetCoaches()
+        {
+            var coaches = await _userManager.GetUsersInRoleAsync(UserRoles.Coach);
+
+            return coaches;
+        }
+
+        public async Task<User?> GetCoachWithWrestlersAsync(string userId)
+        {
+            var coach = await _context.Users
+                .Where(user =>  user.Id == userId)
+                .Include(coach => coach.Wrestlers)
+                .ThenInclude(wrestler => wrestler.WrestlingStyle)
+                .FirstOrDefaultAsync();
+
+            
+
+            if (coach == null)
+                return null;
+
+            var isCoach = await _userManager.IsInRoleAsync(coach, UserRoles.Coach);
+
+            if (!isCoach)
+                return null;
+
+            return coach;
         }
     }
 }

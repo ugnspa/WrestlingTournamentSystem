@@ -9,5 +9,7 @@ namespace WrestlingTournamentSystem.DataAccess.Interfaces
         public Task<User?> FindByIdAsync(string userId);
         public Task<bool> IsPasswordValidAsync(User user, string password);
         public Task<IList<string>> GetUserRolesAsync(User user);
+        public Task<IEnumerable<User>> GetCoaches();
+        public Task<User?> GetCoachWithWrestlersAsync(string userId);
     }
 }

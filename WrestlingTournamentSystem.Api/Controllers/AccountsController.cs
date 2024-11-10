@@ -134,6 +134,34 @@ namespace WrestlingTournamentSystem.Api.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("Coaches")]
+        public async Task<IActionResult> GetCoaches() 
+        {
+            try
+            {
+                return Ok(await _accountsService.GetCoachesAsync());
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
+        }
+
+        [HttpGet]
+        [Route("Coaches/{id}")]
+        public async Task<IActionResult> GetCoachWithWrestlers(string id)
+        {
+            try
+            {
+                return Ok(await _accountsService.GetCoachWithWrestlersAsync(id));
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
+        }
+
         private void UpdateCookie(string refreshToken)
         {
             var cookieOptions = new CookieOptions
