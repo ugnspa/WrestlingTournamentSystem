@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WrestlingTournamentSystem.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using WrestlingTournamentSystem.DataAccess.Data;
 namespace WrestlingTournamentSystem.DataAccess.Migrations
 {
     [DbContext(typeof(WrestlingTournamentSystemDbContext))]
-    partial class WrestlingTournamentSystemDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241110163531_Session")]
+    partial class Session
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -167,7 +170,7 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
 
                     b.HasIndex("fk_WrestlerId");
 
-                    b.ToTable("WrestlersTournamentsWeightCategories", (string)null);
+                    b.ToTable("WrestlersTournamentsWeightCategories");
                 });
 
             modelBuilder.Entity("WrestlingTournamentSystem.DataAccess.Entities.Session", b =>
@@ -197,7 +200,7 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Sessions", (string)null);
+                    b.ToTable("Sessions");
                 });
 
             modelBuilder.Entity("WrestlingTournamentSystem.DataAccess.Entities.Tournament", b =>
@@ -237,7 +240,7 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
 
                     b.HasIndex("StatusId");
 
-                    b.ToTable("Tournaments", (string)null);
+                    b.ToTable("Tournaments");
                 });
 
             modelBuilder.Entity("WrestlingTournamentSystem.DataAccess.Entities.TournamentStatus", b =>
@@ -255,7 +258,7 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TournamentStatuses", (string)null);
+                    b.ToTable("TournamentStatuses");
                 });
 
             modelBuilder.Entity("WrestlingTournamentSystem.DataAccess.Entities.TournamentWeightCategory", b =>
@@ -289,7 +292,7 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
 
                     b.HasIndex("fk_WeightCategoryId");
 
-                    b.ToTable("TournamentWeightCategories", (string)null);
+                    b.ToTable("TournamentWeightCategories");
                 });
 
             modelBuilder.Entity("WrestlingTournamentSystem.DataAccess.Entities.TournamentWeightCategoryStatus", b =>
@@ -307,7 +310,7 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TournamentWeightCategoryStatuses", (string)null);
+                    b.ToTable("TournamentWeightCategoryStatuses");
                 });
 
             modelBuilder.Entity("WrestlingTournamentSystem.DataAccess.Entities.User", b =>
@@ -416,7 +419,7 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
 
                     b.HasIndex("StyleId");
 
-                    b.ToTable("WeightCategories", (string)null);
+                    b.ToTable("WeightCategories");
                 });
 
             modelBuilder.Entity("WrestlingTournamentSystem.DataAccess.Entities.Wrestler", b =>
@@ -462,7 +465,7 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
 
                     b.HasIndex("StyleId");
 
-                    b.ToTable("Wrestlers", (string)null);
+                    b.ToTable("Wrestlers");
                 });
 
             modelBuilder.Entity("WrestlingTournamentSystem.DataAccess.Entities.WrestlingStyle", b =>
@@ -480,7 +483,7 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("WrestlingStyles", (string)null);
+                    b.ToTable("WrestlingStyles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

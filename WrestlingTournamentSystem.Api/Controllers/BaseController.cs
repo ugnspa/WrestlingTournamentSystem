@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WrestlingTournamentSystem.DataAccess.Helpers;
 using WrestlingTournamentSystem.DataAccess.Helpers.Exceptions;
+using WrestlingTournamentSystem.DataAccess.Helpers.Responses;
 
 namespace WrestlingTournamentSystem.Api.Controllers
 {

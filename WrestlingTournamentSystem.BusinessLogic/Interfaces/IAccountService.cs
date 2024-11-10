@@ -12,7 +12,8 @@ namespace WrestlingTournamentSystem.BusinessLogic.Interfaces
     {
         public Task Register(RegisterUserDTO registerUserDTO);
         public Task<SuccessfulLoginDTO> Login(LoginUserDTO loginUserDTO);
-        public Task<string> CreateRefreshToken(string userId);
+        public Task<string> CreateRefreshToken(Guid sessionId, string userId);
         public Task<SuccessfulLoginDTO> GetAccessTokenFromRefreshToken(string? refreshToken);
+        public string GetSessionIdFromRefreshToken(string? refreshToken);
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using WrestlingTournamentSystem.BusinessLogic.Interfaces;
 using WrestlingTournamentSystem.DataAccess.DTO.User;
 using WrestlingTournamentSystem.DataAccess.Helpers;
+using WrestlingTournamentSystem.DataAccess.Helpers.Responses;
 using WrestlingTournamentSystem.DataAccess.Helpers.Settings;
 
 namespace WrestlingTournamentSystem.Api.Controllers
@@ -13,11 +14,13 @@ namespace WrestlingTournamentSystem.Api.Controllers
     public class AccountsController : BaseController
     {
         private readonly IAccountService _accountsService;
+        private readonly ISessionService _sessionService;
         private readonly JwtSettings _jwtSettings;
 
-        public AccountsController(IAccountService accountsService, IOptions<JwtSettings> jwtSettings)
+        public AccountsController(IAccountService accountsService, ISessionService sessionService, IOptions<JwtSettings> jwtSettings)
         {
             _accountsService = accountsService;
+            _sessionService = sessionService;
             _jwtSettings = jwtSettings.Value;
         }
 
@@ -50,7 +53,11 @@ namespace WrestlingTournamentSystem.Api.Controllers
             {
                 var loginDTO = await _accountsService.Login(loginUserDTO);
 
-                var refreshToken = await _accountsService.CreateRefreshToken(loginDTO.UserId);
+                var sessionId = Guid.NewGuid();
+
+                var refreshToken = await _accountsService.CreateRefreshToken(sessionId, loginDTO.UserId);
+
+                await _sessionService.CreateSessionAsync(sessionId, loginDTO.UserId, refreshToken, DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays));
 
                 UpdateCookie(refreshToken);
 
@@ -68,13 +75,25 @@ namespace WrestlingTournamentSystem.Api.Controllers
         {
             HttpContext.Request.Cookies.TryGetValue("RefreshToken", out var refreshToken);
 
+            if (string.IsNullOrEmpty(refreshToken))
+                return UnprocessableEntity(new ErrorResponse(StatusCodes.Status422UnprocessableEntity, "Refresh token not found"));
+
             try
             {
                 var loginDTO = await _accountsService.GetAccessTokenFromRefreshToken(refreshToken);
 
-                var newRefreshToken = await _accountsService.CreateRefreshToken(loginDTO.UserId);
+                var sessionId = Guid.Parse(_accountsService.GetSessionIdFromRefreshToken(refreshToken));
+
+                if(!await _sessionService.IsSessionValidAsync(sessionId, refreshToken!)) 
+                {
+                    UnprocessableEntity(new ErrorResponse(StatusCodes.Status422UnprocessableEntity, "Session is not valid anymore"));
+                }
+
+                var newRefreshToken = await _accountsService.CreateRefreshToken(sessionId, loginDTO.UserId);
 
                 UpdateCookie(newRefreshToken);
+
+                await _sessionService.ExtendSessionAsync(sessionId, newRefreshToken, DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays));
 
                 return Ok (new AccessTokenDTO(loginDTO.AccessToken));
             }
@@ -85,6 +104,30 @@ namespace WrestlingTournamentSystem.Api.Controllers
 
         }
 
+        [HttpPost]
+        [Route("Logout")]
+        public async Task<IActionResult> Logout()
+        {
+            HttpContext.Request.Cookies.TryGetValue("RefreshToken", out var refreshToken);
+
+            if (string.IsNullOrEmpty(refreshToken))
+                return UnprocessableEntity(new ErrorResponse(StatusCodes.Status422UnprocessableEntity, "Refresh token not found"));
+
+            try
+            {
+                var sessionId = Guid.Parse(_accountsService.GetSessionIdFromRefreshToken(refreshToken));
+
+                await _sessionService.InvalidateSessionAsync(sessionId);
+
+                DeleteCookie("RefreshToken");
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
+        }
 
         private void UpdateCookie(string refreshToken)
         {
@@ -97,6 +140,11 @@ namespace WrestlingTournamentSystem.Api.Controllers
             };
 
             HttpContext.Response.Cookies.Append("RefreshToken", refreshToken, cookieOptions);
+        }
+
+        private void DeleteCookie(string cookieName)
+        {
+            HttpContext.Response.Cookies.Delete(cookieName);
         }
     }
 }

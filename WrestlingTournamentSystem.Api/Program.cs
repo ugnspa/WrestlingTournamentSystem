@@ -52,6 +52,7 @@ builder.Services.AddScoped<ITournamentWeightCategoryStatusRepository, Tournament
 builder.Services.AddScoped<IWrestlingStyleRepository, WrestlingStyleRepository>();
 builder.Services.AddScoped<IWrestlerRepository, WrestlerRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<ISessionRepository, SessionRepository>();
 
 //Add services
 builder.Services.AddScoped<ITournamentsService, TournamentsService>();
@@ -60,6 +61,7 @@ builder.Services.AddScoped<IWrestlerService, WrestlerService>();
 builder.Services.AddTransient<JwtTokenService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<DatabaseSeeder>();
+builder.Services.AddScoped<ISessionService, SessionService>();
 
 //Add Validation
 builder.Services.AddScoped<IValidationService, ValidationService>();

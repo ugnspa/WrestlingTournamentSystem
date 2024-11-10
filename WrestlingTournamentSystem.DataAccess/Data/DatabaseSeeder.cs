@@ -67,9 +67,7 @@ namespace WrestlingTournamentSystem.DataAccess.Data
 
         private async Task AddTournamentStatusesAsync()
         {
-            if (!await _context.TournamentStatuses.AnyAsync())
-            {
-                var statuses = new[]
+            var statuses = new[]
                 {
                     new TournamentStatus { Id = 1, Name = "Closed" },
                     new TournamentStatus { Id = 2, Name = "Registration" },
@@ -77,34 +75,44 @@ namespace WrestlingTournamentSystem.DataAccess.Data
                     new TournamentStatus { Id = 4, Name = "Finished" }
                 };
 
-                _context.TournamentStatuses.AddRange(statuses);
-                await _context.SaveChangesAsync();
+            foreach (var status in statuses) 
+            {
+                var existingStatus = await _context.TournamentStatuses.FindAsync(status.Id);
+                if (existingStatus == null)
+                {
+                    _context.TournamentStatuses.Add(status);
+                }
             }
+
+            await _context.SaveChangesAsync();           
         }
 
         private async Task AddWrestlingStylesAsync()
         {
-            if (!await _context.WrestlingStyles.AnyAsync())
-            {
-                var styles = new[]
-                {
+            var styles = new[]
+{
                     new WrestlingStyle { Id = 1, Name = "GR" },
                     new WrestlingStyle { Id = 2, Name = "FS" },
                     new WrestlingStyle { Id = 3, Name = "WW" },
                     new WrestlingStyle { Id = 4, Name = "BW" }
                 };
 
-                _context.WrestlingStyles.AddRange(styles);
-                await _context.SaveChangesAsync();
+            foreach(var style in styles)
+            {
+                var existingStyle = await _context.WrestlingStyles.FindAsync(style.Id);
+                if (existingStyle == null)
+                {
+                    _context.WrestlingStyles.Add(style);
+                }
             }
+
+            await _context.SaveChangesAsync();       
         }
 
         private async Task AddTournamentWeightCategoryStatusesAsync()
         {
-            if (!await _context.TournamentWeightCategoryStatuses.AnyAsync())
-            {
-                var weightCategoryStatuses = new[]
-                {
+            var weightCategoryStatuses = new[]
+               {
                     new TournamentWeightCategoryStatus { Id = 1, Name = "Closed" },
                     new TournamentWeightCategoryStatus { Id = 2, Name = "Registration" },
                     new TournamentWeightCategoryStatus { Id = 3, Name = "Weigh-In" },
@@ -112,9 +120,16 @@ namespace WrestlingTournamentSystem.DataAccess.Data
                     new TournamentWeightCategoryStatus { Id = 5, Name = "Finished" }
                 };
 
-                _context.TournamentWeightCategoryStatuses.AddRange(weightCategoryStatuses);
-                await _context.SaveChangesAsync();
+            foreach (var status in weightCategoryStatuses)
+            {
+                var existingStatus = await _context.TournamentWeightCategoryStatuses.FindAsync(status.Id);
+                if (existingStatus == null)
+                {
+                    _context.TournamentWeightCategoryStatuses.Add(status);
+                }
             }
+
+            await _context.SaveChangesAsync();
         }
     }
 }

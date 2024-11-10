@@ -22,6 +22,7 @@ namespace WrestlingTournamentSystem.DataAccess.Data
         public DbSet<WrestlingStyle> WrestlingStyles { get; set; }
         public DbSet<WeightCategory> WeightCategories { get; set; }
         public DbSet<Wrestler> Wrestlers { get; set; }
+        public DbSet<Session> Sessions { get; set; }
  
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -30,6 +31,7 @@ namespace WrestlingTournamentSystem.DataAccess.Data
             {
                 entity.HasMany(u => u.Tournaments).WithOne(t => t.Organiser).HasForeignKey(t => t.OrganiserId).OnDelete(DeleteBehavior.NoAction);
                 entity.HasMany(entity => entity.Wrestlers).WithOne(w => w.Coach).HasForeignKey(w => w.CoachId).OnDelete(DeleteBehavior.NoAction);
+                entity.HasMany(entity => entity.Sessions).WithOne(s => s.User).HasForeignKey(s => s.UserId).OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Tournament>(entity =>

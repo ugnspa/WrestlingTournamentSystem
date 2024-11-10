@@ -66,14 +66,14 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             return new SuccessfulLoginDTO(user.Id, accessToken);
         }
 
-        public async Task<string> CreateRefreshToken(string userId)
+        public async Task<string> CreateRefreshToken(Guid sessionId, string userId)
         {
             var user = await _accountRepository.FindByIdAsync(userId);
 
             if (user == null)
                 throw new NotFoundException("User was not found");
 
-            return _jwtTokenService.CreateRefreshToken(user.Id);
+            return _jwtTokenService.CreateRefreshToken(sessionId, user.Id);
         }
 
         public async Task<SuccessfulLoginDTO> GetAccessTokenFromRefreshToken(string? refreshToken)
@@ -95,6 +95,18 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             var accessToken = _jwtTokenService.CreateAccessToken(user.UserName!, user.Id, userRoles);
 
             return new SuccessfulLoginDTO(user.Id, accessToken);
+        }
+
+        public string GetSessionIdFromRefreshToken(string? refreshToken)
+        {
+            if (string.IsNullOrEmpty(refreshToken) ||
+                !_jwtTokenService.TryParseRefreshToken(refreshToken, out var claims) ||
+                claims?.FindFirstValue("SessionId") is not string sessionId)
+            {
+                throw new BusinessRuleValidationException("Invalid refresh token");
+            }
+
+            return sessionId;
         }
     }
 }

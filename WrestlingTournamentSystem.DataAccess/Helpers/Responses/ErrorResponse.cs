@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WrestlingTournamentSystem.DataAccess.Helpers
+namespace WrestlingTournamentSystem.DataAccess.Helpers.Responses
 {
     public class ErrorResponse
     {

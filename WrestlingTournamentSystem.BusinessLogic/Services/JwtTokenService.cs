@@ -46,12 +46,13 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public string CreateRefreshToken(string userId)
+        public string CreateRefreshToken(Guid sessionId, string userId)
         {
             var authClaims = new List<Claim>
             {
                 new (JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new (JwtRegisteredClaimNames.Sub, userId)
+                new (JwtRegisteredClaimNames.Sub, userId),
+                new ("SessionId", sessionId.ToString())
             };
 
             var token = new JwtSecurityToken(
@@ -88,6 +89,5 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
                 return false;
             }
         }
-
     }
 }
