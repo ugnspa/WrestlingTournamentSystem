@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WrestlingTournamentSystem.BusinessLogic.Interfaces;
 using WrestlingTournamentSystem.DataAccess.DTO.Wrestler;
 using WrestlingTournamentSystem.DataAccess.Helpers.Exceptions;
+using WrestlingTournamentSystem.DataAccess.Helpers.Roles;
 
 namespace WrestlingTournamentSystem.Api.Controllers
 {
@@ -68,6 +70,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
         /// <response code="422">If the birthday is in the future.</response>
         /// <response code="404">If the tournament or weight category is not found.</response>
         [HttpPost]
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser + "," + UserRoles.Coach)]
         public async Task<IActionResult> CreateAndAddWrestlerToTournamentWeightCategory(int tournamentId, int weightCategoryId, WrestlerCreateDTO wrestlerCreateDTO)
         {
             if(!ModelState.IsValid)
@@ -93,6 +96,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
         /// <response code="204">If the wrestler is successfully deleted.</response>
         /// <response code="404">If the wrestler, tournament, or weight category is not found.</response>
         [HttpDelete("{wrestlerId}")]
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser + "," + UserRoles.Coach)]
         public async Task<IActionResult> DeleteWrestler(int tournamentId, int weightCategoryId, int wrestlerId)
         {
             try
@@ -118,6 +122,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
         /// <response code="422">If the birthday is in the future.</response>
         /// <response code="404">If the wrestler, tournament, or weight category is not found.</response>
         [HttpPut("{wrestlerId}")]
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser + "," + UserRoles.Coach)]
         public async Task<IActionResult> UpdateWrestler(int tournamentId, int weightCategoryId, int wrestlerId, WrestlerUpdateDTO wrestlerUpdateDTO)
         {
             if (!ModelState.IsValid)

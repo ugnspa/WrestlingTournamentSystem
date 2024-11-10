@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using WrestlingTournamentSystem.BusinessLogic.Interfaces;
 using WrestlingTournamentSystem.DataAccess.DTO.TournamentWeightCategory;
+using WrestlingTournamentSystem.DataAccess.Helpers.Roles;
 
 namespace WrestlingTournamentSystem.Api.Controllers
 {
@@ -62,6 +64,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
         /// <response code="204">If the weight category is successfully deleted.</response>
         /// <response code="404">If the weight category or tournament is not found.</response>
         [HttpDelete("{weightCategoryId}")]
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser)]
         public async Task<IActionResult> DeleteTournamentWeightCategory(int tournamentId, int weightCategoryId)
         {
             try
@@ -84,6 +87,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
         /// <response code="422">If the end date is less than start date or dates are out of tournament date range.</response>
         /// <response code="404">If the tournament or status is not found.</response>
         [HttpPost]
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser)]
         public async Task<IActionResult> CreateTournamentWeightCategory(int tournamentId, TournamentWeightCategoryCreateDTO tournamentWeightCategoryCreateDTO)
         {
             if (!ModelState.IsValid)
@@ -111,6 +115,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
         /// <response code="422">If the end date is less than start date or dates are out of tournament date range.</response>
         /// <response code="404">If the tournament, weight category, or status is not found.</response>
         [HttpPut("{weightCategoryId}")]
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser)]
         public async Task<IActionResult> UpdateTournamentWeightCategory(int tournamentId, int weightCategoryId, TournamentWeightCategoryUpdateDTO tournamentWeightCategoryUpdateDTO)
         {
             if (!ModelState.IsValid)

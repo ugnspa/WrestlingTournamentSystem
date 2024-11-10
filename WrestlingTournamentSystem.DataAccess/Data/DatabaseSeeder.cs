@@ -26,6 +26,8 @@ namespace WrestlingTournamentSystem.DataAccess.Data
         {
             await AddDefaultRolesAsync();
             await AddAdminUserAsync();
+            await AddCoachUserAsync();
+            await AddOrganiserUserAsync();
             await AddTournamentStatusesAsync();
             await AddWrestlingStylesAsync();
             await AddTournamentWeightCategoryStatusesAsync();
@@ -49,6 +51,50 @@ namespace WrestlingTournamentSystem.DataAccess.Data
                 if (createAdminResult.Succeeded) 
                 {
                     await _userManager.AddToRolesAsync(newAdminUser, UserRoles.All);
+                }
+            }
+        }
+
+        private async Task AddCoachUserAsync() 
+        {
+            var newCoachUser = new User
+            {
+                UserName = "coach",
+                Email = "coach@coach.com",
+                Name = "Coach",
+                Surname = "Coach",
+                City = "CoachCity"
+            };
+
+            var existingCoachUser = await _userManager.FindByNameAsync(newCoachUser.UserName);
+            if (existingCoachUser == null)
+            {
+                var createCoachResult = await _userManager.CreateAsync(newCoachUser, "Password1!"); //Change to env
+                if (createCoachResult.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(newCoachUser, UserRoles.Coach);
+                }
+            }
+        }
+
+        private async Task AddOrganiserUserAsync()
+        {
+            var newOrganiserUser = new User
+            {
+                UserName = "organiser",
+                Email = "organiser@organiser.com",
+                Name = "Organiser",
+                Surname = "Organiser",
+                City = "OrganiserCity"
+            };
+
+            var existingOrganiserUser = await _userManager.FindByNameAsync(newOrganiserUser.UserName);
+            if (existingOrganiserUser == null)
+            {
+                var createOrganiserResult = await _userManager.CreateAsync(newOrganiserUser, "Password1!"); //Change to env
+                if (createOrganiserResult.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(newOrganiserUser, UserRoles.TournamentOrganiser);
                 }
             }
         }

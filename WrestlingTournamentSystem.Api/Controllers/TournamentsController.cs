@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -63,6 +64,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
         /// <response code="422">If end date is less than start date.</response>
         /// <response code="404">If tournament status or tournament was not found.</response>
         [HttpPost]
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser)]
         public async Task<IActionResult> CreateTournament(TournamentCreateDTO tournamentCreateDTO)
         {
             if(!ModelState.IsValid)
@@ -89,6 +91,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
         /// <response code="422">If end date is less than start date.</response>
         /// <response code="404">If tournament status or tournament was not found.</response>
         [HttpPut("{tournamentId}")]
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser)]
         public async Task<IActionResult> UpdateTournament(int tournamentId, TournamentUpdateDTO tournamentUpdateDTO)
         {
             if (!ModelState.IsValid)
@@ -112,6 +115,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
         /// <response code="204">If the tournament is successfully deleted.</response>
         /// <response code="404">If the tournament is not found.</response>
         [HttpDelete("{id}")]
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser)]
         public async Task<IActionResult> DeleteTournament(int id)
         {
             try

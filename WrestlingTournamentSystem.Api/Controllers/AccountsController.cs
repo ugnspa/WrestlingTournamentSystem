@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.Extensions.Options;
 using WrestlingTournamentSystem.BusinessLogic.Interfaces;
 using WrestlingTournamentSystem.DataAccess.DTO.User;
 using WrestlingTournamentSystem.DataAccess.Helpers;
 using WrestlingTournamentSystem.DataAccess.Helpers.Responses;
+using WrestlingTournamentSystem.DataAccess.Helpers.Roles;
 using WrestlingTournamentSystem.DataAccess.Helpers.Settings;
 
 namespace WrestlingTournamentSystem.Api.Controllers
@@ -26,6 +28,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
 
         [HttpPost]
         [Route("Register")]
+        [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Register(RegisterUserDTO registerUserDTO)
         {
             if(!ModelState.IsValid)
@@ -71,6 +74,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
 
         [HttpPost]
         [Route("AccessToken")]
+        [Authorize]
         public async Task<IActionResult> AccessToken()
         {
             HttpContext.Request.Cookies.TryGetValue("RefreshToken", out var refreshToken);
@@ -86,7 +90,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
 
                 if(!await _sessionService.IsSessionValidAsync(sessionId, refreshToken!)) 
                 {
-                    UnprocessableEntity(new ErrorResponse(StatusCodes.Status422UnprocessableEntity, "Session is not valid anymore"));
+                    return UnprocessableEntity(new ErrorResponse(StatusCodes.Status422UnprocessableEntity, "Session is not valid anymore"));
                 }
 
                 var newRefreshToken = await _accountsService.CreateRefreshToken(sessionId, loginDTO.UserId);
@@ -106,6 +110,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
 
         [HttpPost]
         [Route("Logout")]
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
             HttpContext.Request.Cookies.TryGetValue("RefreshToken", out var refreshToken);
