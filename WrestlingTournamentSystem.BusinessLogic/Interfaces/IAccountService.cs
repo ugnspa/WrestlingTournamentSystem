@@ -16,7 +16,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Interfaces
         public Task<string> CreateRefreshToken(Guid sessionId, string userId);
         public Task<SuccessfulLoginDTO> GetAccessTokenFromRefreshToken(string? refreshToken);
         public string GetSessionIdFromRefreshToken(string? refreshToken);
-        public Task<IEnumerable<CoachReadDTO>> GetCoachesAsync();
-        public Task<CoachReadDTO> GetCoachWithWrestlersAsync(string userId);
+        public Task<IEnumerable<CoachListDTO>> GetCoachesAsync();
+        public Task<CoachDetailDTO> GetCoachWithWrestlersAsync(string userId);
     }
 }
