@@ -24,8 +24,8 @@ namespace WrestlingTournamentSystem.DataAccess.Entities
         public string City { get; set; } = null!;
 
         //navigation properties 
-        public ICollection<Tournament> Tournaments { get; set; } = new List<Tournament>();
-        public ICollection<Wrestler> Wrestlers { get; set; } = new List<Wrestler>();
+        public ICollection<Tournament>? Tournaments { get; set; }
+        public ICollection<Wrestler>? Wrestlers { get; set; }
         public ICollection<Session> Sessions { get; set; } = new List<Session>();
     }
 }

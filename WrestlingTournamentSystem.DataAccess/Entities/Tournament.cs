@@ -38,6 +38,6 @@ namespace WrestlingTournamentSystem.DataAccess.Entities
         public int StatusId { get; set; }
         public TournamentStatus TournamentStatus { get; set; } = null!;
 
-        public ICollection<TournamentWeightCategory> TournamentWeightCategories { get; set; } = new List<TournamentWeightCategory>();
+        public ICollection<TournamentWeightCategory>? TournamentWeightCategories { get; set; }
     }
 }

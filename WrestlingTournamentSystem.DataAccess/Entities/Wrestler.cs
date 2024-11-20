@@ -40,6 +40,6 @@ namespace WrestlingTournamentSystem.DataAccess.Entities
         public string? CoachId { get; set; }
         public User? Coach { get; set; } = null!;
 
-        public ICollection<TournamentWeightCategory> TournamentWeightCategories { get; set; } = new List<TournamentWeightCategory>();
+        public ICollection<TournamentWeightCategory>? TournamentWeightCategories { get; set; }
     }
 }

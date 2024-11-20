@@ -34,6 +34,6 @@ namespace WrestlingTournamentSystem.DataAccess.Entities
         public int fk_WeightCategoryId { get; set; }
         public WeightCategory WeightCategory { get; set; } = null!;
 
-        public ICollection<Wrestler> Wrestlers { get; set; } = new List<Wrestler>();
+        public ICollection<Wrestler>? Wrestlers { get; set; }
     }
 }
