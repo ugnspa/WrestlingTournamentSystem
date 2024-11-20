@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WrestlingTournamentSystem.DataAccess.Interfaces;
+﻿using WrestlingTournamentSystem.DataAccess.Interfaces;
 using WrestlingTournamentSystem.DataAccess.Data;
 using WrestlingTournamentSystem.DataAccess.Entities;
 using Microsoft.EntityFrameworkCore;

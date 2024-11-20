@@ -1,11 +1,4 @@
-﻿using Microsoft.Identity.Client;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WrestlingTournamentSystem.BusinessLogic.Interfaces;
+﻿using WrestlingTournamentSystem.BusinessLogic.Interfaces;
 using WrestlingTournamentSystem.DataAccess.Helpers;
 using WrestlingTournamentSystem.DataAccess.Helpers.Exceptions;
 using WrestlingTournamentSystem.DataAccess.Interfaces;

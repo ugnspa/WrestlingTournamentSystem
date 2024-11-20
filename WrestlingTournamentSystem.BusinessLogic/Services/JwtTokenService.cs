@@ -1,14 +1,8 @@
-﻿using Microsoft.AspNetCore.Razor.TagHelpers;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using WrestlingTournamentSystem.DataAccess.Helpers.Settings;
 
 namespace WrestlingTournamentSystem.BusinessLogic.Services

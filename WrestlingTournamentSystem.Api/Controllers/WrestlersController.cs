@@ -4,7 +4,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using WrestlingTournamentSystem.BusinessLogic.Interfaces;
 using WrestlingTournamentSystem.DataAccess.DTO.Wrestler;
-using WrestlingTournamentSystem.DataAccess.Helpers.Exceptions;
 using WrestlingTournamentSystem.DataAccess.Helpers.Responses;
 using WrestlingTournamentSystem.DataAccess.Helpers.Roles;
 

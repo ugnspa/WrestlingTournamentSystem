@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WrestlingTournamentSystem.DataAccess.DTO.Wrestler;
-using WrestlingTournamentSystem.DataAccess.Entities;
+﻿using WrestlingTournamentSystem.DataAccess.DTO.Wrestler;
 
 namespace WrestlingTournamentSystem.BusinessLogic.Interfaces
 {

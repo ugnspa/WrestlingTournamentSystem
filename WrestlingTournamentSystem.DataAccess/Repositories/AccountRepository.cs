@@ -1,12 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WrestlingTournamentSystem.DataAccess.Data;
-using WrestlingTournamentSystem.DataAccess.DTO.User;
 using WrestlingTournamentSystem.DataAccess.Entities;
 using WrestlingTournamentSystem.DataAccess.Helpers.Exceptions;
 using WrestlingTournamentSystem.DataAccess.Helpers.Roles;
@@ -81,9 +75,7 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
                 .Where(user =>  user.Id == userId)
                 .Include(coach => coach.Wrestlers)
                 .ThenInclude(wrestler => wrestler.WrestlingStyle)
-                .FirstOrDefaultAsync();
-
-            
+                .FirstOrDefaultAsync();           
 
             if (coach == null)
                 return null;

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using WrestlingTournamentSystem.DataAccess.DTO.Tournament;
 using WrestlingTournamentSystem.DataAccess.DTO.TournamentWeightCategory;
 using WrestlingTournamentSystem.DataAccess.DTO.User;

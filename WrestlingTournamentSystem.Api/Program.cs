@@ -13,9 +13,8 @@ using System.Text;
 using WrestlingTournamentSystem.DataAccess.Entities;
 using WrestlingTournamentSystem.DataAccess.Helpers.Mappers;
 using WrestlingTournamentSystem.DataAccess.Helpers.Settings;
-using Microsoft.Extensions.Options;
-using WrestlingTournamentSystem.DataAccess.Helpers.Responses;
 using System.Text.Json;
+using WrestlingTournamentSystem.DataAccess.Response;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -98,10 +97,9 @@ builder.Services.AddAuthentication(option =>
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
             context.Response.ContentType = "application/json";
 
-            var errorResponse = new ErrorResponse(StatusCodes.Status401Unauthorized, "Unauthorized access");
-            var errorJson = JsonSerializer.Serialize(errorResponse);
+            var responseJson = JsonSerializer.Serialize(ApiResponse.UnauthorizedResponse("Unauthorized access"));
 
-            return context.Response.WriteAsync(errorJson);
+            return context.Response.WriteAsync(responseJson);
         },
 
         OnForbidden = context =>
@@ -109,10 +107,9 @@ builder.Services.AddAuthentication(option =>
             context.Response.StatusCode = StatusCodes.Status403Forbidden;
             context.Response.ContentType = "application/json";
 
-            var errorResponse = new ErrorResponse(StatusCodes.Status403Forbidden, "Forbidden: You do not have the required permissions.");
-            var errorJson = JsonSerializer.Serialize(errorResponse);
+            var responeJson = JsonSerializer.Serialize(ApiResponse.ForbiddenResponse("Forbidden: You do not have the required permissions"));
 
-            return context.Response.WriteAsync(errorJson);
+            return context.Response.WriteAsync(responeJson);
         }
     };
 });

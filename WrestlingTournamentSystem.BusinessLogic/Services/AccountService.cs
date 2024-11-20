@@ -1,14 +1,6 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 using WrestlingTournamentSystem.BusinessLogic.Interfaces;
 using WrestlingTournamentSystem.BusinessLogic.Validation;
 using WrestlingTournamentSystem.DataAccess.DTO.User;
@@ -109,21 +101,21 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             return sessionId;
         }
 
-        public async Task<IEnumerable<CoachReadDTO>> GetCoachesAsync()
+        public async Task<IEnumerable<CoachListDTO>> GetCoachesAsync()
         {
             var coaches = await _accountRepository.GetCoaches();
 
-            return _mapper.Map<IEnumerable<CoachReadDTO>>(coaches);
+            return _mapper.Map<IEnumerable<CoachListDTO>>(coaches);
         }
 
-        public async Task<CoachReadDTO> GetCoachWithWrestlersAsync(string userId)
+        public async Task<CoachDetailDTO> GetCoachWithWrestlersAsync(string userId)
         {
             var coach = await _accountRepository.GetCoachWithWrestlersAsync(userId);
 
             if(coach == null)
                 throw new NotFoundException("Coach was not found");
 
-            return _mapper.Map<CoachReadDTO>(coach);
+            return _mapper.Map<CoachDetailDTO>(coach);
         }
     }
 }

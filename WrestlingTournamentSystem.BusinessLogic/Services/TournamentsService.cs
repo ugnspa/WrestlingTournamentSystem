@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using WrestlingTournamentSystem.BusinessLogic.Interfaces;
-using WrestlingTournamentSystem.DataAccess.Entities;
-using WrestlingTournamentSystem.DataAccess.Interfaces;
-using AutoMapper;
-using WrestlingTournamentSystem.DataAccess.DTO.Tournament;
 using WrestlingTournamentSystem.BusinessLogic.Validation;
+using WrestlingTournamentSystem.DataAccess.DTO.Tournament;
+using WrestlingTournamentSystem.DataAccess.Entities;
 using WrestlingTournamentSystem.DataAccess.Helpers.Exceptions;
+using WrestlingTournamentSystem.DataAccess.Interfaces;
 
 namespace WrestlingTournamentSystem.BusinessLogic.Services
 {
@@ -19,7 +14,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
         private readonly ITournamentStatusRepository _tournamentStatusRepository;
         private readonly IMapper _mapper;
         private readonly IValidationService _validationService;
-        public TournamentsService(ITournamentRepository tournamentRepository, ITournamentStatusRepository tournamentStatusRepository, IMapper mapper, IValidationService validationService) 
+        public TournamentsService(ITournamentRepository tournamentRepository, ITournamentStatusRepository tournamentStatusRepository, IMapper mapper, IValidationService validationService)
         {
             _tournamentRepository = tournamentRepository;
             _tournamentStatusRepository = tournamentStatusRepository;
@@ -31,7 +26,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             if (tournamentCreateDTO == null)
                 throw new ArgumentNullException(nameof(tournamentCreateDTO));
 
-            if(String.IsNullOrEmpty(userId))
+            if (String.IsNullOrEmpty(userId))
                 throw new ArgumentNullException(nameof(userId));
 
             _validationService.ValidateStartEndDates(tournamentCreateDTO.StartDate, tournamentCreateDTO.EndDate);
@@ -49,7 +44,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 
             var result = await _tournamentRepository.CreateTournamentAsync(tournament);
 
-            if(result == null)
+            if (result == null)
                 throw new Exception("Failed to create tournament");
 
             return _mapper.Map<TournamentReadDTO>(result);
@@ -105,7 +100,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 
             _validationService.ValidateStartEndDates(tournamentUpdateDTO.StartDate, tournamentUpdateDTO.EndDate);
 
-            _mapper.Map(tournamentUpdateDTO, tournamentToUpdate);   
+            _mapper.Map(tournamentUpdateDTO, tournamentToUpdate);
 
             var result = await _tournamentRepository.UpdateTournamentAsync(tournamentToUpdate);
 
