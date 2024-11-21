@@ -29,9 +29,6 @@ namespace WrestlingTournamentSystem.Api.Controllers
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> Register(RegisterUserDTO registerUserDTO)
         {
-            if(!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             try
             {
                 await _accountsService.Register(registerUserDTO);
@@ -47,9 +44,6 @@ namespace WrestlingTournamentSystem.Api.Controllers
         [Route("Login")]
         public async Task<IActionResult> Login(LoginUserDTO loginUserDTO)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             try
             {
                 var loginDTO = await _accountsService.Login(loginUserDTO);

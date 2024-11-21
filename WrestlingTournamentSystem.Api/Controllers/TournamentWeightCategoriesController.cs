@@ -100,9 +100,6 @@ namespace WrestlingTournamentSystem.Api.Controllers
         [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser)]
         public async Task<IActionResult> CreateTournamentWeightCategory(int tournamentId, TournamentWeightCategoryCreateDTO tournamentWeightCategoryCreateDTO)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             try
             {
                 var userId = HttpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub);
@@ -135,9 +132,6 @@ namespace WrestlingTournamentSystem.Api.Controllers
         [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser)]
         public async Task<IActionResult> UpdateTournamentWeightCategory(int tournamentId, int weightCategoryId, TournamentWeightCategoryUpdateDTO tournamentWeightCategoryUpdateDTO)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             try
             {
                 var userId = HttpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub);
