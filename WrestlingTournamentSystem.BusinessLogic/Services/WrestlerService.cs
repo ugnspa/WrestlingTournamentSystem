@@ -26,13 +26,13 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             _validationService = validationService;
         }
 
-        private async Task ValidateTournamentAndWeightCategory(int tournamentId, int tournamentWeightCategoryId, bool isAdmin = false, string userId = "")
+        private async Task ValidateTournamentAndWeightCategory(int tournamentId, int tournamentWeightCategoryId, bool isAdmin = false, string userId = "", bool guestActionAllowed = false)
         {
             var tournament = await _tournamentRepository.GetTournamentAsync(tournamentId);
             if (tournament == null)
                 throw new NotFoundException($"Tournament with id {tournamentId} does not exist");
 
-            if (tournament.OrganiserId != userId && !isAdmin)
+            if (tournament.OrganiserId != userId && !isAdmin && !guestActionAllowed)
                 throw new ForbiddenException("You are not allowed to perform this action for this tournament");
 
             var tournamentWeightCategory = await _tournamentWeightCategoryRepository.GetTournamentWeightCategoryAsync(tournamentId, tournamentWeightCategoryId);
@@ -86,7 +86,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 
         public async Task<WrestlerReadDTO?> GetTournamentWeightCategoryWrestlerAsync(int tournamentId, int tournamentWeightCategoryId, int wrestlerId)
         {
-            await ValidateTournamentAndWeightCategory(tournamentId, tournamentWeightCategoryId);
+            await ValidateTournamentAndWeightCategory(tournamentId, tournamentWeightCategoryId, guestActionAllowed: true);
 
             var tournamentWeightCategoryWrestler = await _wrestlerRepository.GetTournamentWeightCategoryWrestlerAsync(tournamentId, tournamentWeightCategoryId, wrestlerId);
 
@@ -100,7 +100,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 
         public async Task<IEnumerable<WrestlerReadDTO>> GetTournamentWeightCategoryWrestlersAsync(int tournamentId, int tournamentWeightCategoryId)
         {
-            await ValidateTournamentAndWeightCategory(tournamentId, tournamentWeightCategoryId);
+            await ValidateTournamentAndWeightCategory(tournamentId, tournamentWeightCategoryId, guestActionAllowed: true);
 
             return _mapper.Map<IEnumerable<WrestlerReadDTO>>(await _wrestlerRepository.GetTournamentWeightCategoryWrestlersAsync(tournamentId, tournamentWeightCategoryId));
         }
