@@ -25,7 +25,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             _accountRepository = accountRepository;
         }
 
-        public async Task Register(RegisterUserDTO registerUserDTO)
+        public async Task<UserListDTO> Register(RegisterUserDTO registerUserDTO)
         {
             var user = await _accountRepository.FindByUsernameAsync(registerUserDTO.UserName);
 
@@ -37,6 +37,8 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             var newUser = _mapper.Map<User>(registerUserDTO);
 
             await _accountRepository.CreateUserAsync(newUser, registerUserDTO.Password);
+
+            return _mapper.Map<UserListDTO>(newUser);
         }
 
         public async Task<SuccessfulLoginDTO> Login(LoginUserDTO loginUserDTO)
@@ -101,21 +103,21 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             return sessionId;
         }
 
-        public async Task<IEnumerable<CoachListDTO>> GetCoachesAsync()
+        public async Task<IEnumerable<UserListDTO>> GetCoachesAsync()
         {
             var coaches = await _accountRepository.GetCoaches();
 
-            return _mapper.Map<IEnumerable<CoachListDTO>>(coaches);
+            return _mapper.Map<IEnumerable<UserListDTO>>(coaches);
         }
 
-        public async Task<CoachDetailDTO> GetCoachWithWrestlersAsync(string userId)
+        public async Task<UserDetailDTO> GetCoachWithWrestlersAsync(string userId)
         {
             var coach = await _accountRepository.GetCoachWithWrestlersAsync(userId);
 
             if(coach == null)
                 throw new NotFoundException("Coach was not found");
 
-            return _mapper.Map<CoachDetailDTO>(coach);
+            return _mapper.Map<UserDetailDTO>(coach);
         }
     }
 }

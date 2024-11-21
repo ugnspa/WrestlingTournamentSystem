@@ -34,10 +34,8 @@ namespace WrestlingTournamentSystem.DataAccess.Helpers.Mappers
 
             //User
             CreateMap<RegisterUserDTO, User>();
-
-            //Coach
-            CreateMap<User, CoachListDTO>();
-            CreateMap<User, CoachDetailDTO>();
+            CreateMap<User, UserListDTO>();
+            CreateMap<User, UserDetailDTO>();
         }
     }
 }

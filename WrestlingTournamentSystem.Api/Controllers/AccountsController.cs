@@ -32,8 +32,8 @@ namespace WrestlingTournamentSystem.Api.Controllers
         {
             try
             {
-                await _accountsService.Register(registerUserDTO);
-                return Created();
+                var user = await _accountsService.Register(registerUserDTO);
+                return Created("", ApiResponse.CreatedResponse("User registered", user));
             }
             catch (Exception ex)
             {
