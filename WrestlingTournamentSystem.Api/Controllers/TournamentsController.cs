@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WrestlingTournamentSystem.BusinessLogic.Interfaces;
 using WrestlingTournamentSystem.DataAccess.DTO.Tournament;
+using WrestlingTournamentSystem.DataAccess.Entities;
 using WrestlingTournamentSystem.DataAccess.Helpers.Responses;
 using WrestlingTournamentSystem.DataAccess.Helpers.Roles;
+using WrestlingTournamentSystem.DataAccess.Response;
 
 namespace WrestlingTournamentSystem.Api.Controllers
 {
@@ -27,7 +29,8 @@ namespace WrestlingTournamentSystem.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetTournaments()
         {
-            return Ok(await _tournamentsService.GetTournamentsAsync());
+            var tournaments = await _tournamentsService.GetTournamentsAsync();
+            return Ok(ApiResponse.OkResponse("Tournaments", tournaments));
         }
 
         /// <summary>
@@ -43,7 +46,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
             {
                 var tournament = await _tournamentsService.GetTournamentAsync(id);
 
-                return Ok(tournament);
+                return Ok(ApiResponse.OkResponse("Tournament by id", tournament));
             }
             catch (Exception e)
             {
@@ -69,10 +72,10 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 var userId = HttpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub);
 
                 if (String.IsNullOrEmpty(userId))
-                    return Unauthorized(new ErrorResponse(StatusCodes.Status401Unauthorized, "User ID is missing from the token."));
+                    return Unauthorized(ApiResponse.UnauthorizedResponse("User ID is missing from the token."));
 
                 var tournamentReadDTO = await _tournamentsService.CreateTournamentAsync(userId, tournamentCreateDTO);
-                return Created("", tournamentReadDTO);
+                return Created("", ApiResponse.CreatedResponse("Tournament created", tournamentReadDTO));
             }
             catch (Exception e)
             {
@@ -98,12 +101,12 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 var userId = HttpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub);
 
                 if (String.IsNullOrEmpty(userId))
-                    return Unauthorized(new ErrorResponse(StatusCodes.Status401Unauthorized, "User ID is missing from the token."));
+                    return Unauthorized(ApiResponse.UnauthorizedResponse("User ID is missing from the token."));
 
                 var isAdmin = HttpContext.User.IsInRole(UserRoles.Admin);
 
                 var tournamentReadDTO = await _tournamentsService.UpdateTournamentAsync(isAdmin, userId, tournamentId, tournamentUpdateDTO);
-                return Ok(tournamentReadDTO);
+                return Ok(ApiResponse.OkResponse("Tournament updated", tournamentReadDTO));
             }
             catch (Exception e)
             {
@@ -126,7 +129,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 var userId = HttpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub);
 
                 if (String.IsNullOrEmpty(userId))
-                    return Unauthorized(new ErrorResponse(StatusCodes.Status401Unauthorized, "User ID is missing from the token."));
+                    return Unauthorized(ApiResponse.UnauthorizedResponse("User ID is missing from the token."));
 
                 var isAdmin = HttpContext.User.IsInRole(UserRoles.Admin);
 

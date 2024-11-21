@@ -23,9 +23,19 @@ namespace WrestlingTournamentSystem.DataAccess.Response
             Errors = errors;
         }
 
-        public static ApiResponse SuccessResponse(string message, object? data = null)
+        public static ApiResponse OkResponse(string message, object? data = null)
         {
             return new ApiResponse(true, 200, message, data, null);
+        }
+
+        public static ApiResponse CreatedResponse(string message, object? data)
+        {
+            return new ApiResponse(true, 201, message, data, null);
+        }
+
+        public static ApiResponse NoContentResponse(string message)
+        {
+            return new ApiResponse(true, 204, message, null, null);
         }
 
         public static ApiResponse ErrorResponse(string message, List<string> errors)

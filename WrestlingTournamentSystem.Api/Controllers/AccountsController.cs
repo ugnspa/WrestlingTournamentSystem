@@ -6,6 +6,7 @@ using WrestlingTournamentSystem.DataAccess.DTO.User;
 using WrestlingTournamentSystem.DataAccess.Helpers.Responses;
 using WrestlingTournamentSystem.DataAccess.Helpers.Roles;
 using WrestlingTournamentSystem.DataAccess.Helpers.Settings;
+using WrestlingTournamentSystem.DataAccess.Response;
 
 namespace WrestlingTournamentSystem.Api.Controllers
 {
@@ -56,7 +57,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
 
                 UpdateCookie(refreshToken);
 
-                return Ok(new AccessTokenDTO(loginDTO.AccessToken));
+                return Ok(ApiResponse.OkResponse("Successful login", new AccessTokenDTO(loginDTO.AccessToken)));
             }
             catch (Exception ex)
             {
@@ -72,7 +73,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
             HttpContext.Request.Cookies.TryGetValue("RefreshToken", out var refreshToken);
 
             if (string.IsNullOrEmpty(refreshToken))
-                return UnprocessableEntity(new ErrorResponse(StatusCodes.Status422UnprocessableEntity, "Refresh token not found"));
+                return UnprocessableEntity(ApiResponse.UnprocessableEntityResponse("Refresh token not found"));
 
             try
             {
@@ -82,7 +83,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
 
                 if(!await _sessionService.IsSessionValidAsync(sessionId, refreshToken!)) 
                 {
-                    return UnprocessableEntity(new ErrorResponse(StatusCodes.Status422UnprocessableEntity, "Session is not valid anymore"));
+                    return UnprocessableEntity(ApiResponse.UnprocessableEntityResponse("Session is not valid anymore"));
                 }
 
                 var newRefreshToken = await _accountsService.CreateRefreshToken(sessionId, loginDTO.UserId);
@@ -91,7 +92,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
 
                 await _sessionService.ExtendSessionAsync(sessionId, newRefreshToken, DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays));
 
-                return Ok (new AccessTokenDTO(loginDTO.AccessToken));
+                return Ok (ApiResponse.OkResponse("Access token refreshed", new AccessTokenDTO(loginDTO.AccessToken)));
             }
             catch (Exception ex)
             {
@@ -108,7 +109,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
             HttpContext.Request.Cookies.TryGetValue("RefreshToken", out var refreshToken);
 
             if (string.IsNullOrEmpty(refreshToken))
-                return UnprocessableEntity(new ErrorResponse(StatusCodes.Status422UnprocessableEntity, "Refresh token not found"));
+                return UnprocessableEntity(ApiResponse.UnprocessableEntityResponse("Refresh token not found"));
 
             try
             {
@@ -118,7 +119,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
 
                 DeleteCookie("RefreshToken");
 
-                return Ok();
+                return Ok(ApiResponse.OkResponse("Logout successful"));
             }
             catch (Exception ex)
             {
@@ -132,7 +133,8 @@ namespace WrestlingTournamentSystem.Api.Controllers
         {
             try
             {
-                return Ok(await _accountsService.GetCoachesAsync());
+                var coaches = await _accountsService.GetCoachesAsync();
+                return Ok(ApiResponse.OkResponse("Coaches", coaches));
             }
             catch (Exception ex)
             {
@@ -146,7 +148,8 @@ namespace WrestlingTournamentSystem.Api.Controllers
         {
             try
             {
-                return Ok(await _accountsService.GetCoachWithWrestlersAsync(id));
+                var coach = await _accountsService.GetCoachWithWrestlersAsync(id);
+                return Ok(ApiResponse.OkResponse("Coach with wrestlers", coach));
             }
             catch (Exception ex)
             {
