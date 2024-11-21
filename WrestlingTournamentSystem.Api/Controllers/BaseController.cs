@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WrestlingTournamentSystem.DataAccess.Helpers.Exceptions;
-using WrestlingTournamentSystem.DataAccess.Helpers.Responses;
+using WrestlingTournamentSystem.DataAccess.Response;
 
 namespace WrestlingTournamentSystem.Api.Controllers
 {
@@ -8,17 +8,17 @@ namespace WrestlingTournamentSystem.Api.Controllers
     {
         protected IActionResult HandleException(Exception ex)
         {
-            var statusCode = ex switch
+            var message = ex.Message;
+
+            var response = ex switch
             {
-                NotFoundException => StatusCodes.Status404NotFound,
-                BusinessRuleValidationException => StatusCodes.Status422UnprocessableEntity,
-                ForbiddenException => StatusCodes.Status403Forbidden,
-                _ => StatusCodes.Status500InternalServerError
+                NotFoundException => ApiResponse.NotFoundResponse(message),
+                BusinessRuleValidationException => ApiResponse.UnprocessableEntityResponse(message),
+                ForbiddenException => ApiResponse.ForbiddenResponse(message),
+                _ => ApiResponse.InternalServerErrorResponse("Internal Server Error")
             };
 
-            var title = statusCode == StatusCodes.Status500InternalServerError ? "Internal Server Error" : ex.Message;
-
-            return StatusCode(statusCode, new ErrorResponse(statusCode, title));
+            return StatusCode(response.Status, response);
         }
     }
 }

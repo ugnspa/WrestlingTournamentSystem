@@ -15,6 +15,7 @@ using WrestlingTournamentSystem.DataAccess.Helpers.Mappers;
 using WrestlingTournamentSystem.DataAccess.Helpers.Settings;
 using System.Text.Json;
 using WrestlingTournamentSystem.DataAccess.Response;
+using Microsoft.AspNetCore.Mvc;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,6 +42,20 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
+
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        var errors = context.ModelState.Values
+            .SelectMany(v => v.Errors.Select(e => e.ErrorMessage))
+            .ToList();
+
+        var response = ApiResponse.ErrorResponse("Validation error", errors);
+
+        return new BadRequestObjectResult(response);
+    };
+});
 
 //Mappers
 builder.Services.AddAutoMapper(typeof(MappingProfile));
