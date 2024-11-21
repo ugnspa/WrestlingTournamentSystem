@@ -33,11 +33,6 @@ namespace WrestlingTournamentSystem.DataAccess.Response
             return new ApiResponse(true, 201, message, data, null);
         }
 
-        public static ApiResponse NoContentResponse(string message)
-        {
-            return new ApiResponse(true, 204, message, null, null);
-        }
-
         public static ApiResponse ErrorResponse(string message, List<string> errors)
         {
             return new ApiResponse(false, 400, message, null, errors);
