@@ -24,9 +24,9 @@ namespace WrestlingTournamentSystem.DataAccess.Data
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.HasMany(u => u.Tournaments).WithOne(t => t.Organiser).HasForeignKey(t => t.OrganiserId).OnDelete(DeleteBehavior.NoAction);
-                entity.HasMany(entity => entity.Wrestlers).WithOne(w => w.Coach).HasForeignKey(w => w.CoachId).OnDelete(DeleteBehavior.NoAction);
-                entity.HasMany(entity => entity.Sessions).WithOne(s => s.User).HasForeignKey(s => s.UserId).OnDelete(DeleteBehavior.Cascade);
+                entity.HasMany(user => user.Tournaments).WithOne(t => t.Organiser).HasForeignKey(t => t.OrganiserId).OnDelete(DeleteBehavior.NoAction);
+                entity.HasMany(user => user.Wrestlers).WithOne(w => w.Coach).HasForeignKey(w => w.CoachId).OnDelete(DeleteBehavior.NoAction);
+                entity.HasMany(user => user.Sessions).WithOne(s => s.User).HasForeignKey(s => s.UserId).OnDelete(DeleteBehavior.Cascade);
             });
 
             modelBuilder.Entity<Tournament>(entity =>

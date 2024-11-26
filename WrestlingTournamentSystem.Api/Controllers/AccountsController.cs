@@ -6,33 +6,27 @@ using WrestlingTournamentSystem.DataAccess.DTO.User;
 using WrestlingTournamentSystem.DataAccess.Helpers.Responses;
 using WrestlingTournamentSystem.DataAccess.Helpers.Roles;
 using WrestlingTournamentSystem.DataAccess.Helpers.Settings;
-using WrestlingTournamentSystem.DataAccess.Response;
 
 namespace WrestlingTournamentSystem.Api.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
-    public class AccountsController : BaseController
+    public class AccountsController(
+        IAccountService accountsService,
+        ISessionService sessionService,
+        IOptions<JwtSettings> jwtSettings)
+        : BaseController
     {
-        private readonly IAccountService _accountsService;
-        private readonly ISessionService _sessionService;
-        private readonly JwtSettings _jwtSettings;
-
-        public AccountsController(IAccountService accountsService, ISessionService sessionService, IOptions<JwtSettings> jwtSettings)
-        {
-            _accountsService = accountsService;
-            _sessionService = sessionService;
-            _jwtSettings = jwtSettings.Value;
-        }
+        private readonly JwtSettings _jwtSettings = jwtSettings.Value;
 
         [HttpPost]
         [Route("Register")]
         [Authorize(Roles = UserRoles.Admin)]
-        public async Task<IActionResult> Register(RegisterUserDTO registerUserDTO)
+        public async Task<IActionResult> Register(RegisterUserDto registerUserDto)
         {
             try
             {
-                var user = await _accountsService.Register(registerUserDTO);
+                var user = await accountsService.Register(registerUserDto);
                 return Created("", ApiResponse.CreatedResponse("User registered", user));
             }
             catch (Exception ex)
@@ -43,21 +37,21 @@ namespace WrestlingTournamentSystem.Api.Controllers
 
         [HttpPost]
         [Route("Login")]
-        public async Task<IActionResult> Login(LoginUserDTO loginUserDTO)
+        public async Task<IActionResult> Login(LoginUserDto loginUserDto)
         {
             try
             {
-                var loginDTO = await _accountsService.Login(loginUserDTO);
+                var loginDto = await accountsService.Login(loginUserDto);
 
                 var sessionId = Guid.NewGuid();
 
-                var refreshToken = await _accountsService.CreateRefreshToken(sessionId, loginDTO.UserId);
+                var refreshToken = await accountsService.CreateRefreshToken(sessionId, loginDto.UserId);
 
-                await _sessionService.CreateSessionAsync(sessionId, loginDTO.UserId, refreshToken, DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays));
+                await sessionService.CreateSessionAsync(sessionId, loginDto.UserId, refreshToken, DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays));
 
                 UpdateCookie(refreshToken);
 
-                return Ok(ApiResponse.OkResponse("Successful login", new AccessTokenDTO(loginDTO.AccessToken)));
+                return Ok(ApiResponse.OkResponse("Successful login", new AccessTokenDto(loginDto.AccessToken)));
             }
             catch (Exception ex)
             {
@@ -77,22 +71,22 @@ namespace WrestlingTournamentSystem.Api.Controllers
 
             try
             {
-                var loginDTO = await _accountsService.GetAccessTokenFromRefreshToken(refreshToken);
+                var loginDto = await accountsService.GetAccessTokenFromRefreshToken(refreshToken);
 
-                var sessionId = Guid.Parse(_accountsService.GetSessionIdFromRefreshToken(refreshToken));
+                var sessionId = Guid.Parse(accountsService.GetSessionIdFromRefreshToken(refreshToken));
 
-                if(!await _sessionService.IsSessionValidAsync(sessionId, refreshToken!)) 
+                if(!await sessionService.IsSessionValidAsync(sessionId, refreshToken)) 
                 {
                     return UnprocessableEntity(ApiResponse.UnprocessableEntityResponse("Session is not valid anymore"));
                 }
 
-                var newRefreshToken = await _accountsService.CreateRefreshToken(sessionId, loginDTO.UserId);
+                var newRefreshToken = await accountsService.CreateRefreshToken(sessionId, loginDto.UserId);
 
                 UpdateCookie(newRefreshToken);
 
-                await _sessionService.ExtendSessionAsync(sessionId, newRefreshToken, DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays));
+                await sessionService.ExtendSessionAsync(sessionId, newRefreshToken, DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays));
 
-                return Ok (ApiResponse.OkResponse("Access token refreshed", new AccessTokenDTO(loginDTO.AccessToken)));
+                return Ok (ApiResponse.OkResponse("Access token refreshed", new AccessTokenDto(loginDto.AccessToken)));
             }
             catch (Exception ex)
             {
@@ -113,9 +107,9 @@ namespace WrestlingTournamentSystem.Api.Controllers
 
             try
             {
-                var sessionId = Guid.Parse(_accountsService.GetSessionIdFromRefreshToken(refreshToken));
+                var sessionId = Guid.Parse(accountsService.GetSessionIdFromRefreshToken(refreshToken));
 
-                await _sessionService.InvalidateSessionAsync(sessionId);
+                await sessionService.InvalidateSessionAsync(sessionId);
 
                 DeleteCookie("RefreshToken");
 
@@ -133,7 +127,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
         {
             try
             {
-                var coaches = await _accountsService.GetCoachesAsync();
+                var coaches = await accountsService.GetCoachesAsync();
                 return Ok(ApiResponse.OkResponse("Coaches", coaches));
             }
             catch (Exception ex)
@@ -148,7 +142,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
         {
             try
             {
-                var coach = await _accountsService.GetCoachWithWrestlersAsync(id);
+                var coach = await accountsService.GetCoachWithWrestlersAsync(id);
                 return Ok(ApiResponse.OkResponse("Coach with wrestlers", coach));
             }
             catch (Exception ex)

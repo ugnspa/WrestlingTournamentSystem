@@ -2,6 +2,6 @@
 {
     public interface IWeightCategoryRepository
     {
-        public Task<bool> WeightCategoryExistsAsync(int WeigthCategoryId);
+        public Task<bool> WeightCategoryExistsAsync(int weigthCategoryId);
     }
 }

@@ -6,21 +6,13 @@ using WrestlingTournamentSystem.BusinessLogic.Interfaces;
 using WrestlingTournamentSystem.DataAccess.DTO.Wrestler;
 using WrestlingTournamentSystem.DataAccess.Helpers.Responses;
 using WrestlingTournamentSystem.DataAccess.Helpers.Roles;
-using WrestlingTournamentSystem.DataAccess.Response;
 
 namespace WrestlingTournamentSystem.Api.Controllers
 {
     [ApiController]
     [Route("api/v1/Tournaments/{tournamentId}/TournamentWeightCategories/{weightCategoryId}/[controller]")]
-    public class WrestlersController : BaseController
+    public class WrestlersController(IWrestlerService wrestlerService) : BaseController
     {
-        private readonly IWrestlerService _wrestlerService;
-
-        public WrestlersController(IWrestlerService wrestlerService)
-        { 
-            _wrestlerService = wrestlerService;
-        }
-
         /// <summary>
         /// Gets all wrestlers within a specific tournament and weight category.
         /// </summary>
@@ -33,7 +25,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
         {
             try
             {
-                var wrestlers = await _wrestlerService.GetTournamentWeightCategoryWrestlersAsync(tournamentId, weightCategoryId);
+                var wrestlers = await wrestlerService.GetTournamentWeightCategoryWrestlersAsync(tournamentId, weightCategoryId);
                 return Ok(ApiResponse.OkResponse("Wrestlers", wrestlers));
             }
             catch (Exception e)
@@ -55,7 +47,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
         {
             try
             {
-                var wrestler = await _wrestlerService.GetTournamentWeightCategoryWrestlerAsync(tournamentId, weightCategoryId, wrestlerId);
+                var wrestler = await wrestlerService.GetTournamentWeightCategoryWrestlerAsync(tournamentId, weightCategoryId, wrestlerId);
                 return Ok(ApiResponse.OkResponse("Wrestler by id", wrestler));
             }
             catch (Exception e)
@@ -69,14 +61,14 @@ namespace WrestlingTournamentSystem.Api.Controllers
         /// </summary>
         /// <param name="tournamentId">The tournament's identifier.</param>
         /// <param name="weightCategoryId">The weight category's identifier.</param>
-        /// <param name="wrestlerCreateDTO">The wrestler creation data transfer object.</param>
+        /// <param name="wrestlerCreateDto">The wrestler creation data transfer object.</param>
         /// <response code="201">A newly created wrestler within the specified tournament and weight category.</response>
         /// <response code="400">If the details are incorrect.</response>
         /// <response code="422">If the birthday is in the future.</response>
         /// <response code="404">If the tournament or weight category is not found.</response>
         [HttpPost]
         [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser)]
-        public async Task<IActionResult> CreateAndAddWrestlerToTournamentWeightCategory(int tournamentId, int weightCategoryId, WrestlerCreateDTO wrestlerCreateDTO)
+        public async Task<IActionResult> CreateAndAddWrestlerToTournamentWeightCategory(int tournamentId, int weightCategoryId, WrestlerCreateDto wrestlerCreateDto)
         {
             try
             {
@@ -87,8 +79,8 @@ namespace WrestlingTournamentSystem.Api.Controllers
 
                 var isAdmin = HttpContext.User.IsInRole(UserRoles.Admin);
 
-                var wrestlerReadDTO = await _wrestlerService.CreateAndAddWrestlerToTournamentWeightCategory(isAdmin, userId, tournamentId, weightCategoryId, wrestlerCreateDTO);
-                return Created("", ApiResponse.CreatedResponse("Created Wrestler", wrestlerReadDTO));
+                var wrestlerReadDto = await wrestlerService.CreateAndAddWrestlerToTournamentWeightCategory(isAdmin, userId, tournamentId, weightCategoryId, wrestlerCreateDto);
+                return Created("", ApiResponse.CreatedResponse("Created Wrestler", wrestlerReadDto));
             }
             catch (Exception e)
             {
@@ -117,7 +109,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
 
                 var isAdmin = HttpContext.User.IsInRole(UserRoles.Admin);
 
-                await _wrestlerService.DeleteWrestlerAsync(isAdmin, userId, tournamentId, weightCategoryId, wrestlerId);
+                await wrestlerService.DeleteWrestlerAsync(isAdmin, userId, tournamentId, weightCategoryId, wrestlerId);
                 return NoContent();
             }
             catch (Exception e)
@@ -132,14 +124,14 @@ namespace WrestlingTournamentSystem.Api.Controllers
         /// <param name="tournamentId">The tournament's identifier.</param>
         /// <param name="weightCategoryId">The weight category's identifier.</param>
         /// <param name="wrestlerId">The wrestler's identifier to update.</param>
-        /// <param name="wrestlerUpdateDTO">The wrestler update data transfer object.</param>
+        /// <param name="wrestlerUpdateDto">The wrestler update data transfer object.</param>
         /// <response code="200">An updated wrestler if successful.</response>
         /// <response code="400">If the details are incorrect.</response>
         /// <response code="422">If the birthday is in the future.</response>
         /// <response code="404">If the wrestler, tournament, or weight category is not found.</response>
         [HttpPut("{wrestlerId}")]
         [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser)]
-        public async Task<IActionResult> UpdateWrestler(int tournamentId, int weightCategoryId, int wrestlerId, WrestlerUpdateDTO wrestlerUpdateDTO)
+        public async Task<IActionResult> UpdateWrestler(int tournamentId, int weightCategoryId, int wrestlerId, WrestlerUpdateDto wrestlerUpdateDto)
         {
             try
             {
@@ -150,8 +142,8 @@ namespace WrestlingTournamentSystem.Api.Controllers
 
                 var isAdmin = HttpContext.User.IsInRole(UserRoles.Admin);
 
-                var wrestlerReadDTO = await _wrestlerService.UpdateWrestlerAsync(isAdmin, userId, tournamentId, weightCategoryId, wrestlerId, wrestlerUpdateDTO);
-                return Ok(ApiResponse.OkResponse("Wrestler Updated", wrestlerReadDTO));
+                var wrestlerReadDto = await wrestlerService.UpdateWrestlerAsync(isAdmin, userId, tournamentId, weightCategoryId, wrestlerId, wrestlerUpdateDto);
+                return Ok(ApiResponse.OkResponse("Wrestler Updated", wrestlerReadDto));
             }
             catch (Exception e)
             {

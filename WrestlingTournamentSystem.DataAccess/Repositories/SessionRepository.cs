@@ -7,15 +7,8 @@ using WrestlingTournamentSystem.DataAccess.Interfaces;
 
 namespace WrestlingTournamentSystem.DataAccess.Repositories
 {
-    public class SessionRepository : ISessionRepository
+    public class SessionRepository(WrestlingTournamentSystemDbContext context) : ISessionRepository
     {
-        private readonly WrestlingTournamentSystemDbContext _context;
-
-        public SessionRepository(WrestlingTournamentSystemDbContext context)
-        {
-            _context = context;
-        }
-
         public async Task CreateSessionAsync(Guid sessionId, string userId, string refreshToken, DateTime expiresAt)
         {
             var session = new Session
@@ -24,42 +17,39 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
                 UserId = userId,
                 InitiatedAt = DateTime.UtcNow,
                 ExpiresAt = expiresAt,
-                LastRefreshToken = refreshToken.ToSHA256()
+                LastRefreshToken = refreshToken.ToSha256()
             };
 
-            _context.Sessions.Add(session);
+            context.Sessions.Add(session);
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
 
         public async Task ExtendSessionAsync(Guid sessionId, string refreshToken, DateTime expiresAt)
         {
-            var session = _context.Sessions.FirstOrDefault(s => s.Id == sessionId);
-
-            if (session == null)
-                throw new NotFoundException("Session not found");
+            var session = context.Sessions.FirstOrDefault(s => s.Id == sessionId) ?? throw new NotFoundException("Session not found");
 
             session.ExpiresAt = expiresAt;
-            session.LastRefreshToken = refreshToken.ToSHA256();
+            session.LastRefreshToken = refreshToken.ToSha256();
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
 
         public async Task<Session?> GetSessionByIdAsync(Guid sessionId)
         {
-            return await _context.Sessions.FirstOrDefaultAsync(s => s.Id == sessionId);
+            return await context.Sessions.FirstOrDefaultAsync(s => s.Id == sessionId);
         }
 
         public async Task InvalidateSessionAsycn(Guid sessionId)
         {
-            var session = _context.Sessions.FirstOrDefault(s => s.Id == sessionId);
+            var session = context.Sessions.FirstOrDefault(s => s.Id == sessionId);
 
             if (session == null)
                 return;
 
             session.IsRevoked = true;
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
     }
 }

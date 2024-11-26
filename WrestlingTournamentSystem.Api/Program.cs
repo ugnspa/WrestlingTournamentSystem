@@ -14,8 +14,8 @@ using WrestlingTournamentSystem.DataAccess.Entities;
 using WrestlingTournamentSystem.DataAccess.Helpers.Mappers;
 using WrestlingTournamentSystem.DataAccess.Helpers.Settings;
 using System.Text.Json;
-using WrestlingTournamentSystem.DataAccess.Response;
 using Microsoft.AspNetCore.Mvc;
+using WrestlingTournamentSystem.DataAccess.Helpers.Responses;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -122,9 +122,9 @@ builder.Services.AddAuthentication(option =>
             context.Response.StatusCode = StatusCodes.Status403Forbidden;
             context.Response.ContentType = "application/json";
 
-            var responeJson = JsonSerializer.Serialize(ApiResponse.ForbiddenResponse("Forbidden: You do not have the required permissions"));
+            var responseJson = JsonSerializer.Serialize(ApiResponse.ForbiddenResponse("Forbidden: You do not have the required permissions"));
 
-            return context.Response.WriteAsync(responeJson);
+            return context.Response.WriteAsync(responseJson);
         }
     };
 });
@@ -136,7 +136,6 @@ var app = builder.Build();
 
 //Seed database
 using var scope = app.Services.CreateScope();
-var context = scope.ServiceProvider.GetRequiredService<WrestlingTournamentSystemDbContext>();
 var dbSeeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
 await dbSeeder.SeedAsync();
 

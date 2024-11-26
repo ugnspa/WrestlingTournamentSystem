@@ -1,16 +1,15 @@
 ﻿using WrestlingTournamentSystem.DataAccess.DTO.User;
-using WrestlingTournamentSystem.DataAccess.Entities;
 
 namespace WrestlingTournamentSystem.BusinessLogic.Interfaces
 {
     public interface IAccountService
     {
-        public Task<UserListDTO> Register(RegisterUserDTO registerUserDTO);
-        public Task<SuccessfulLoginDTO> Login(LoginUserDTO loginUserDTO);
+        public Task<UserListDto> Register(RegisterUserDto registerUserDto);
+        public Task<SuccessfulLoginDto> Login(LoginUserDto loginUserDto);
         public Task<string> CreateRefreshToken(Guid sessionId, string userId);
-        public Task<SuccessfulLoginDTO> GetAccessTokenFromRefreshToken(string? refreshToken);
+        public Task<SuccessfulLoginDto> GetAccessTokenFromRefreshToken(string? refreshToken);
         public string GetSessionIdFromRefreshToken(string? refreshToken);
-        public Task<IEnumerable<UserListDTO>> GetCoachesAsync();
-        public Task<UserDetailDTO> GetCoachWithWrestlersAsync(string userId);
+        public Task<IEnumerable<UserListDto>> GetCoachesAsync();
+        public Task<UserDetailDto> GetCoachWithWrestlersAsync(string userId);
     }
 }

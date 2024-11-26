@@ -2,7 +2,7 @@
 
 namespace WrestlingTournamentSystem.DataAccess.DTO.Wrestler
 {
-    public class WrestlerCreateDTO
+    public class WrestlerCreateDto
     {
         [Required]
         [StringLength(50)]

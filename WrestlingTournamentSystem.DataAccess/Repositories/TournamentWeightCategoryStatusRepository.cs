@@ -5,23 +5,17 @@ using WrestlingTournamentSystem.DataAccess.Interfaces;
 
 namespace WrestlingTournamentSystem.DataAccess.Repositories
 {
-    public class TournamentWeightCategoryStatusRepository : ITournamentWeightCategoryStatusRepository
+    public class TournamentWeightCategoryStatusRepository(WrestlingTournamentSystemDbContext context)
+        : ITournamentWeightCategoryStatusRepository
     {
-        private readonly WrestlingTournamentSystemDbContext _context;
-
-        public TournamentWeightCategoryStatusRepository(WrestlingTournamentSystemDbContext context)
-        {
-            _context = context;
-        }
-
         public async Task<bool> TournamentWeightCategoryStatusExistsAsync(int tournamentWeightCategoryStatusId)
         {
-            return await _context.TournamentWeightCategoryStatuses.AnyAsync(twcs => twcs.Id == tournamentWeightCategoryStatusId);
+            return await context.TournamentWeightCategoryStatuses.AnyAsync(twcs => twcs.Id == tournamentWeightCategoryStatusId);
         }
 
         public Task<TournamentWeightCategoryStatus?> GetClosedTournamentWeightCategoryStatus()
         {
-            return _context.TournamentWeightCategoryStatuses.FirstOrDefaultAsync(twcs => twcs.Name == "Closed");
+            return context.TournamentWeightCategoryStatuses.FirstOrDefaultAsync(twcs => twcs.Name == "Closed");
         } 
     }
 }

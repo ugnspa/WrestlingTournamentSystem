@@ -5,11 +5,10 @@ namespace WrestlingTournamentSystem.DataAccess.Helpers
 {
     public static class Extensions
     {
-        public static string ToSHA256(this string input)
+        public static string ToSha256(this string input)
         {
-            using var sha256 = SHA256.Create();
             var bytes = Encoding.UTF8.GetBytes(input);
-            var hash = sha256.ComputeHash(bytes);
+            var hash = SHA256.HashData(bytes);
             return Convert.ToBase64String(hash);
         }
     }

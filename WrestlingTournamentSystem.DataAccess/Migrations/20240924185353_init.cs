@@ -180,40 +180,6 @@ namespace WrestlingTournamentSystem.DataAccess.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.InsertData(
-                table: "TournamentStatuses",
-                columns: new[] { "Id", "Name" },
-                values: new object[,]
-                {
-                    { 1, "Closed" },
-                    { 2, "Registration" },
-                    { 3, "In Progress" },
-                    { 4, "Finished" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "TournamentWeightCategoryStatuses",
-                columns: new[] { "Id", "Name" },
-                values: new object[,]
-                {
-                    { 1, "Closed" },
-                    { 2, "Registration" },
-                    { 3, "Weigh-In" },
-                    { 4, "In Progress" },
-                    { 5, "Finished" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "WrestlingStyles",
-                columns: new[] { "Id", "Name" },
-                values: new object[,]
-                {
-                    { 1, "GR" },
-                    { 2, "FS" },
-                    { 3, "WW" },
-                    { 4, "BW" }
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Tournaments_StatusId",
                 table: "Tournaments",

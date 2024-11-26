@@ -1,27 +1,18 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace WrestlingTournamentSystem.DataAccess.Response
+namespace WrestlingTournamentSystem.DataAccess.Helpers.Responses
 {
-    public class ApiResponse
+    public class ApiResponse(bool success, int status, string message, object? data, List<string>? errors)
     {
-        public bool Success { get; set; }
-        public int Status { get; set; }
-        public string Message { get; set; }
+        public bool Success { get; set; } = success;
+        public int Status { get; set; } = status;
+        public string Message { get; set; } = message;
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public object? Data { get; set; } = null;
+        public object? Data { get; set; } = data;
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-        public List<string>? Errors { get; set; } = null;
-
-        public ApiResponse(bool success, int status, string message, object? data , List<string>? errors )
-        {
-            Success = success;
-            Status = status;
-            Message = message;
-            Data = data;
-            Errors = errors;
-        }
+        public List<string>? Errors { get; set; } = errors;
 
         public static ApiResponse OkResponse(string message, object? data = null)
         {

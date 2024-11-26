@@ -8,141 +8,121 @@ using WrestlingTournamentSystem.DataAccess.Interfaces;
 
 namespace WrestlingTournamentSystem.BusinessLogic.Services
 {
-    public class WrestlerService : IWrestlerService
+    public class WrestlerService(
+        IWrestlerRepository wrestlerRepository,
+        IWrestlingStyleRepository wrestlingStyleRepository,
+        ITournamentRepository tournamentRepository,
+        ITournamentWeightCategoryRepository tournamentWeightCategoryRepository,
+        IMapper mapper,
+        IValidationService validationService)
+        : IWrestlerService
     {
-        private readonly IWrestlerRepository _wrestlerRepository;
-        private readonly IWrestlingStyleRepository _wrestlingStyleRepository;
-        private readonly ITournamentRepository _tournamentRepository;
-        private readonly ITournamentWeightCategoryRepository _tournamentWeightCategoryRepository;
-        private readonly IMapper _mapper;
-        private readonly IValidationService _validationService;
-        public WrestlerService(IWrestlerRepository wrestlerRepository, IWrestlingStyleRepository wrestlingStyleRepository, ITournamentRepository tournamentRepository, ITournamentWeightCategoryRepository tournamentWeightCategoryRepository, IMapper mapper, IValidationService validationService)
-        {
-            _wrestlerRepository = wrestlerRepository;
-            _wrestlingStyleRepository = wrestlingStyleRepository;
-            _tournamentRepository = tournamentRepository;
-            _tournamentWeightCategoryRepository = tournamentWeightCategoryRepository;
-            _mapper = mapper;
-            _validationService = validationService;
-        }
-
         private async Task ValidateTournamentAndWeightCategory(int tournamentId, int tournamentWeightCategoryId, bool isAdmin = false, string userId = "", bool guestActionAllowed = false)
         {
-            var tournament = await _tournamentRepository.GetTournamentAsync(tournamentId);
+            var tournament = await tournamentRepository.GetTournamentAsync(tournamentId);
+
             if (tournament == null)
                 throw new NotFoundException($"Tournament with id {tournamentId} does not exist");
 
             if (tournament.OrganiserId != userId && !isAdmin && !guestActionAllowed)
                 throw new ForbiddenException("You are not allowed to perform this action for this tournament");
 
-            var tournamentWeightCategory = await _tournamentWeightCategoryRepository.GetTournamentWeightCategoryAsync(tournamentId, tournamentWeightCategoryId);
+            var tournamentWeightCategory = await tournamentWeightCategoryRepository.GetTournamentWeightCategoryAsync(tournamentId, tournamentWeightCategoryId);
+
             if (tournamentWeightCategory == null)
                 throw new NotFoundException($"Tournament does not have weight category with id {tournamentWeightCategoryId}");
         }
 
-        private void ValidateBirthDate(DateTime birthDate)
+        public async Task<WrestlerReadDto?> CreateAndAddWrestlerToTournamentWeightCategory(bool isAdmin, string userId, int tournamentId, int tournamentWeightCategoryId, WrestlerCreateDto wrestlerCreateDto)
         {
-            if (birthDate > DateTime.Now)
+            if (wrestlerCreateDto == null)
             {
-                throw new BusinessRuleValidationException("Birth date cannot be in the future");
-            }
-
-            if (birthDate < new DateTime(1900, 1, 1))
-            {
-                throw new BusinessRuleValidationException("Birth date cannot be earlier than January 1, 1900.");
-            }
-        }
-
-        public async Task<WrestlerReadDTO?> CreateAndAddWrestlerToTournamentWeightCategory(bool isAdmin, string userId, int tournamentId, int tournamentWeightCategoryId, WrestlerCreateDTO wrestlerCreateDTO)
-        {
-            if(wrestlerCreateDTO == null)
-            {
-                throw new ArgumentNullException(nameof(wrestlerCreateDTO));
+                throw new ArgumentNullException(nameof(wrestlerCreateDto));
             }
 
             await ValidateTournamentAndWeightCategory( tournamentId, tournamentWeightCategoryId, isAdmin, userId);
 
-            var wrestlingStyleExists = await _wrestlingStyleRepository.WrestlingStyleExistsAsync(wrestlerCreateDTO.StyleId);
+            var wrestlingStyleExists = await wrestlingStyleRepository.WrestlingStyleExistsAsync(wrestlerCreateDto.StyleId);
 
             if (!wrestlingStyleExists)
             {
-                throw new NotFoundException($"Wrestling style with id {wrestlerCreateDTO.StyleId} does not exist");
+                throw new NotFoundException($"Wrestling style with id {wrestlerCreateDto.StyleId} does not exist");
             }
 
-            _validationService.ValidateBirthDate(wrestlerCreateDTO.BirthDate);
+            validationService.ValidateBirthDate(wrestlerCreateDto.BirthDate);
 
-            var wrestler = _mapper.Map<Wrestler>(wrestlerCreateDTO);
+            var wrestler = mapper.Map<Wrestler>(wrestlerCreateDto);
             //wrestler.PhotoUrl = AzureBlobService.DefaultWrestlerPhotoUrl; //Add default photo 
 
-            var result = await _wrestlerRepository.CreateAndAddWrestlerToTournamentWeightCategoryAsync(tournamentId, tournamentWeightCategoryId, wrestler);
+            var result = await wrestlerRepository.CreateAndAddWrestlerToTournamentWeightCategoryAsync(tournamentId, tournamentWeightCategoryId, wrestler);
 
             if (result == null)
             {
                 throw new Exception($"Failed to add wrestler to tournament weight category");
             }
 
-            return _mapper.Map<WrestlerReadDTO>(result);
+            return mapper.Map<WrestlerReadDto>(result);
         }
 
-        public async Task<WrestlerReadDTO?> GetTournamentWeightCategoryWrestlerAsync(int tournamentId, int tournamentWeightCategoryId, int wrestlerId)
+        public async Task<WrestlerReadDto?> GetTournamentWeightCategoryWrestlerAsync(int tournamentId, int tournamentWeightCategoryId, int wrestlerId)
         {
             await ValidateTournamentAndWeightCategory(tournamentId, tournamentWeightCategoryId, guestActionAllowed: true);
 
-            var tournamentWeightCategoryWrestler = await _wrestlerRepository.GetTournamentWeightCategoryWrestlerAsync(tournamentId, tournamentWeightCategoryId, wrestlerId);
+            var tournamentWeightCategoryWrestler = await wrestlerRepository.GetTournamentWeightCategoryWrestlerAsync(tournamentId, tournamentWeightCategoryId, wrestlerId);
 
             if (tournamentWeightCategoryWrestler == null)
             {
                 throw new NotFoundException($"Tournament weight category does not have wrestler with id {wrestlerId}");
             }
 
-            return _mapper.Map<WrestlerReadDTO>(tournamentWeightCategoryWrestler);
+            return mapper.Map<WrestlerReadDto>(tournamentWeightCategoryWrestler);
         }
 
-        public async Task<IEnumerable<WrestlerReadDTO>> GetTournamentWeightCategoryWrestlersAsync(int tournamentId, int tournamentWeightCategoryId)
+        public async Task<IEnumerable<WrestlerReadDto>> GetTournamentWeightCategoryWrestlersAsync(int tournamentId, int tournamentWeightCategoryId)
         {
             await ValidateTournamentAndWeightCategory(tournamentId, tournamentWeightCategoryId, guestActionAllowed: true);
 
-            return _mapper.Map<IEnumerable<WrestlerReadDTO>>(await _wrestlerRepository.GetTournamentWeightCategoryWrestlersAsync(tournamentId, tournamentWeightCategoryId));
+            return mapper.Map<IEnumerable<WrestlerReadDto>>(await wrestlerRepository.GetTournamentWeightCategoryWrestlersAsync(tournamentId, tournamentWeightCategoryId));
         }
 
         public async Task DeleteWrestlerAsync(bool isAdmin, string userId, int tournamentId, int tournamentWeightCategoryId, int wrestlerId)
         {
             await ValidateTournamentAndWeightCategory(tournamentId, tournamentWeightCategoryId, isAdmin, userId);
 
-            var wrestler = await _wrestlerRepository.GetTournamentWeightCategoryWrestlerAsync(tournamentId, tournamentWeightCategoryId, wrestlerId);
+            var wrestler = await wrestlerRepository.GetTournamentWeightCategoryWrestlerAsync(tournamentId, tournamentWeightCategoryId, wrestlerId);
             
             if (wrestler == null)
             {
                 throw new NotFoundException($"Tournament weight category does not have wrestler with id {wrestlerId}");
             }
 
-            await _wrestlerRepository.DeleteWrestlerAsync(wrestler); 
+            await wrestlerRepository.DeleteWrestlerAsync(wrestler); 
         }
 
-        public async Task<WrestlerReadDTO?> UpdateWrestlerAsync(bool isAdmin, string userId, int tournamentId, int tournamentWeightCategoryId, int wrestlerId, WrestlerUpdateDTO wrestlerUpdateDTO)
+        public async Task<WrestlerReadDto?> UpdateWrestlerAsync(bool isAdmin, string userId, int tournamentId, int tournamentWeightCategoryId, int wrestlerId, WrestlerUpdateDto wrestlerUpdateDto)
         {
             await ValidateTournamentAndWeightCategory(tournamentId, tournamentWeightCategoryId, isAdmin, userId);
 
-            var tounamentWeightCategoryWrestler = await _wrestlerRepository.GetTournamentWeightCategoryWrestlerAsync(tournamentId, tournamentWeightCategoryId, wrestlerId);
+            var tounamentWeightCategoryWrestler = await wrestlerRepository.GetTournamentWeightCategoryWrestlerAsync(tournamentId, tournamentWeightCategoryId, wrestlerId);
 
             if (tounamentWeightCategoryWrestler == null)
                 throw new NotFoundException($"Tournament weight category does not have wrestler with id {wrestlerId}");
             
-            var wrestlingStyleExists = await _wrestlingStyleRepository.WrestlingStyleExistsAsync(wrestlerUpdateDTO.StyleId);
+            var wrestlingStyleExists = await wrestlingStyleRepository.WrestlingStyleExistsAsync(wrestlerUpdateDto.StyleId);
 
             if (!wrestlingStyleExists)
-                throw new NotFoundException($"Wrestling style with id {wrestlerUpdateDTO.StyleId} does not exist");
+                throw new NotFoundException($"Wrestling style with id {wrestlerUpdateDto.StyleId} does not exist");
 
-            _validationService.ValidateBirthDate(wrestlerUpdateDTO.BirthDate);
+            validationService.ValidateBirthDate(wrestlerUpdateDto.BirthDate);
 
-            _mapper.Map(wrestlerUpdateDTO, tounamentWeightCategoryWrestler);
+            mapper.Map(wrestlerUpdateDto, tounamentWeightCategoryWrestler);
 
-            var result = await _wrestlerRepository.UpdateWrestlerAsync(tounamentWeightCategoryWrestler);
+            var result = await wrestlerRepository.UpdateWrestlerAsync(tounamentWeightCategoryWrestler);
 
             if (result == null)
                 throw new Exception($"Failed to update wrestler with id {wrestlerId}");
 
-            return _mapper.Map<WrestlerReadDTO>(result);
+            return mapper.Map<WrestlerReadDto>(result);
         }
     }
 }

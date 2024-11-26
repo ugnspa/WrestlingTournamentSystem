@@ -1,6 +1,6 @@
 ﻿namespace WrestlingTournamentSystem.DataAccess.DTO.Tournament
 {
-    public class TournamentReadDTO
+    public class TournamentReadDto
     {
         public int Id { get; set; }
 

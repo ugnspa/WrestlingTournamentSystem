@@ -1,7 +1,7 @@
 ﻿
 namespace WrestlingTournamentSystem.DataAccess.DTO.TournamentWeightCategory
 {
-    public class TournamentWeightCategoryReadDTO
+    public class TournamentWeightCategoryReadDto
     {
         public int Id { get; set; }
         public DateTime StartDate { get; set; }

@@ -10,91 +10,83 @@ using WrestlingTournamentSystem.DataAccess.Interfaces;
 
 namespace WrestlingTournamentSystem.BusinessLogic.Services
 {
-    public class AccountService : IAccountService
+    public class AccountService(
+        JwtTokenService jwtTokenService,
+        IValidationService validationService,
+        IMapper mapper,
+        IAccountRepository accountRepository)
+        : IAccountService
     {
-        private readonly JwtTokenService _jwtTokenService;
-        private readonly IAccountRepository _accountRepository;
-        private readonly IValidationService _validationService;
-        private readonly IMapper _mapper;
-
-        public AccountService(JwtTokenService jwtTokenService, IValidationService validationService, IMapper mapper, IAccountRepository accountRepository)
+        public async Task<UserListDto> Register(RegisterUserDto registerUserDto)
         {
-            _jwtTokenService = jwtTokenService;
-            _validationService = validationService;
-            _mapper = mapper;
-            _accountRepository = accountRepository;
-        }
-
-        public async Task<UserListDTO> Register(RegisterUserDTO registerUserDTO)
-        {
-            var user = await _accountRepository.FindByUsernameAsync(registerUserDTO.UserName);
+            var user = await accountRepository.FindByUsernameAsync(registerUserDto.UserName);
 
             if (user != null)
-                throw new BusinessRuleValidationException($"Username {registerUserDTO.UserName} already taken");
+                throw new BusinessRuleValidationException($"Username {registerUserDto.UserName} already taken");
 
-            _validationService.ValidateRegisterPassword(registerUserDTO.Password, registerUserDTO.ConfirmPassword);
+            validationService.ValidateRegisterPassword(registerUserDto.Password, registerUserDto.ConfirmPassword);
 
-            var newUser = _mapper.Map<User>(registerUserDTO);
+            var newUser = mapper.Map<User>(registerUserDto);
 
-            await _accountRepository.CreateUserAsync(newUser, registerUserDTO.Password);
+            await accountRepository.CreateUserAsync(newUser, registerUserDto.Password);
 
-            return _mapper.Map<UserListDTO>(newUser);
+            return mapper.Map<UserListDto>(newUser);
         }
 
-        public async Task<SuccessfulLoginDTO> Login(LoginUserDTO loginUserDTO)
+        public async Task<SuccessfulLoginDto> Login(LoginUserDto loginUserDto)
         {
-            var user = await _accountRepository.FindByUsernameAsync(loginUserDTO.UserName);
+            var user = await accountRepository.FindByUsernameAsync(loginUserDto.UserName);
 
             if (user == null)
                 throw new BusinessRuleValidationException("Invalid username or password");
 
-            var isPasswordValid = await _accountRepository.IsPasswordValidAsync(user, loginUserDTO.Password);
+            var isPasswordValid = await accountRepository.IsPasswordValidAsync(user, loginUserDto.Password);
 
             if (!isPasswordValid)
                 throw new BusinessRuleValidationException("Invalid username or password");
 
-            var userRoles = await _accountRepository.GetUserRolesAsync(user);
+            var userRoles = await accountRepository.GetUserRolesAsync(user);
 
-            var accessToken = _jwtTokenService.CreateAccessToken(user.UserName!, user.Id, userRoles);
+            var accessToken = jwtTokenService.CreateAccessToken(user.UserName!, user.Id, userRoles);
 
-            return new SuccessfulLoginDTO(user.Id, accessToken);
+            return new SuccessfulLoginDto(user.Id, accessToken);
         }
 
         public async Task<string> CreateRefreshToken(Guid sessionId, string userId)
         {
-            var user = await _accountRepository.FindByIdAsync(userId);
+            var user = await accountRepository.FindByIdAsync(userId);
 
             if (user == null)
                 throw new NotFoundException("User was not found");
 
-            return _jwtTokenService.CreateRefreshToken(sessionId, user.Id);
+            return jwtTokenService.CreateRefreshToken(sessionId, user.Id);
         }
 
-        public async Task<SuccessfulLoginDTO> GetAccessTokenFromRefreshToken(string? refreshToken)
+        public async Task<SuccessfulLoginDto> GetAccessTokenFromRefreshToken(string? refreshToken)
         {
             if (string.IsNullOrEmpty(refreshToken) || 
-                !_jwtTokenService.TryParseRefreshToken(refreshToken, out var claims) ||
+                !jwtTokenService.TryParseRefreshToken(refreshToken, out var claims) ||
                 claims?.FindFirstValue(JwtRegisteredClaimNames.Sub) is not string userId)
             {
                 throw new BusinessRuleValidationException("Invalid refresh token");
             }
 
-            var user = await _accountRepository.FindByIdAsync(userId);
+            var user = await accountRepository.FindByIdAsync(userId);
 
             if(user == null)  
                 throw new BusinessRuleValidationException("Invalid refresh token");
 
-            var userRoles = await _accountRepository.GetUserRolesAsync(user);
+            var userRoles = await accountRepository.GetUserRolesAsync(user);
 
-            var accessToken = _jwtTokenService.CreateAccessToken(user.UserName!, user.Id, userRoles);
+            var accessToken = jwtTokenService.CreateAccessToken(user.UserName!, user.Id, userRoles);
 
-            return new SuccessfulLoginDTO(user.Id, accessToken);
+            return new SuccessfulLoginDto(user.Id, accessToken);
         }
 
         public string GetSessionIdFromRefreshToken(string? refreshToken)
         {
             if (string.IsNullOrEmpty(refreshToken) ||
-                !_jwtTokenService.TryParseRefreshToken(refreshToken, out var claims) ||
+                !jwtTokenService.TryParseRefreshToken(refreshToken, out var claims) ||
                 claims?.FindFirstValue("SessionId") is not string sessionId)
             {
                 throw new BusinessRuleValidationException("Invalid refresh token");
@@ -103,21 +95,21 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             return sessionId;
         }
 
-        public async Task<IEnumerable<UserListDTO>> GetCoachesAsync()
+        public async Task<IEnumerable<UserListDto>> GetCoachesAsync()
         {
-            var coaches = await _accountRepository.GetCoaches();
+            var coaches = await accountRepository.GetCoaches();
 
-            return _mapper.Map<IEnumerable<UserListDTO>>(coaches);
+            return mapper.Map<IEnumerable<UserListDto>>(coaches);
         }
 
-        public async Task<UserDetailDTO> GetCoachWithWrestlersAsync(string userId)
+        public async Task<UserDetailDto> GetCoachWithWrestlersAsync(string userId)
         {
-            var coach = await _accountRepository.GetCoachWithWrestlersAsync(userId);
+            var coach = await accountRepository.GetCoachWithWrestlersAsync(userId);
 
             if(coach == null)
                 throw new NotFoundException("Coach was not found");
 
-            return _mapper.Map<UserDetailDTO>(coach);
+            return mapper.Map<UserDetailDto>(coach);
         }
     }
 }

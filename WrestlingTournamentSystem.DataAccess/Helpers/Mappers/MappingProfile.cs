@@ -12,30 +12,30 @@ namespace WrestlingTournamentSystem.DataAccess.Helpers.Mappers
         public MappingProfile()
         {
             //Tournament
-            CreateMap<Tournament, TournamentReadDTO>()
+            CreateMap<Tournament, TournamentReadDto>()
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.TournamentStatus.Name));
-            CreateMap<TournamentCreateDTO, Tournament>();
-            CreateMap<TournamentUpdateDTO, Tournament>();
+            CreateMap<TournamentCreateDto, Tournament>();
+            CreateMap<TournamentUpdateDto, Tournament>();
 
             //TournamentWeightCategory
-            CreateMap<TournamentWeightCategory, TournamentWeightCategoryReadDTO>()
+            CreateMap<TournamentWeightCategory, TournamentWeightCategoryReadDto>()
                 .ForMember(dest => dest.Style, opt => opt.MapFrom(src => src.WeightCategory.WrestlingStyle.Name))
                 .ForMember(dest => dest.Weight, opt => opt.MapFrom(src => src.WeightCategory.Weight))
                 .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.WeightCategory.Age))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.TournamentWeightCategoryStatus.Name));
-            CreateMap<TournamentWeightCategoryCreateDTO, TournamentWeightCategory>();
-            CreateMap<TournamentWeightCategoryUpdateDTO, TournamentWeightCategory>();
+            CreateMap<TournamentWeightCategoryCreateDto, TournamentWeightCategory>();
+            CreateMap<TournamentWeightCategoryUpdateDto, TournamentWeightCategory>();
 
             //Wrestler
-            CreateMap<Wrestler, WrestlerReadDTO>()
+            CreateMap<Wrestler, WrestlerReadDto>()
                 .ForMember(dest => dest.Style, opt => opt.MapFrom(src => src.WrestlingStyle.Name));
-            CreateMap<WrestlerCreateDTO, Wrestler>();
-            CreateMap<WrestlerUpdateDTO, Wrestler>();
+            CreateMap<WrestlerCreateDto, Wrestler>();
+            CreateMap<WrestlerUpdateDto, Wrestler>();
 
             //User
-            CreateMap<RegisterUserDTO, User>();
-            CreateMap<User, UserListDTO>();
-            CreateMap<User, UserDetailDTO>();
+            CreateMap<RegisterUserDto, User>();
+            CreateMap<User, UserListDto>();
+            CreateMap<User, UserDetailDto>();
         }
     }
 }

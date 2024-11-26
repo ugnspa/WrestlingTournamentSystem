@@ -1,6 +1,6 @@
 ﻿namespace WrestlingTournamentSystem.DataAccess.DTO.Wrestler
 {
-    public class WrestlerReadDTO
+    public class WrestlerReadDto
     {
         public int Id { get; set; }
         public string Name { get; set; } = null!;

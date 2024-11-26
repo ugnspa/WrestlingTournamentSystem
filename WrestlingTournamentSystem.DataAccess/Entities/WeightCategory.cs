@@ -5,8 +5,8 @@ namespace WrestlingTournamentSystem.DataAccess.Entities
 {
     public class WeightCategory
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]

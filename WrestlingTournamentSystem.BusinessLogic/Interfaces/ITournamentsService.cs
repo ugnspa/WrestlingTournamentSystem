@@ -4,10 +4,10 @@ namespace WrestlingTournamentSystem.BusinessLogic.Interfaces
 {
     public interface ITournamentsService
     {
-        public Task<IEnumerable<TournamentReadDTO>> GetTournamentsAsync();
-        public Task<TournamentReadDTO> GetTournamentAsync(int id);
-        public Task<TournamentReadDTO> CreateTournamentAsync(string userId, TournamentCreateDTO tournamentCreateDTO);
-        public Task<TournamentReadDTO> UpdateTournamentAsync(bool isAdmin, string userId, int tournamentId, TournamentUpdateDTO tournamentUpdateDTO);
+        public Task<IEnumerable<TournamentReadDto>> GetTournamentsAsync();
+        public Task<TournamentReadDto> GetTournamentAsync(int id);
+        public Task<TournamentReadDto> CreateTournamentAsync(string userId, TournamentCreateDto tournamentCreateDto);
+        public Task<TournamentReadDto> UpdateTournamentAsync(bool isAdmin, string userId, int tournamentId, TournamentUpdateDto tournamentUpdateDto);
         public Task DeleteTournamentAsync(bool isAdmin, string userId, int id);
     }
 }

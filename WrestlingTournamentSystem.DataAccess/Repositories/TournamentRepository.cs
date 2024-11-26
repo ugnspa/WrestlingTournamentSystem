@@ -1,23 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WrestlingTournamentSystem.DataAccess.Data;
 using WrestlingTournamentSystem.DataAccess.Entities;
 using WrestlingTournamentSystem.DataAccess.Helpers.Exceptions;
 using WrestlingTournamentSystem.DataAccess.Interfaces;
 
-namespace WrestlingTournamentSystem.DataAccess.Data
+namespace WrestlingTournamentSystem.DataAccess.Repositories
 {
-    public class TournamentRepository : ITournamentRepository
+    public class TournamentRepository(WrestlingTournamentSystemDbContext context) : ITournamentRepository
     {
-        private readonly WrestlingTournamentSystemDbContext _context;
-
-        public TournamentRepository(WrestlingTournamentSystemDbContext context)
-        {
-            _context = context;
-        }
-
         public async Task<Tournament?> CreateTournamentAsync(Tournament tournament)
         {
-            _context.Tournaments.Add(tournament);
-            await _context.SaveChangesAsync();
+            context.Tournaments.Add(tournament);
+            await context.SaveChangesAsync();
 
             return await GetTournamentAsync(tournament.Id);
         }
@@ -25,30 +19,27 @@ namespace WrestlingTournamentSystem.DataAccess.Data
         public async Task DeleteTournamentAsync(Tournament tournament)
         {
 
-            _context.Tournaments.Remove(tournament);
-            await _context.SaveChangesAsync();
+            context.Tournaments.Remove(tournament);
+            await context.SaveChangesAsync();
         }
 
         public async Task<Tournament?> GetTournamentAsync(int id)
         {
-            return await _context.Tournaments.Include(t => t.TournamentStatus).FirstOrDefaultAsync(t => t.Id == id);
+            return await context.Tournaments.Include(t => t.TournamentStatus).FirstOrDefaultAsync(t => t.Id == id);
         }
 
         public async Task<IEnumerable<Tournament>> GetTournamentsAsync()
         {
-            return await _context.Tournaments.Include(t => t.TournamentStatus).ToListAsync();
+            return await context.Tournaments.Include(t => t.TournamentStatus).ToListAsync();
         }
 
         public async Task<Tournament?> UpdateTournamentAsync(Tournament tournament)
         {
-            var tournamentToUpdate = _context.Tournaments.Find(tournament.Id);
+            var tournamentToUpdate = await context.Tournaments.FindAsync(tournament.Id) ?? throw new NotFoundException($"Tournament with id {tournament.Id} was not found");
 
-            if (tournamentToUpdate == null)
-                throw new NotFoundException($"Tournament with id {tournament.Id} was not found");
+            context.Entry(tournamentToUpdate).CurrentValues.SetValues(tournament);
 
-            _context.Entry(tournamentToUpdate).CurrentValues.SetValues(tournament);
-
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
             return await GetTournamentAsync(tournament.Id);
         }

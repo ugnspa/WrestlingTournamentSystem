@@ -8,27 +8,20 @@ using WrestlingTournamentSystem.DataAccess.Interfaces;
 
 namespace WrestlingTournamentSystem.DataAccess.Repositories
 {
-    public class AccountRepository : IAccountRepository
+    public class AccountRepository(WrestlingTournamentSystemDbContext context, UserManager<User> userManager)
+        : IAccountRepository
     {
-        private readonly UserManager<User> _userManager;
-        private readonly WrestlingTournamentSystemDbContext _context;
-
-        public AccountRepository(WrestlingTournamentSystemDbContext context, UserManager<User> userManager)
-        {
-            _context = context;
-            _userManager = userManager;
-        }
         public async Task CreateUserAsync(User user, string password)
         {
-            using var transaction = await _context.Database.BeginTransactionAsync();
+            await using var transaction = await context.Database.BeginTransactionAsync();
 
             try
             {
-                var createUserResult = await _userManager.CreateAsync(user, password);
+                var createUserResult = await userManager.CreateAsync(user, password);
                 if (!createUserResult.Succeeded)
                     throw new BusinessRuleValidationException(createUserResult.Errors.First().Description);
 
-                var addRoleResult = await _userManager.AddToRoleAsync(user, UserRoles.TournamentOrganiser); //Pass role as parameter
+                var addRoleResult = await userManager.AddToRoleAsync(user, UserRoles.TournamentOrganiser); //Pass role as parameter
                 if (!addRoleResult.Succeeded)
                     throw new BusinessRuleValidationException(addRoleResult.Errors.First().Description);
 
@@ -44,43 +37,43 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
 
         public async Task<User?> FindByUsernameAsync(string userName)
         {
-            return await _userManager.FindByNameAsync(userName);
+            return await userManager.FindByNameAsync(userName);
         }
 
         public async Task<bool> IsPasswordValidAsync(User user, string password)
         {
-            return await _userManager.CheckPasswordAsync(user, password);
+            return await userManager.CheckPasswordAsync(user, password);
         }
 
         public async Task<IList<string>> GetUserRolesAsync(User user)
         {
-            return await _userManager.GetRolesAsync(user);
+            return await userManager.GetRolesAsync(user);
         }
 
         public Task<User?> FindByIdAsync(string userId)
         {
-            return _userManager.FindByIdAsync(userId);
+            return userManager.FindByIdAsync(userId);
         }
 
         public async Task<IEnumerable<User>> GetCoaches()
         {
-            var coaches = await _userManager.GetUsersInRoleAsync(UserRoles.Coach);
+            var coaches = await userManager.GetUsersInRoleAsync(UserRoles.Coach);
 
             return coaches;
         }
 
         public async Task<User?> GetCoachWithWrestlersAsync(string userId)
         {
-            var coach = await _context.Users
+            var coach = await context.Users
                 .Where(user =>  user.Id == userId)
-                .Include(coach => coach.Wrestlers)
+                .Include(coach => coach.Wrestlers)!
                 .ThenInclude(wrestler => wrestler.WrestlingStyle)
                 .FirstOrDefaultAsync();           
 
             if (coach == null)
                 return null;
 
-            var isCoach = await _userManager.IsInRoleAsync(coach, UserRoles.Coach);
+            var isCoach = await userManager.IsInRoleAsync(coach, UserRoles.Coach);
 
             if (!isCoach)
                 return null;

@@ -4,18 +4,11 @@ using WrestlingTournamentSystem.DataAccess.Helpers.Roles;
 
 namespace WrestlingTournamentSystem.DataAccess.Data
 {
-    public class DatabaseSeeder
+    public class DatabaseSeeder(
+        UserManager<User> userManager,
+        RoleManager<IdentityRole> roleManager,
+        WrestlingTournamentSystemDbContext context)
     {
-        private readonly UserManager<User> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly WrestlingTournamentSystemDbContext _context;
-        public DatabaseSeeder(UserManager<User> userManager, RoleManager<IdentityRole> roleManager, WrestlingTournamentSystemDbContext context)
-        {
-            _userManager = userManager;
-            _roleManager = roleManager;
-            _context = context;
-        }
-
         public async Task SeedAsync()
         {
             await AddDefaultRolesAsync();
@@ -25,6 +18,7 @@ namespace WrestlingTournamentSystem.DataAccess.Data
             await AddTournamentStatusesAsync();
             await AddWrestlingStylesAsync();
             await AddTournamentWeightCategoryStatusesAsync();
+            await AddPrimaryWeightCategoriesAsync();
         }
 
         private async Task AddAdminUserAsync()
@@ -38,13 +32,13 @@ namespace WrestlingTournamentSystem.DataAccess.Data
                 City = "AdminCity"
             };
 
-            var existingAdminUser = await _userManager.FindByNameAsync(newAdminUser.UserName);
+            var existingAdminUser = await userManager.FindByNameAsync(newAdminUser.UserName);
             if (existingAdminUser == null) 
             {
-                var createAdminResult = await _userManager.CreateAsync(newAdminUser, "Password1!"); //Change to env
+                var createAdminResult = await userManager.CreateAsync(newAdminUser, "Password1!"); //Change to env
                 if (createAdminResult.Succeeded) 
                 {
-                    await _userManager.AddToRoleAsync(newAdminUser, UserRoles.Admin);
+                    await userManager.AddToRoleAsync(newAdminUser, UserRoles.Admin);
                 }
             }
         }
@@ -60,13 +54,13 @@ namespace WrestlingTournamentSystem.DataAccess.Data
                 City = "CoachCity"
             };
 
-            var existingCoachUser = await _userManager.FindByNameAsync(newCoachUser.UserName);
+            var existingCoachUser = await userManager.FindByNameAsync(newCoachUser.UserName);
             if (existingCoachUser == null)
             {
-                var createCoachResult = await _userManager.CreateAsync(newCoachUser, "Password1!"); //Change to env
+                var createCoachResult = await userManager.CreateAsync(newCoachUser, "Password1!"); //Change to env
                 if (createCoachResult.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(newCoachUser, UserRoles.Coach);
+                    await userManager.AddToRoleAsync(newCoachUser, UserRoles.Coach);
                 }
             }
         }
@@ -82,13 +76,13 @@ namespace WrestlingTournamentSystem.DataAccess.Data
                 City = "OrganiserCity"
             };
 
-            var existingOrganiserUser = await _userManager.FindByNameAsync(newOrganiserUser.UserName);
+            var existingOrganiserUser = await userManager.FindByNameAsync(newOrganiserUser.UserName);
             if (existingOrganiserUser == null)
             {
-                var createOrganiserResult = await _userManager.CreateAsync(newOrganiserUser, "Password1!"); //Change to env
+                var createOrganiserResult = await userManager.CreateAsync(newOrganiserUser, "Password1!"); //Change to env
                 if (createOrganiserResult.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(newOrganiserUser, UserRoles.TournamentOrganiser);
+                    await userManager.AddToRoleAsync(newOrganiserUser, UserRoles.TournamentOrganiser);
                 }
             }
         }
@@ -97,10 +91,10 @@ namespace WrestlingTournamentSystem.DataAccess.Data
         {
             foreach (var role in UserRoles.All)
             {
-                var roleExists = await _roleManager.RoleExistsAsync(role);
+                var roleExists = await roleManager.RoleExistsAsync(role);
                 if (!roleExists)
                 {
-                    await _roleManager.CreateAsync(new IdentityRole(role));
+                    await roleManager.CreateAsync(new IdentityRole(role));
                 }
             }
         }
@@ -109,95 +103,99 @@ namespace WrestlingTournamentSystem.DataAccess.Data
         {
             var statuses = new[]
                 {
-                    new TournamentStatus { Id = 1, Name = "Closed" },
-                    new TournamentStatus { Id = 2, Name = "Registration" },
-                    new TournamentStatus { Id = 3, Name = "In Progress" },
-                    new TournamentStatus { Id = 4, Name = "Finished" }
+                    new TournamentStatus { Name = "Closed" },
+                    new TournamentStatus { Name = "Registration" },
+                    new TournamentStatus { Name = "In Progress" },
+                    new TournamentStatus { Name = "Finished" }
                 };
 
             foreach (var status in statuses) 
             {
-                var existingStatus = await _context.TournamentStatuses.FindAsync(status.Id);
+                var existingStatus = await context.TournamentStatuses.FindAsync(status.Id);
                 if (existingStatus == null)
                 {
-                    _context.TournamentStatuses.Add(status);
+                    context.TournamentStatuses.Add(status);
                 }
             }
 
-            await _context.SaveChangesAsync();           
+            await context.SaveChangesAsync();           
         }
 
         private async Task AddWrestlingStylesAsync()
         {
             var styles = new[]
 {
-                    new WrestlingStyle { Id = 1, Name = "GR" },
-                    new WrestlingStyle { Id = 2, Name = "FS" },
-                    new WrestlingStyle { Id = 3, Name = "WW" },
-                    new WrestlingStyle { Id = 4, Name = "BW" }
+                    new WrestlingStyle { Name = "GR" },
+                    new WrestlingStyle { Name = "FS" },
+                    new WrestlingStyle { Name = "WW" },
+                    new WrestlingStyle { Name = "BW" }
                 };
 
             foreach(var style in styles)
             {
-                var existingStyle = await _context.WrestlingStyles.FindAsync(style.Id);
+                var existingStyle = await context.WrestlingStyles.FindAsync(style.Id);
                 if (existingStyle == null)
                 {
-                    _context.WrestlingStyles.Add(style);
+                    context.WrestlingStyles.Add(style);
                 }
             }
 
-            await _context.SaveChangesAsync();       
+            await context.SaveChangesAsync();       
         }
 
         private async Task AddTournamentWeightCategoryStatusesAsync()
         {
             var weightCategoryStatuses = new[]
                {
-                    new TournamentWeightCategoryStatus { Id = 1, Name = "Closed" },
-                    new TournamentWeightCategoryStatus { Id = 2, Name = "Registration" },
-                    new TournamentWeightCategoryStatus { Id = 3, Name = "Weigh-In" },
-                    new TournamentWeightCategoryStatus { Id = 4, Name = "In Progress" },
-                    new TournamentWeightCategoryStatus { Id = 5, Name = "Finished" }
+                    new TournamentWeightCategoryStatus { Name = "Closed" },
+                    new TournamentWeightCategoryStatus { Name = "Registration" },
+                    new TournamentWeightCategoryStatus { Name = "Weigh-In" },
+                    new TournamentWeightCategoryStatus { Name = "In Progress" },
+                    new TournamentWeightCategoryStatus { Name = "Finished" }
                 };
 
             foreach (var status in weightCategoryStatuses)
             {
-                var existingStatus = await _context.TournamentWeightCategoryStatuses.FindAsync(status.Id);
+                var existingStatus = await context.TournamentWeightCategoryStatuses.FindAsync(status.Id);
                 if (existingStatus == null)
                 {
-                    _context.TournamentWeightCategoryStatuses.Add(status);
+                    context.TournamentWeightCategoryStatuses.Add(status);
                 }
             }
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
 
         private async Task AddPrimaryWeightCategoriesAsync()
         {
+            var grStyle = context.WrestlingStyles.FirstOrDefault(s => s.Name == "GR");
+
+            if (grStyle == null) return;
+
             var primaryWeightCategories = new[]
             {
-                    new WeightCategory { Id = 1, Weight = 60, Age = "Seniors", PrimaryCategory = true, StyleId = 1 },
-                    new WeightCategory { Id = 2, Weight = 63, Age = "Seniors", PrimaryCategory = true, StyleId = 1 },
-                    new WeightCategory { Id = 3, Weight = 67, Age = "Seniors", PrimaryCategory = true, StyleId = 1 },
-                    new WeightCategory { Id = 4, Weight = 72, Age = "Seniors", PrimaryCategory = true, StyleId = 1 },
-                    new WeightCategory { Id = 5, Weight = 77, Age = "Seniors", PrimaryCategory = true, StyleId = 1 },
-                    new WeightCategory { Id = 6, Weight = 82, Age = "Seniors", PrimaryCategory = true, StyleId = 1 },
-                    new WeightCategory { Id = 7, Weight = 87, Age = "Seniors", PrimaryCategory = true, StyleId = 1 },
-                    new WeightCategory { Id = 8, Weight = 92, Age = "Seniors", PrimaryCategory = true, StyleId = 1 },
-                    new WeightCategory { Id = 9, Weight = 97, Age = "Seniors", PrimaryCategory = true, StyleId = 1 },
-                    new WeightCategory { Id = 10, Weight = 130, Age = "Seniors", PrimaryCategory = true, StyleId = 1 }
+                    new WeightCategory { Weight = 60, Age = "Seniors", PrimaryCategory = true, WrestlingStyle = grStyle },
+                    new WeightCategory { Weight = 63, Age = "Seniors", PrimaryCategory = true, WrestlingStyle = grStyle },
+                    new WeightCategory { Weight = 67, Age = "Seniors", PrimaryCategory = true, WrestlingStyle = grStyle },
+                    new WeightCategory { Weight = 72, Age = "Seniors", PrimaryCategory = true, WrestlingStyle = grStyle },
+                    new WeightCategory { Weight = 77, Age = "Seniors", PrimaryCategory = true, WrestlingStyle = grStyle },
+                    new WeightCategory { Weight = 82, Age = "Seniors", PrimaryCategory = true, WrestlingStyle = grStyle },
+                    new WeightCategory { Weight = 87, Age = "Seniors", PrimaryCategory = true, WrestlingStyle = grStyle },
+                    new WeightCategory { Weight = 92, Age = "Seniors", PrimaryCategory = true, WrestlingStyle = grStyle },
+                    new WeightCategory { Weight = 97, Age = "Seniors", PrimaryCategory = true, WrestlingStyle = grStyle },
+                    new WeightCategory { Weight = 130, Age = "Seniors", PrimaryCategory = true, WrestlingStyle = grStyle }
             };
 
             foreach (var wc in primaryWeightCategories)
             {
-                var existingStatus = await _context.TournamentWeightCategoryStatuses.FindAsync(wc.Id);
-                if (existingStatus == null)
+                var existingWeightCategory = await context.WeightCategories.FindAsync(wc.Id);
+                if (existingWeightCategory == null)
                 {
-                    _context.WeightCategories.Add(wc);
+                    context.WeightCategories.Add(wc);
                 }
             }
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
         }
     }
 }

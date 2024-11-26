@@ -1,9 +1,4 @@
 ﻿namespace WrestlingTournamentSystem.DataAccess.Helpers.Exceptions
 {
-    public class BusinessRuleValidationException : Exception
-    {
-        public BusinessRuleValidationException(string message) : base(message)
-        {
-        }
-    }
+    public class BusinessRuleValidationException(string message) : Exception(message);
 }

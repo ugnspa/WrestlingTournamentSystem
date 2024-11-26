@@ -2,7 +2,7 @@
 
 namespace WrestlingTournamentSystem.DataAccess.DTO.User
 {
-    public class LoginUserDTO
+    public class LoginUserDto
     {
         [Required]
         [StringLength(256)]

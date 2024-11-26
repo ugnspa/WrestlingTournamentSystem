@@ -4,18 +4,11 @@ using WrestlingTournamentSystem.DataAccess.Interfaces;
 
 namespace WrestlingTournamentSystem.DataAccess.Repositories
 {
-    public class WeightCategoryRepository : IWeightCategoryRepository
+    public class WeightCategoryRepository(WrestlingTournamentSystemDbContext context) : IWeightCategoryRepository
     {
-        private readonly WrestlingTournamentSystemDbContext _context;
-
-        public WeightCategoryRepository(WrestlingTournamentSystemDbContext context)
+        public async Task<bool> WeightCategoryExistsAsync(int weigthCategoryId)
         {
-            _context = context;
-        }
-
-        public async Task<bool> WeightCategoryExistsAsync(int WeigthCategoryId)
-        {
-            return await _context.WeightCategories.AnyAsync(wc => wc.Id == WeigthCategoryId);
+            return await context.WeightCategories.AnyAsync(wc => wc.Id == weigthCategoryId);
         }
     }
 }

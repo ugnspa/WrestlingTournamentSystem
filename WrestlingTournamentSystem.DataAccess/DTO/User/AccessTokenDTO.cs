@@ -1,11 +1,7 @@
 ﻿namespace WrestlingTournamentSystem.DataAccess.DTO.User
 {
-    public class AccessTokenDTO
+    public class AccessTokenDto(string accessToken)
     {
-        public string AccessToken { get; set; }
-        public AccessTokenDTO(string accessToken)
-        {
-            AccessToken = accessToken;
-        }
+        public string AccessToken { get; set; } = accessToken;
     }
 }

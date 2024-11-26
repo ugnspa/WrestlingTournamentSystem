@@ -2,7 +2,7 @@
 
 namespace WrestlingTournamentSystem.DataAccess.DTO.TournamentWeightCategory
 {
-    public class TournamentWeightCategoryCreateDTO
+    public class TournamentWeightCategoryCreateDto
     {
         [Required]
         public DateTime? StartDate { get; set; }

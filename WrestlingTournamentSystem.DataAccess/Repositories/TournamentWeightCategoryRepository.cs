@@ -6,33 +6,26 @@ using WrestlingTournamentSystem.DataAccess.Helpers.Exceptions;
 
 namespace WrestlingTournamentSystem.DataAccess.Repositories
 {
-    public class TournamentWeightCategoryRepository : ITournamentWeightCategoryRepository
+    public class TournamentWeightCategoryRepository(WrestlingTournamentSystemDbContext context)
+        : ITournamentWeightCategoryRepository
     {
-
-        private readonly WrestlingTournamentSystemDbContext _context;
-
-        public TournamentWeightCategoryRepository(WrestlingTournamentSystemDbContext context)
-        {
-            _context = context;
-        }
-
         public async Task<TournamentWeightCategory?> CreateTournamentWeightCategoryAsync(TournamentWeightCategory tournamentWeightCategory)
         {
-            _context.TournamentWeightCategories.Add(tournamentWeightCategory);
-            await _context.SaveChangesAsync();
+            context.TournamentWeightCategories.Add(tournamentWeightCategory);
+            await context.SaveChangesAsync();
 
             return await GetTournamentWeightCategoryAsync(tournamentWeightCategory.fk_TournamentId, tournamentWeightCategory.Id);
         }
 
         public async Task DeleteTournamentWeightCategoryAsync(TournamentWeightCategory tournamentWeightCategory)
         {
-            _context.TournamentWeightCategories.Remove(tournamentWeightCategory);
-            await _context.SaveChangesAsync();
+            context.TournamentWeightCategories.Remove(tournamentWeightCategory);
+            await context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<TournamentWeightCategory>> GetTournamentWeightCategoriesAsync(int tournamentId)
         {
-            return await _context.TournamentWeightCategories
+            return await context.TournamentWeightCategories
                 .Where(twc => twc.fk_TournamentId == tournamentId)
                 .Include(twc => twc.WeightCategory)
                 .Include(twc => twc.WeightCategory.WrestlingStyle)
@@ -42,7 +35,7 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
 
         public async Task<TournamentWeightCategory?> GetTournamentWeightCategoryAsync(int tournamentId, int tournamentWeightCategoryId)
         {
-            return await _context.TournamentWeightCategories
+            return await context.TournamentWeightCategories
                 .Where(twc => twc.fk_TournamentId == tournamentId && twc.Id == tournamentWeightCategoryId)
                 .Include(twc => twc.WeightCategory)
                 .Include(twc => twc.WeightCategory.WrestlingStyle)
@@ -52,14 +45,14 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
 
         public async Task<TournamentWeightCategory?> UpdateTournamentWeightCategoryAsync(TournamentWeightCategory tournamentWeightCategory)
         {
-            var tournamentWeightCategoryToUpdate = _context.TournamentWeightCategories.Find(tournamentWeightCategory.Id);
+            var tournamentWeightCategoryToUpdate = await context.TournamentWeightCategories.FindAsync(tournamentWeightCategory.Id);
 
             if (tournamentWeightCategoryToUpdate == null)
                 throw new NotFoundException($"Tournament weight category with id {tournamentWeightCategory.Id} was not found");
 
-            _context.Entry(tournamentWeightCategoryToUpdate).CurrentValues.SetValues(tournamentWeightCategory);
+            context.Entry(tournamentWeightCategoryToUpdate).CurrentValues.SetValues(tournamentWeightCategory);
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
 
             return await GetTournamentWeightCategoryAsync(tournamentWeightCategoryToUpdate.fk_TournamentId, tournamentWeightCategoryToUpdate.Id);
         }

@@ -1,6 +1,6 @@
 ﻿namespace WrestlingTournamentSystem.DataAccess.DTO.User
 {
-    public class UserListDTO
+    public class UserListDto
     {
         public string Id { get; set; } = null!;
         public string Name { get; set; } = null!;
