@@ -20,6 +20,16 @@ using WrestlingTournamentSystem.DataAccess.Helpers.Responses;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddDbContext<WrestlingTournamentSystemDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDatabase"));
@@ -144,6 +154,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors();
 
 app.UseHttpsRedirection();
 
