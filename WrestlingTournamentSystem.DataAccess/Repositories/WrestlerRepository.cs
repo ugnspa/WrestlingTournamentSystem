@@ -14,6 +14,7 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
                  .Where(twc => twc.Id == tournamentWeightCategoryId && twc.fk_TournamentId == tournamentId)
                  .SelectMany(twc => twc.Wrestlers!)
                  .Include(w => w.WrestlingStyle)
+                 .Include(w => w.Coach)
                  .FirstOrDefaultAsync(w => w.Id == wrestlerId);
         }
 
@@ -23,6 +24,7 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
                 .Where(twc => twc.Id == tournamentWeightCategoryId && twc.fk_TournamentId == tournamentId)
                 .SelectMany(twc => twc.Wrestlers!)
                 .Include(w => w.WrestlingStyle)
+                .Include(w => w.Coach)
                 .ToListAsync();
         }
 
@@ -68,6 +70,7 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
         {
             return await context.Wrestlers
                 .Include(w => w.WrestlingStyle)
+                .Include(w => w.Coach)
                 .FirstOrDefaultAsync(w => w.Id == wrestlerId);
         }
     }

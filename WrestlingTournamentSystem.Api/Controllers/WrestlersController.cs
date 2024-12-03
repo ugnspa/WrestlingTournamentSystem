@@ -150,5 +150,19 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 return HandleException(e);
             }
         }
+
+        [HttpGet("/api/v1/Wrestlers/{id}")]
+        public async Task<IActionResult> GetWrestlerById(int id)
+        {
+            try
+            {
+                var wrestler = await wrestlerService.GetWrestlerByIdAsync(id);
+                return Ok(ApiResponse.OkResponse("Wrestler by id", wrestler));
+            }
+            catch (Exception e)
+            {
+                return HandleException(e);
+            }
+        }
     }
 }

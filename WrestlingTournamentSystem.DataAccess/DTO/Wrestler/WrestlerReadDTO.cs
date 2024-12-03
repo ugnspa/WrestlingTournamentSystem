@@ -9,5 +9,6 @@
         public DateTime BirthDate { get; set; }
         public string? PhotoUrl { get; set; }
         public string Style { get; set; } = null!;
+        public string? Coach { get; set; }
     }
 }
