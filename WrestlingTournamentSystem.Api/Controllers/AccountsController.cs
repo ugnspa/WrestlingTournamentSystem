@@ -65,8 +65,6 @@ namespace WrestlingTournamentSystem.Api.Controllers
         {
             HttpContext.Request.Cookies.TryGetValue("RefreshToken", out var refreshToken);
 
-            Console.WriteLine($"RefreshToken: {refreshToken}");
-
             if (string.IsNullOrEmpty(refreshToken))
                 return UnprocessableEntity(ApiResponse.UnprocessableEntityResponse("Refresh token not found"));
 
@@ -157,9 +155,9 @@ namespace WrestlingTournamentSystem.Api.Controllers
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                SameSite = SameSiteMode.Lax,
+                SameSite = SameSiteMode.None,
                 Expires = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays),
-                Secure = true // should be true in production
+                Secure = true
             };
 
             HttpContext.Response.Cookies.Append("RefreshToken", refreshToken, cookieOptions);
