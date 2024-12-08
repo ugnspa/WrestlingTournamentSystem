@@ -61,7 +61,6 @@ namespace WrestlingTournamentSystem.Api.Controllers
 
         [HttpPost]
         [Route("AccessToken")]
-        [Authorize]
         public async Task<IActionResult> AccessToken()
         {
             HttpContext.Request.Cookies.TryGetValue("RefreshToken", out var refreshToken);
