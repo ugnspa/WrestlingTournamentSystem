@@ -16,15 +16,28 @@ using WrestlingTournamentSystem.DataAccess.Helpers.Settings;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using WrestlingTournamentSystem.DataAccess.Helpers.Responses;
+using DotNetEnv;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+if (builder.Environment.IsDevelopment())
+{
+    Env.Load();
+}
+
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddEnvironmentVariables();
+
+var corsSettings = builder.Configuration.GetSection("Cors").Get<CorsSettings>();
 
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
     {
-        builder.WithOrigins("http://localhost:5173")
+        builder.WithOrigins(corsSettings!.AllowedOrigin)
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
