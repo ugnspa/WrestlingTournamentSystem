@@ -101,6 +101,8 @@ namespace WrestlingTournamentSystem.DataAccess.Data
 
         private async Task AddTournamentStatusesAsync()
         {
+            int id = 1;
+
             var statuses = new[]
                 {
                     new TournamentStatus { Name = "Closed" },
@@ -111,11 +113,13 @@ namespace WrestlingTournamentSystem.DataAccess.Data
 
             foreach (var status in statuses) 
             {
-                var existingStatus = await context.TournamentStatuses.FindAsync(status.Id);
+                var existingStatus = await context.TournamentStatuses.FindAsync(id);
                 if (existingStatus == null)
                 {
                     context.TournamentStatuses.Add(status);
                 }
+
+                id++;
             }
 
             await context.SaveChangesAsync();           
@@ -123,6 +127,8 @@ namespace WrestlingTournamentSystem.DataAccess.Data
 
         private async Task AddWrestlingStylesAsync()
         {
+            int id = 1;
+
             var styles = new[]
 {
                     new WrestlingStyle { Name = "GR" },
@@ -133,11 +139,13 @@ namespace WrestlingTournamentSystem.DataAccess.Data
 
             foreach(var style in styles)
             {
-                var existingStyle = await context.WrestlingStyles.FindAsync(style.Id);
+                var existingStyle = await context.WrestlingStyles.FindAsync(id);
                 if (existingStyle == null)
                 {
                     context.WrestlingStyles.Add(style);
                 }
+
+                id++;
             }
 
             await context.SaveChangesAsync();       
@@ -145,6 +153,8 @@ namespace WrestlingTournamentSystem.DataAccess.Data
 
         private async Task AddTournamentWeightCategoryStatusesAsync()
         {
+            int id = 1;
+
             var weightCategoryStatuses = new[]
                {
                     new TournamentWeightCategoryStatus { Name = "Closed" },
@@ -156,11 +166,12 @@ namespace WrestlingTournamentSystem.DataAccess.Data
 
             foreach (var status in weightCategoryStatuses)
             {
-                var existingStatus = await context.TournamentWeightCategoryStatuses.FindAsync(status.Id);
+                var existingStatus = await context.TournamentWeightCategoryStatuses.FindAsync(id);
                 if (existingStatus == null)
                 {
                     context.TournamentWeightCategoryStatuses.Add(status);
                 }
+                id++;
             }
 
             await context.SaveChangesAsync();
@@ -171,6 +182,8 @@ namespace WrestlingTournamentSystem.DataAccess.Data
             var grStyle = context.WrestlingStyles.FirstOrDefault(s => s.Name == "GR");
 
             if (grStyle == null) return;
+
+            int id = 1;
 
             var primaryWeightCategories = new[]
             {
@@ -188,11 +201,13 @@ namespace WrestlingTournamentSystem.DataAccess.Data
 
             foreach (var wc in primaryWeightCategories)
             {
-                var existingWeightCategory = await context.WeightCategories.FindAsync(wc.Id);
+                var existingWeightCategory = await context.WeightCategories.FindAsync(id);
                 if (existingWeightCategory == null)
                 {
                     context.WeightCategories.Add(wc);
                 }
+
+                id++;
             }
 
             await context.SaveChangesAsync();
