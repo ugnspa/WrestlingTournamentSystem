@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Web/sites/WrestlingTournamentSystemApi/providers/Microsoft.ServiceLinker/linkers/ConnectionStringsLocalDatabase_6B28446C2B",
+      "secretStore": "AzureAppSettings",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/wrestlingtournamentsystemapidbserver/databases/WrestlingTournamentSystem.Api_db",
+      "type": "mssql.azure",
+      "connectionId": "ConnectionStrings:LocalDatabase",
+      "dynamicId": null
+    }
+  }
+}
