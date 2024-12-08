@@ -147,6 +147,9 @@ var app = builder.Build();
 
 //Seed database
 using var scope = app.Services.CreateScope();
+var dbContext = scope.ServiceProvider.GetRequiredService<WrestlingTournamentSystemDbContext>();
+dbContext.Database.Migrate();
+
 var dbSeeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
 await dbSeeder.SeedAsync();
 
