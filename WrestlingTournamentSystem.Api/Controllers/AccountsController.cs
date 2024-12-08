@@ -57,13 +57,15 @@ namespace WrestlingTournamentSystem.Api.Controllers
             {
                 return HandleException(ex);
             }
-        }
+        } 
 
         [HttpPost]
         [Route("AccessToken")]
         public async Task<IActionResult> AccessToken()
         {
             HttpContext.Request.Cookies.TryGetValue("RefreshToken", out var refreshToken);
+
+            Console.WriteLine($"RefreshToken: {refreshToken}");
 
             if (string.IsNullOrEmpty(refreshToken))
                 return UnprocessableEntity(ApiResponse.UnprocessableEntityResponse("Refresh token not found"));
@@ -157,7 +159,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 HttpOnly = true,
                 SameSite = SameSiteMode.Lax,
                 Expires = DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpirationDays),
-                Secure = false // should be true in production
+                Secure = true // should be true in production
             };
 
             HttpContext.Response.Cookies.Append("RefreshToken", refreshToken, cookieOptions);
