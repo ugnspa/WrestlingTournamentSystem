@@ -46,7 +46,14 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddDbContext<WrestlingTournamentSystemDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDatabase"));
+    if(builder.Environment.IsDevelopment())
+    {
+        options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDatabase"));
+    }
+    else
+    {
+        options.UseSqlServer(builder.Configuration.GetConnectionString("AzureDatabase"));
+    }
 });
 
 builder.Services.AddControllers();
