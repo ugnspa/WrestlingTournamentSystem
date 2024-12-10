@@ -165,7 +165,14 @@ namespace WrestlingTournamentSystem.Api.Controllers
 
         private void DeleteCookie(string cookieName)
         {
-            HttpContext.Response.Cookies.Delete(cookieName);
+            HttpContext.Response.Cookies.Append(cookieName, string.Empty, new CookieOptions
+            {
+                Expires = DateTimeOffset.UtcNow.AddDays(-1),
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None
+            });
         }
+
     }
 }
