@@ -34,7 +34,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Validation
                 throw new BusinessRuleValidationException("End date is required.");
             }
 
-            if (startDate > endDate)
+            if (startDate.Value.Date > endDate.Value.Date)
             {
                 throw new BusinessRuleValidationException("Start date cannot be after end date.");
             }
@@ -47,12 +47,12 @@ namespace WrestlingTournamentSystem.BusinessLogic.Validation
                 throw new BusinessRuleValidationException("All dates must be provided.");
             }
 
-            if (weightCategoryStartDate > weightCategoryEndDate)
+            if (weightCategoryStartDate.Value.Date > weightCategoryEndDate.Value.Date)
             {
                 throw new BusinessRuleValidationException("Weight category start date must be before end date.");
             }
 
-            if (weightCategoryStartDate < tournamentStartDate || weightCategoryEndDate > tournamentEndDate)
+            if (weightCategoryStartDate.Value.Date < tournamentStartDate.Value.Date || weightCategoryEndDate.Value.Date > tournamentEndDate.Value.Date)
             {
                 throw new BusinessRuleValidationException($"Weight category dates must be within the tournament's start ({tournamentStartDate.Value.Date}) and end ({tournamentEndDate.Value.Date}) dates.");
             }
