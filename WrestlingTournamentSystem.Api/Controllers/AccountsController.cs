@@ -150,6 +150,22 @@ namespace WrestlingTournamentSystem.Api.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("Roles")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> GetRoles()
+        {
+            try
+            {
+                var roles = await accountsService.GetAllRolesAsync();
+                return Ok(ApiResponse.OkResponse("Roles", roles));
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
+        }
+
         private void UpdateCookie(string refreshToken)
         {
             var cookieOptions = new CookieOptions

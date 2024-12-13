@@ -11,5 +11,6 @@ namespace WrestlingTournamentSystem.BusinessLogic.Interfaces
         public string GetSessionIdFromRefreshToken(string? refreshToken);
         public Task<IEnumerable<UserListDto>> GetCoachesAsync();
         public Task<UserDetailDto> GetCoachWithWrestlersAsync(string userId);
+        public Task<IEnumerable<RoleDto>> GetAllRolesAsync();
     }
 }

@@ -34,5 +34,8 @@ namespace WrestlingTournamentSystem.DataAccess.DTO.User
         [Required]
         [DataType(DataType.Password)]
         public string ConfirmPassword { get; set; } = null!;
+
+        [Required]
+        public string RoleId { get; set; } = null!;
     }
 }

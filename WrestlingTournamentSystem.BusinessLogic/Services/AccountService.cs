@@ -28,7 +28,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 
             var newUser = mapper.Map<User>(registerUserDto);
 
-            await accountRepository.CreateUserAsync(newUser, registerUserDto.Password);
+            await accountRepository.CreateUserAsync(newUser, registerUserDto.Password, registerUserDto.RoleId);
 
             return mapper.Map<UserListDto>(newUser);
         }
@@ -110,6 +110,13 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
                 throw new NotFoundException("Coach was not found");
 
             return mapper.Map<UserDetailDto>(coach);
+        }
+
+        public async Task<IEnumerable<RoleDto>> GetAllRolesAsync()
+        {
+            var roles = await accountRepository.GetAllRolesAsync();
+
+            return mapper.Map<IEnumerable<RoleDto>>(roles);
         }
     }
 }

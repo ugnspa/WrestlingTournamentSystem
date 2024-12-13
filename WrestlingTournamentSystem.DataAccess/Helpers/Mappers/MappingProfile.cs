@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Routing.Constraints;
 using WrestlingTournamentSystem.DataAccess.DTO.Tournament;
@@ -39,6 +40,7 @@ namespace WrestlingTournamentSystem.DataAccess.Helpers.Mappers
             CreateMap<RegisterUserDto, User>();
             CreateMap<User, UserListDto>();
             CreateMap<User, UserDetailDto>();
+            CreateMap<IdentityRole,RoleDto>();
         }
     }
 }

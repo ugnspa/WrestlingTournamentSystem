@@ -8,10 +8,10 @@ using WrestlingTournamentSystem.DataAccess.Interfaces;
 
 namespace WrestlingTournamentSystem.DataAccess.Repositories
 {
-    public class AccountRepository(WrestlingTournamentSystemDbContext context, UserManager<User> userManager)
+    public class AccountRepository(WrestlingTournamentSystemDbContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         : IAccountRepository
     {
-        public async Task CreateUserAsync(User user, string password)
+        public async Task CreateUserAsync(User user, string password, string roleId)
         {
             await using var transaction = await context.Database.BeginTransactionAsync();
 
@@ -21,17 +21,21 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
                 if (!createUserResult.Succeeded)
                     throw new BusinessRuleValidationException(createUserResult.Errors.First().Description);
 
-                var addRoleResult = await userManager.AddToRoleAsync(user, UserRoles.TournamentOrganiser); //Pass role as parameter
+                var role = await roleManager.FindByIdAsync(roleId);
+                if (role == null)
+                    throw new BusinessRuleValidationException("Role not found");
+
+                var addRoleResult = await userManager.AddToRoleAsync(user, role.Name!);
                 if (!addRoleResult.Succeeded)
                     throw new BusinessRuleValidationException(addRoleResult.Errors.First().Description);
 
                 await transaction.CommitAsync();
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 await transaction.RollbackAsync();
 
-                throw new Exception("An error occurred creating User and adding Roles.");
+                throw new BusinessRuleValidationException($"An error occurred creating User and adding Roles. {e.Message}");
             }
         }
 
@@ -79,6 +83,13 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
                 return null;
 
             return coach;
+        }
+
+        public async Task<IEnumerable<IdentityRole>> GetAllRolesAsync()
+        {
+            var roles = await roleManager.Roles.ToListAsync();
+
+            return roles;
         }
     }
 }
