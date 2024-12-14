@@ -15,8 +15,7 @@ namespace WrestlingTournamentSystem.DataAccess.Helpers.Mappers
         public MappingProfile()
         {
             //Tournament
-            CreateMap<Tournament, TournamentReadDto>()
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.TournamentStatus.Name));
+            CreateMap<Tournament, TournamentReadDto>();
             CreateMap<TournamentCreateDto, Tournament>();
             CreateMap<TournamentUpdateDto, Tournament>();
 

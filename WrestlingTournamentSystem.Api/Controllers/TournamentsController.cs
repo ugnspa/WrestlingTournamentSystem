@@ -133,6 +133,21 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 return HandleException(e);
             }
         }
+
+        [HttpGet("Statuses")]
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser)]
+        public async Task<IActionResult> GetTournamentStatuses()
+        {
+            try
+            {
+                var tournamentStatuses = await tournamentsService.GetTournamentStatusesAsync();
+                return Ok(ApiResponse.OkResponse("Tournament statuses", tournamentStatuses));
+            }
+            catch (Exception e)
+            {
+                return HandleException(e);
+            }
+        }
     }
 
 }

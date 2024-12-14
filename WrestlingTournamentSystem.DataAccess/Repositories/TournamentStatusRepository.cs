@@ -21,5 +21,10 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
         {
             return await context.TournamentStatuses.AnyAsync(ts => ts.Id == statusId);
         }
+
+        public async Task<IEnumerable<TournamentStatus>> GetTournamentStatusesAsync()
+        {
+            return await context.TournamentStatuses.ToListAsync();
+        }
     }
 }

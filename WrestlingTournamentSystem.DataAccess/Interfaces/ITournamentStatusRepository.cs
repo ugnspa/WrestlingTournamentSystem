@@ -7,5 +7,6 @@ namespace WrestlingTournamentSystem.DataAccess.Interfaces
         public Task<TournamentStatus?> GetClosedTournamentStatus();
         public Task<TournamentStatus?> GetTournamentStatusById(int statusId);
         public Task<bool> TournamentStatusExists(int statusId);
+        public Task<IEnumerable<TournamentStatus>> GetTournamentStatusesAsync();
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace WrestlingTournamentSystem.DataAccess.DTO.Tournament
+﻿using WrestlingTournamentSystem.DataAccess.Entities;
+
+namespace WrestlingTournamentSystem.DataAccess.DTO.Tournament
 {
     public class TournamentReadDto
     {
@@ -12,7 +14,7 @@
 
         public DateTime EndDate { get; set; }
 
-        public string Status { get; set; } = null!;
+        public TournamentStatus TournamentStatus { get; set; } = null!;
 
         public string OrganiserId { get; set; } = null!;
 

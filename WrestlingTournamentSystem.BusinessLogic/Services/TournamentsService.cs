@@ -74,6 +74,13 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             return mapper.Map<IEnumerable<TournamentReadDto>>(tournaments);
         }
 
+        public async Task<IEnumerable<TournamentStatus>> GetTournamentStatusesAsync()
+        {
+            var tournamentStatuses = await tournamentStatusRepository.GetTournamentStatusesAsync();
+
+            return tournamentStatuses;
+        }
+
         public async Task<TournamentReadDto> UpdateTournamentAsync(bool isAdmin, string userId, int tournamentId, TournamentUpdateDto tournamentUpdateDto)
         {
             if (tournamentUpdateDto == null)
