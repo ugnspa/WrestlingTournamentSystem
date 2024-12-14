@@ -20,11 +20,7 @@ namespace WrestlingTournamentSystem.DataAccess.Helpers.Mappers
             CreateMap<TournamentUpdateDto, Tournament>();
 
             //TournamentWeightCategory
-            CreateMap<TournamentWeightCategory, TournamentWeightCategoryReadDto>()
-                .ForMember(dest => dest.Style, opt => opt.MapFrom(src => src.WeightCategory.WrestlingStyle.Name))
-                .ForMember(dest => dest.Weight, opt => opt.MapFrom(src => src.WeightCategory.Weight))
-                .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.WeightCategory.Age))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.TournamentWeightCategoryStatus.Name));
+            CreateMap<TournamentWeightCategory, TournamentWeightCategoryReadDto>();
             CreateMap<TournamentWeightCategoryCreateDto, TournamentWeightCategory>();
             CreateMap<TournamentWeightCategoryUpdateDto, TournamentWeightCategory>();
 
