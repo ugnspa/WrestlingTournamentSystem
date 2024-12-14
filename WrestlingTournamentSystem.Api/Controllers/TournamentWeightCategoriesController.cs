@@ -76,7 +76,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 var isAdmin = HttpContext.User.IsInRole(UserRoles.Admin);
 
                 await tournamentWeightCategoryService.DeleteTournamentWeightCategoryAsync(isAdmin, userId, tournamentId, weightCategoryId);
-                return NoContent();
+                return Ok(ApiResponse.NoContentResponse());
             }
             catch (Exception e)
             {

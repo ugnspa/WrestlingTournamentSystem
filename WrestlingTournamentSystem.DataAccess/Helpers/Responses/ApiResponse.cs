@@ -24,6 +24,11 @@ namespace WrestlingTournamentSystem.DataAccess.Helpers.Responses
             return new ApiResponse(true, 201, message, data, null);
         }
 
+        public static ApiResponse NoContentResponse()
+        {
+            return new ApiResponse(true, 204, "No content", null, null);
+        }
+
         public static ApiResponse ErrorResponse(string message, List<string> errors)
         {
             return new ApiResponse(false, 400, message, null, errors);

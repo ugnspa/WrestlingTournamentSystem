@@ -126,7 +126,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 var isAdmin = HttpContext.User.IsInRole(UserRoles.Admin);
 
                 await tournamentsService.DeleteTournamentAsync(isAdmin, userId, id);
-                return NoContent();
+                return Ok(ApiResponse.NoContentResponse());
             }
             catch (Exception e)
             {
