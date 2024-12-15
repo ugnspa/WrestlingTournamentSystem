@@ -123,7 +123,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             if(!tournamentWeightCategoryStatusExists)
                 throw new NotFoundException($"Tournament weight category status with id {tournamentWeightCategoryUpdateDto.StatusId} does not exist");
 
-            validationService.ValidateTournamentWeightCategoryDates(tournament.StartDate, tournament.EndDate, tournamentWeightCategoryUpdateDto.StartDate, tournamentWeightCategoryUpdateDto.EndDate);
+            //validationService.ValidateTournamentWeightCategoryDates(tournament.StartDate, tournament.EndDate, tournamentWeightCategoryUpdateDto.StartDate, tournamentWeightCategoryUpdateDto.EndDate);
 
             mapper.Map(tournamentWeightCategoryUpdateDto, tournamentWeightCategoryToUpdate);
 

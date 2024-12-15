@@ -5,12 +5,6 @@ namespace WrestlingTournamentSystem.DataAccess.DTO.TournamentWeightCategory
     public class TournamentWeightCategoryUpdateDto
     {
         [Required]
-        public DateTime? StartDate { get; set; }
-
-        [Required]
-        public DateTime? EndDate { get; set; }
-
-        [Required]
         public int StatusId { get; set; }
 
     }
