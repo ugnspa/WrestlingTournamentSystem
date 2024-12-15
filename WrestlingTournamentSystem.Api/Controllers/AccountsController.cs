@@ -153,7 +153,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
         }
 
         [HttpGet]
-        [Route("Admin/{id}")]
+        [Route("Admin")]
         [Authorize(Roles = UserRoles.Admin)]
         public async Task<IActionResult> GetAdminWithWrestlers()
         {
