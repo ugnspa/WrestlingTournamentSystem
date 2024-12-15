@@ -85,6 +85,15 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
             return coach;
         }
 
+        public async Task<User?> GetAdmin(string adminId)
+        {
+            var admins = await userManager.GetUsersInRoleAsync(UserRoles.Admin);
+
+            var admin = admins.Where(admin => admin.Id == adminId).FirstOrDefault();
+
+            return admin;
+        }
+
         public async Task<IEnumerable<IdentityRole>> GetAllRolesAsync()
         {
             var roles = await roleManager.Roles.ToListAsync();

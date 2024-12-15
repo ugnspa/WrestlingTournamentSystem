@@ -161,6 +161,22 @@ namespace WrestlingTournamentSystem.Api.Controllers
             }
 
         }
-        
+
+        [HttpGet("/api/v1/TournamentWeightCategories/WeightCategories")]
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser)]
+        public async Task<IActionResult> GetWeightCategories()
+        {
+            try
+            {
+               var weightCategories = await tournamentWeightCategoryService.GetWeightCategoriesAsync();
+                return Ok(ApiResponse.OkResponse("All Weight Categories", weightCategories));
+            }
+            catch (Exception e)
+            {
+                return HandleException(e);
+            }
+
+        }
+
     }
 }

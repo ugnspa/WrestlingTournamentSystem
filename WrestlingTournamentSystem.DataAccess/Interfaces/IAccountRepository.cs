@@ -13,5 +13,6 @@ namespace WrestlingTournamentSystem.DataAccess.Interfaces
         public Task<IEnumerable<User>> GetCoaches();
         public Task<User?> GetCoachWithWrestlersAsync(string userId);
         public Task<IEnumerable<IdentityRole>> GetAllRolesAsync();
+        public Task<User?> GetAdmin(string adminId);
     }
 }

@@ -73,5 +73,13 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
                 .Include(w => w.Coach)
                 .FirstOrDefaultAsync(w => w.Id == wrestlerId);
         }
+
+        public async Task<IEnumerable<Wrestler>> GetAllWrestlersAsync()
+        {
+            return await context.Wrestlers
+                .Include(w => w.WrestlingStyle)
+                .Include(w => w.Coach)
+                .ToListAsync();
+        }
     }
 }

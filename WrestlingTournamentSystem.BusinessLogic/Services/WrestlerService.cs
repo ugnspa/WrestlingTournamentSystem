@@ -134,5 +134,12 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
 
             return mapper.Map<WrestlerReadDto>(wrestler);
         }
+
+        public async Task<IEnumerable<WrestlerReadDto>> GetAllWrestlersAsync()
+        {
+            var wrestlers = await wrestlerRepository.GetAllWrestlersAsync();
+
+            return mapper.Map<IEnumerable<WrestlerReadDto>>(wrestlers);
+        }
     }
 }

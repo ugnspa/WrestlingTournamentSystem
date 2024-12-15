@@ -5,6 +5,7 @@ using AutoMapper;
 using WrestlingTournamentSystem.DataAccess.Helpers.Exceptions;
 using WrestlingTournamentSystem.DataAccess.Entities;
 using WrestlingTournamentSystem.BusinessLogic.Validation;
+using WrestlingTournamentSystem.DataAccess.DTO.WeightCategory;
 
 namespace WrestlingTournamentSystem.BusinessLogic.Services
 {
@@ -140,6 +141,13 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             var tournamentWeightCategoryStatuses = await tournamentWeightCategoryStatusRepository.GetTournamentWeightCategoryStatusesAsync();
 
             return tournamentWeightCategoryStatuses;
+        }
+
+        public async Task<IEnumerable<WeightCategoryReadDto>> GetWeightCategoriesAsync()
+        {
+            var weightCategories = await weightCategoryRepository.GetWeightCategoriesAsync();
+
+            return mapper.Map<IEnumerable<WeightCategoryReadDto>>(weightCategories);
         }
     }
 }

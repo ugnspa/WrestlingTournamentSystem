@@ -164,5 +164,19 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 return HandleException(e);
             }
         }
+
+        [HttpGet("/api/v1/Wrestlers")]
+        public async Task<IActionResult> GetAllWrestlers()
+        {
+            try
+            {
+                var wrestlers = await wrestlerService.GetAllWrestlersAsync();
+                return Ok(ApiResponse.OkResponse("All Wrestlers", wrestlers));
+            }
+            catch (Exception e)
+            {
+                return HandleException(e);
+            }
+        }
     }
 }

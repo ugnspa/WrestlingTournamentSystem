@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using WrestlingTournamentSystem.BusinessLogic.Interfaces;
 using WrestlingTournamentSystem.DataAccess.DTO.User;
 using WrestlingTournamentSystem.DataAccess.Helpers.Responses;
@@ -143,6 +145,27 @@ namespace WrestlingTournamentSystem.Api.Controllers
             {
                 var coach = await accountsService.GetCoachWithWrestlersAsync(id);
                 return Ok(ApiResponse.OkResponse("Coach with wrestlers", coach));
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
+        }
+
+        [HttpGet]
+        [Route("Admin/{id}")]
+        [Authorize(Roles = UserRoles.Admin)]
+        public async Task<IActionResult> GetAdminWithWrestlers()
+        {
+            try
+            {
+                var userId = HttpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+
+                if (String.IsNullOrEmpty(userId))
+                    return Unauthorized(ApiResponse.UnauthorizedResponse("User ID is missing from the token."));
+
+                var admin = await accountsService.GetAdminWtihWrestlersAsync(userId);
+                return Ok(ApiResponse.OkResponse("Admin with Wrestlers", admin));
             }
             catch (Exception ex)
             {

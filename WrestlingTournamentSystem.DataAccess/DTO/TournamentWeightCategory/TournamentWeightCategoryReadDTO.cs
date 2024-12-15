@@ -9,7 +9,7 @@ namespace WrestlingTournamentSystem.DataAccess.DTO.TournamentWeightCategory
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public TournamentWeightCategoryStatus TournamentWeightCategoryStatus { get; set; } = null!;
-        public WeightCategory WeightCategory { get; set; } = null!;
+        public Entities.WeightCategory WeightCategory { get; set; } = null!;
 
     }
 }

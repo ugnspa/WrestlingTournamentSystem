@@ -14,7 +14,8 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
         JwtTokenService jwtTokenService,
         IValidationService validationService,
         IMapper mapper,
-        IAccountRepository accountRepository)
+        IAccountRepository accountRepository,
+        IWrestlerRepository wrestlerRepository)
         : IAccountService
     {
         public async Task<UserListDto> Register(RegisterUserDto registerUserDto)
@@ -117,6 +118,20 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             var roles = await accountRepository.GetAllRolesAsync();
 
             return mapper.Map<IEnumerable<RoleDto>>(roles);
+        }
+
+        public async Task<UserDetailDto> GetAdminWtihWrestlersAsync(string adminId)
+        {
+            var admin = await accountRepository.GetAdmin(adminId);
+
+            if(admin == null)
+                throw new NotFoundException("Admin was not found");
+
+            var adminWrestlers = await wrestlerRepository.GetAllWrestlersAsync();
+
+            admin.Wrestlers = adminWrestlers.ToList();
+
+            return mapper.Map<UserDetailDto>(admin);
         }
     }
 }

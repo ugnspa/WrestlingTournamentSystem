@@ -1,4 +1,5 @@
 ﻿using WrestlingTournamentSystem.DataAccess.DTO.Wrestler;
+using WrestlingTournamentSystem.DataAccess.Entities;
 
 namespace WrestlingTournamentSystem.BusinessLogic.Interfaces
 {
@@ -10,5 +11,6 @@ namespace WrestlingTournamentSystem.BusinessLogic.Interfaces
         public Task<WrestlerReadDto?> UpdateWrestlerAsync(bool isAdmin, string userId, int tournamentId, int tournamentWeightCategoryId, int wrestlerId, WrestlerUpdateDto wrestlerUpdateDto);
         public Task DeleteWrestlerAsync(bool isAdmin, string userId, int tournamentId, int tournamentWeightCategoryId, int wrestlerId);
         public Task<WrestlerReadDto> GetWrestlerByIdAsync(int wrestlerId);
+        public Task<IEnumerable<WrestlerReadDto>> GetAllWrestlersAsync();
     }
 }
