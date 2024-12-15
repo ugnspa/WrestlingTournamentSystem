@@ -85,7 +85,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             return mapper.Map<IEnumerable<WrestlerReadDto>>(await wrestlerRepository.GetTournamentWeightCategoryWrestlersAsync(tournamentId, tournamentWeightCategoryId));
         }
 
-        public async Task DeleteWrestlerAsync(bool isAdmin, string userId, int tournamentId, int tournamentWeightCategoryId, int wrestlerId)
+        public async Task RemoveWrestlerFromTournamentWeightCategoryAsync(bool isAdmin, string userId, int tournamentId, int tournamentWeightCategoryId, int wrestlerId)
         {
             await ValidateTournamentAndWeightCategory(tournamentId, tournamentWeightCategoryId, isAdmin, userId);
 
@@ -96,7 +96,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
                 throw new NotFoundException($"Tournament weight category does not have wrestler with id {wrestlerId}");
             }
 
-            await wrestlerRepository.DeleteWrestlerAsync(wrestler); 
+            await wrestlerRepository.RemoveWrestlerFromTournamentWeightCategoryAsync(tournamentId, tournamentWeightCategoryId, wrestler); 
         }
 
         public async Task<WrestlerReadDto?> UpdateWrestlerAsync(bool isAdmin, string userId, int tournamentId, int tournamentWeightCategoryId, int wrestlerId, WrestlerUpdateDto wrestlerUpdateDto)

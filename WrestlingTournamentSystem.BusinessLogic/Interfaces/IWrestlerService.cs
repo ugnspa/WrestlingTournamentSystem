@@ -9,7 +9,7 @@ namespace WrestlingTournamentSystem.BusinessLogic.Interfaces
         public Task<WrestlerReadDto?> GetTournamentWeightCategoryWrestlerAsync(int tournamentId, int tournamentWeightCategoryId, int wrestlerId);
         public Task<WrestlerReadDto?> CreateAndAddWrestlerToTournamentWeightCategory(bool isAdmin, string userId, int tournamentId, int tournamentWeightCategoryId, WrestlerCreateDto wrestlerCreateDto);
         public Task<WrestlerReadDto?> UpdateWrestlerAsync(bool isAdmin, string userId, int tournamentId, int tournamentWeightCategoryId, int wrestlerId, WrestlerUpdateDto wrestlerUpdateDto);
-        public Task DeleteWrestlerAsync(bool isAdmin, string userId, int tournamentId, int tournamentWeightCategoryId, int wrestlerId);
+        public Task RemoveWrestlerFromTournamentWeightCategoryAsync(bool isAdmin, string userId, int tournamentId, int tournamentWeightCategoryId, int wrestlerId);
         public Task<WrestlerReadDto> GetWrestlerByIdAsync(int wrestlerId);
         public Task<IEnumerable<WrestlerReadDto>> GetAllWrestlersAsync();
     }

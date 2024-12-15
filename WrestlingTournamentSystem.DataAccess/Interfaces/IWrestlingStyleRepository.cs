@@ -6,5 +6,6 @@ namespace WrestlingTournamentSystem.DataAccess.Interfaces
     {
         public Task<bool> WrestlingStyleExistsAsync(int wrestlingStyleId);
         public Task<WrestlingStyle?> GetWrestlingStyleByIdAsync(int wrestlingStyleId);
+        public Task<IEnumerable<WrestlingStyle>> GetWrestlingStylesAsync();
     }
 }

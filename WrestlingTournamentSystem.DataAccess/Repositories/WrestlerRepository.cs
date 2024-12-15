@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices;
 using WrestlingTournamentSystem.DataAccess.Data;
 using WrestlingTournamentSystem.DataAccess.Entities;
 using WrestlingTournamentSystem.DataAccess.Helpers.Exceptions;
@@ -52,6 +54,20 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
             await context.SaveChangesAsync();
         }
 
+        public async Task RemoveWrestlerFromTournamentWeightCategoryAsync(int tournamentId, int tournamentWeightCategoryId, Wrestler wrestler)
+        {
+            var tournamentWeightCategory = context.TournamentWeightCategories
+                .Include(twc => twc.Wrestlers)
+                .FirstOrDefault(twc => twc.Id == tournamentWeightCategoryId && twc.fk_TournamentId == tournamentId);
+
+            if (tournamentWeightCategory == null)
+                throw new NotFoundException($"Tournament weight category with id {tournamentWeightCategoryId} was not found");
+
+            tournamentWeightCategory.Wrestlers.Remove(wrestler);
+
+            await context.SaveChangesAsync();
+        }
+
         public async Task<Wrestler?> UpdateWrestlerAsync(Wrestler wrestler)
         {
             var wrestlerToUpdate = await context.Wrestlers.FindAsync(wrestler.Id);
@@ -81,5 +97,6 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
                 .Include(w => w.Coach)
                 .ToListAsync();
         }
+
     }
 }

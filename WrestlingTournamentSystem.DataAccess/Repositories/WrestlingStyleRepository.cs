@@ -7,14 +7,19 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
 {
     public class WrestlingStyleRepository(WrestlingTournamentSystemDbContext context) : IWrestlingStyleRepository
     {
-        public Task<WrestlingStyle?> GetWrestlingStyleByIdAsync(int wrestlingStyleId)
+        public async Task<WrestlingStyle?> GetWrestlingStyleByIdAsync(int wrestlingStyleId)
         {
-            return context.WrestlingStyles.FirstOrDefaultAsync(ws => ws.Id == wrestlingStyleId);
+            return await context.WrestlingStyles.FirstOrDefaultAsync(ws => ws.Id == wrestlingStyleId);
         }
 
-        public Task<bool> WrestlingStyleExistsAsync(int wrestlingStyleId)
+        public async Task<IEnumerable<WrestlingStyle>> GetWrestlingStylesAsync()
         {
-            return context.WrestlingStyles.AnyAsync(ws => ws.Id == wrestlingStyleId);
+            return await context.WrestlingStyles.ToListAsync();
+        }
+
+        public async Task<bool> WrestlingStyleExistsAsync(int wrestlingStyleId)
+        {
+            return await context.WrestlingStyles.AnyAsync(ws => ws.Id == wrestlingStyleId);
         }
     }
 }

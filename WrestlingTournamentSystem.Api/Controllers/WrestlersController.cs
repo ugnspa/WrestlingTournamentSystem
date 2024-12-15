@@ -89,16 +89,16 @@ namespace WrestlingTournamentSystem.Api.Controllers
         }
 
         /// <summary>
-        /// Deletes a wrestler from a tournament weight category.
+        /// Removes wrestler from a tournament weight category.
         /// </summary>
         /// <param name="tournamentId">The tournament's identifier.</param>
         /// <param name="weightCategoryId">The weight category's identifier.</param>
-        /// <param name="wrestlerId">The wrestler's identifier to delete.</param>
-        /// <response code="204">If the wrestler is successfully deleted.</response>
+        /// <param name="wrestlerId">The wrestler's identifier to remove.</param>
+        /// <response code="204">If the wrestler is successfully removed.</response>
         /// <response code="404">If the wrestler, tournament, or weight category is not found.</response>
         [HttpDelete("{wrestlerId}")]
         [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser)]
-        public async Task<IActionResult> DeleteWrestler(int tournamentId, int weightCategoryId, int wrestlerId)
+        public async Task<IActionResult> RemoveWrestler(int tournamentId, int weightCategoryId, int wrestlerId)
         {
             try
             {
@@ -109,7 +109,7 @@ namespace WrestlingTournamentSystem.Api.Controllers
 
                 var isAdmin = HttpContext.User.IsInRole(UserRoles.Admin);
 
-                await wrestlerService.DeleteWrestlerAsync(isAdmin, userId, tournamentId, weightCategoryId, wrestlerId);
+                await wrestlerService.RemoveWrestlerFromTournamentWeightCategoryAsync(isAdmin, userId, tournamentId, weightCategoryId, wrestlerId);
                 return Ok(ApiResponse.NoContentResponse());
             }
             catch (Exception e)
