@@ -178,5 +178,20 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 return HandleException(e);
             }
         }
+
+        [HttpGet("/api/v1/Wrestlers/WrestlingStyles")]
+        [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser)]
+        public async Task<IActionResult> GetWrestlingStyles()
+        {
+            try
+            {
+                var wrestlingStyles = await wrestlerService.GetWrestlingStylesAsync();
+                return Ok(ApiResponse.OkResponse("Wrestling Styles", wrestlingStyles));
+            }
+            catch (Exception e)
+            {
+                return HandleException(e);
+            }
+        }
     }
 }

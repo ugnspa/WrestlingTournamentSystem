@@ -12,5 +12,6 @@ namespace WrestlingTournamentSystem.BusinessLogic.Interfaces
         public Task RemoveWrestlerFromTournamentWeightCategoryAsync(bool isAdmin, string userId, int tournamentId, int tournamentWeightCategoryId, int wrestlerId);
         public Task<WrestlerReadDto> GetWrestlerByIdAsync(int wrestlerId);
         public Task<IEnumerable<WrestlerReadDto>> GetAllWrestlersAsync();
+        public Task<IEnumerable<WrestlingStyle>> GetWrestlingStylesAsync();
     }
 }
