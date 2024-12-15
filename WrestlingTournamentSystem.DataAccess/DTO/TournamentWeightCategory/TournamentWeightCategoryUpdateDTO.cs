@@ -13,7 +13,5 @@ namespace WrestlingTournamentSystem.DataAccess.DTO.TournamentWeightCategory
         [Required]
         public int StatusId { get; set; }
 
-        [Required]
-        public int fk_WeightCategoryId { get; set; }
     }
 }

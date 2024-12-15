@@ -13,9 +13,14 @@ namespace WrestlingTournamentSystem.DataAccess.Repositories
             return await context.TournamentWeightCategoryStatuses.AnyAsync(twcs => twcs.Id == tournamentWeightCategoryStatusId);
         }
 
-        public Task<TournamentWeightCategoryStatus?> GetClosedTournamentWeightCategoryStatus()
+        public async Task<TournamentWeightCategoryStatus?> GetClosedTournamentWeightCategoryStatus()
         {
-            return context.TournamentWeightCategoryStatuses.FirstOrDefaultAsync(twcs => twcs.Name == "Closed");
+            return await context.TournamentWeightCategoryStatuses.FirstOrDefaultAsync(twcs => twcs.Name == "Closed");
         } 
+
+        public async Task<IEnumerable<TournamentWeightCategoryStatus>> GetTournamentWeightCategoryStatusesAsync()
+        {
+            return await context.TournamentWeightCategoryStatuses.ToListAsync();
+        }
     }
 }

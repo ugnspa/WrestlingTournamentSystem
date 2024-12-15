@@ -123,11 +123,6 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
             if(!tournamentWeightCategoryStatusExists)
                 throw new NotFoundException($"Tournament weight category status with id {tournamentWeightCategoryUpdateDto.StatusId} does not exist");
 
-            var weightCategoryExists = await weightCategoryRepository.WeightCategoryExistsAsync(tournamentWeightCategoryUpdateDto.fk_WeightCategoryId);
-
-            if (!weightCategoryExists)
-                throw new NotFoundException($"Weight category with id {tournamentWeightCategoryUpdateDto.fk_WeightCategoryId} does not exist");
-
             validationService.ValidateTournamentWeightCategoryDates(tournament.StartDate, tournament.EndDate, tournamentWeightCategoryUpdateDto.StartDate, tournamentWeightCategoryUpdateDto.EndDate);
 
             mapper.Map(tournamentWeightCategoryUpdateDto, tournamentWeightCategoryToUpdate);
@@ -138,6 +133,13 @@ namespace WrestlingTournamentSystem.BusinessLogic.Services
                 throw new Exception("Failed to update tournament weight category");
 
             return mapper.Map<TournamentWeightCategoryReadDto>(result);
+        }
+
+        public async Task<IEnumerable<TournamentWeightCategoryStatus>> GetTournamentWeightCategoryStatusesAsync()
+        {
+            var tournamentWeightCategoryStatuses = await tournamentWeightCategoryStatusRepository.GetTournamentWeightCategoryStatusesAsync();
+
+            return tournamentWeightCategoryStatuses;
         }
     }
 }

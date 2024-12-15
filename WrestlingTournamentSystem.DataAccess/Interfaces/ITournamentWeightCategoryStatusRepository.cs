@@ -6,5 +6,6 @@ namespace WrestlingTournamentSystem.DataAccess.Interfaces
     {
         public Task<bool> TournamentWeightCategoryStatusExistsAsync(int tournamentWeightCategoryStatusId);
         public Task<TournamentWeightCategoryStatus?> GetClosedTournamentWeightCategoryStatus();
+        Task<IEnumerable<TournamentWeightCategoryStatus>> GetTournamentWeightCategoryStatusesAsync();
     }
 }
