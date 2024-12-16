@@ -10,16 +10,16 @@
 ## **Pagrindinės sistemos naudotojų rolės:**
 
 1. **Varžybų organizatorius**  
-   Asmuo, atsakingas už varžybų ir jų svorio kategorijų kūrimą bei imtynininkų priskyrimą tam tikroms svorio kategorijoms.
+   Asmuo, atsakingas už varžybų ir jų svorio kategorijų kūrimą bei gali priskirti imtynininkus į tam tikras svorio kategorijas.
 
 2. **Treneris**  
-   Treneris gali pridėti imtynininkus į jau sukurtų varžybų svorio kategorijas. Varžybų organizatorius turi patvirtinti pridėjimą.
+   Asmuo, kuris gali peržiūrėti savo imtynininkus.
 
 3. **Svečias**  
-   Naudotojas, kuris gali tik **peržiūrėti** informaciją apie renginius, svorio kategorijas ir imtynininkus. Neturi teisės kurti ar redaguoti informacijos, tačiau gali gauti išsamią informaciją apie vykstančias arba planuojamas varžybas bei juose dalyvaujančius imtynininkus.
+   Naudotojas, kuris gali tik peržiūrėti informaciją apie renginius, svorio kategorijas ir imtynininkus. Svečias neturi teisės kurti ar redaguoti informacijos, tačiau gali gauti išsamią informaciją apie vykstančias arba planuojamas varžybas ir juose dalyvaujančius imtynininkus.
 
 4. **Administratorius**  
-   Asmuo, turintis **visas teises** sistemoje, įskaitant varžybų, svorio kategorijų ir imtynininkų valdymą.
+   Asmuo, kuris turi visas teises sistemoje. Administratorius gali valdyti visas varžybas, svorio kategorijas ir imtynininkus bei užregistruoti nauja naudotoją.
 
 ---
 
