@@ -30,6 +30,10 @@
 - **Duomenų bazė**: MSSQL
 - **Hostingas**: Azure
 
+## **Deployment Diagram**
+![image](https://github.com/user-attachments/assets/26ae2866-f67b-4cf4-80de-6581ec12e732)
+
+
 # Wrestling Tournament System API
 
 ## Overview
