@@ -64,6 +64,8 @@ namespace WrestlingTournamentSystem.Api.Controllers
         /// <param name="wrestlerCreateDto">The wrestler creation data transfer object.</param>
         /// <response code="201">A newly created wrestler within the specified tournament and weight category.</response>
         /// <response code="400">If the details are incorrect.</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Forbidden access</response>
         /// <response code="422">If the birthday is in the future.</response>
         /// <response code="404">If the tournament or weight category is not found.</response>
         [HttpPost]
@@ -94,7 +96,9 @@ namespace WrestlingTournamentSystem.Api.Controllers
         /// <param name="tournamentId">The tournament's identifier.</param>
         /// <param name="weightCategoryId">The weight category's identifier.</param>
         /// <param name="wrestlerId">The wrestler's identifier to remove.</param>
-        /// <response code="204">If the wrestler is successfully removed.</response>
+        /// <response code="200">If the wrestler is successfully removed.</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Forbidden access</response>
         /// <response code="404">If the wrestler, tournament, or weight category is not found.</response>
         [HttpDelete("{wrestlerId}")]
         [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser)]
@@ -127,6 +131,8 @@ namespace WrestlingTournamentSystem.Api.Controllers
         /// <param name="wrestlerUpdateDto">The wrestler update data transfer object.</param>
         /// <response code="200">An updated wrestler if successful.</response>
         /// <response code="400">If the details are incorrect.</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Forbidden access</response>
         /// <response code="422">If the birthday is in the future.</response>
         /// <response code="404">If the wrestler, tournament, or weight category is not found.</response>
         [HttpPut("{wrestlerId}")]
@@ -151,6 +157,12 @@ namespace WrestlingTournamentSystem.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Gets a wrestler by their identifier.
+        /// </summary>
+        /// <param name="id">The wrestler's identifier.</param>
+        /// <response code="200">wrestler by identifier</response>
+        /// <response code="404">If the wrestler is not found.</response>
         [HttpGet("/api/v1/Wrestlers/{id}")]
         public async Task<IActionResult> GetWrestlerById(int id)
         {
@@ -164,7 +176,10 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 return HandleException(e);
             }
         }
-
+        /// <summary>
+        /// Get all wrestlers.
+        /// </summary>
+        /// <response code="200">List of all wreslters</response>
         [HttpGet("/api/v1/Wrestlers")]
         public async Task<IActionResult> GetAllWrestlers()
         {
@@ -179,6 +194,13 @@ namespace WrestlingTournamentSystem.Api.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Get all wrestling styles.
+        /// </summary>
+        /// <response code="200">All wrestling styles</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Forbidden access</response>
         [HttpGet("/api/v1/Wrestlers/WrestlingStyles")]
         [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser)]
         public async Task<IActionResult> GetWrestlingStyles()

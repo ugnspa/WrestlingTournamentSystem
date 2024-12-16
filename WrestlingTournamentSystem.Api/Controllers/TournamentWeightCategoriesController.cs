@@ -60,7 +60,9 @@ namespace WrestlingTournamentSystem.Api.Controllers
         /// </summary>
         /// <param name="tournamentId">The tournament ID.</param>
         /// <param name="weightCategoryId">The weight category ID to delete.</param>
-        /// <response code="204">If the weight category is successfully deleted.</response>
+        /// <response code="200">If the weight category is successfully deleted.</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Forbidden access</response>
         /// <response code="404">If the weight category or tournament is not found.</response>
         [HttpDelete("{weightCategoryId}")]
         [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser)]
@@ -90,6 +92,8 @@ namespace WrestlingTournamentSystem.Api.Controllers
         /// <param name="tournamentWeightCategoryCreateDto">The weight category creation details.</param>
         /// <response code="201">A newly created weight category.</response>
         /// <response code="400">If the details are incorrect.</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Forbidden access</response>
         /// <response code="422">If the end date is less than start date or dates are out of tournament date range.</response>
         /// <response code="404">If the tournament or status is not found.</response>
         [HttpPost]
@@ -122,6 +126,8 @@ namespace WrestlingTournamentSystem.Api.Controllers
         /// <param name="tournamentWeightCategoryUpdateDto">The new details for the weight category.</param>
         /// <response code="200">An updated weight category if details are correct.</response>
         /// <response code="400">If the details are not correct.</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Forbidden access</response>
         /// <response code="422">If the end date is less than start date or dates are out of tournament date range.</response>
         /// <response code="404">If the tournament, weight category, or status is not found.</response>
         [HttpPut("{weightCategoryId}")]
@@ -146,6 +152,13 @@ namespace WrestlingTournamentSystem.Api.Controllers
             }
         }
 
+
+        /// <summary>
+        /// Get all tournament weight category statuses.
+        /// </summary>
+        /// <response code="200">all tournament weight category statuses</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Forbidden access</response>
         [HttpGet("/api/v1/TournamentWeightCategories/Statuses")]
         [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser)]
         public async Task<IActionResult> GetTournamentWeightCategoryStatuses()
@@ -162,6 +175,12 @@ namespace WrestlingTournamentSystem.Api.Controllers
 
         }
 
+        /// <summary>
+        /// Get all tournament weight categories
+        /// </summary>
+        /// <response code="200">all weight categories</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Forbidden access</response>
         [HttpGet("/api/v1/TournamentWeightCategories/WeightCategories")]
         [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser)]
         public async Task<IActionResult> GetWeightCategories()

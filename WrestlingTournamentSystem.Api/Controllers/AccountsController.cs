@@ -21,6 +21,15 @@ namespace WrestlingTournamentSystem.Api.Controllers
     {
         private readonly JwtSettings _jwtSettings = jwtSettings.Value;
 
+
+        /// <summary>
+        /// Register user to the system.
+        /// </summary>
+        /// <param name="registerUserDto">registration information</param>
+        /// <response code="201">If user was successfully created</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Forbidden access</response>
+        /// <response code="422">If passwords do not match or username already taken</response>
         [HttpPost]
         [Route("Register")]
         [Authorize(Roles = UserRoles.Admin)]
@@ -37,6 +46,13 @@ namespace WrestlingTournamentSystem.Api.Controllers
             }
         }
 
+
+        /// <summary>
+        /// login user to the system.
+        /// </summary>
+        /// <param name="loginUserDto">login credentials</param>
+        /// <response code="200">If user successfully logins</response>
+        /// <response code="422">If login is not correct</response>
         [HttpPost]
         [Route("Login")]
         public async Task<IActionResult> Login(LoginUserDto loginUserDto)
@@ -59,8 +75,13 @@ namespace WrestlingTournamentSystem.Api.Controllers
             {
                 return HandleException(ex);
             }
-        } 
+        }
 
+        /// <summary>
+        /// Get Access token from refresh token
+        /// </summary>
+        /// <response code="200">new access token</response>
+        /// <response code="422">if refresh token not found, is invalid or session invalid</response>
         [HttpPost]
         [Route("AccessToken")]
         public async Task<IActionResult> AccessToken()
@@ -96,6 +117,13 @@ namespace WrestlingTournamentSystem.Api.Controllers
 
         }
 
+        /// <summary>
+        /// logout user from the system.
+        /// </summary>
+        /// <response code="200">If successfully logged out, refresh token deleted</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Forbidden access</response>
+        /// <response code="422">refresh token not found</response>
         [HttpPost]
         [Route("Logout")]
         [Authorize]
@@ -122,6 +150,10 @@ namespace WrestlingTournamentSystem.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Get list of all coaches
+        /// </summary>
+        /// <response code="200">list of coaches</response>
         [HttpGet]
         [Route("Coaches")]
         public async Task<IActionResult> GetCoaches() 
@@ -136,7 +168,11 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 return HandleException(ex);
             }
         }
-
+        /// <summary>
+        /// Get coach with wrestlers by id
+        /// </summary>
+        /// <response code="200">coach with all his wrestlers</response>
+        /// <response code="404">coach is not found</response>
         [HttpGet]
         [Route("Coaches/{id}")]
         public async Task<IActionResult> GetCoachWithWrestlers(string id)
@@ -151,7 +187,12 @@ namespace WrestlingTournamentSystem.Api.Controllers
                 return HandleException(ex);
             }
         }
-
+        /// <summary>
+        /// Get admin with wrestlers
+        /// </summary>
+        /// <response code="200">Admin with wreslers</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Forbidden access</response
         [HttpGet]
         [Route("Admin")]
         [Authorize(Roles = UserRoles.Admin)]
@@ -173,6 +214,12 @@ namespace WrestlingTournamentSystem.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// get all user roles
+        /// </summary>
+        /// <response code="200">all user roles</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Forbidden access</response
         [HttpGet]
         [Route("Roles")]
         [Authorize(Roles = UserRoles.Admin)]

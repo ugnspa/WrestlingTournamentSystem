@@ -53,6 +53,8 @@ namespace WrestlingTournamentSystem.Api.Controllers
         /// <param name="tournamentCreateDto">The tournament creation details.</param>
         /// <response code="201">A newly created tournament if details are correct.</response>
         /// <response code="400">If the details are not correct.</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Forbidden access</response>
         /// <response code="422">If end date is less than start date.</response>
         /// <response code="404">If tournament status or tournament was not found.</response>
         [HttpPost]
@@ -82,6 +84,8 @@ namespace WrestlingTournamentSystem.Api.Controllers
         /// <param name="tournamentUpdateDto">The new details to update the tournament.</param>
         /// <response code="200">An updated tournament if details are correct.</response>
         /// <response code="400">If the details are not correct.</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Forbidden access</response>
         /// <response code="422">If end date is less than start date.</response>
         /// <response code="404">If tournament status or tournament was not found.</response>
         [HttpPut("{tournamentId}")]
@@ -110,7 +114,9 @@ namespace WrestlingTournamentSystem.Api.Controllers
         /// Deletes a specific tournament by ID.
         /// </summary>
         /// <param name="id">The ID of the tournament to delete.</param>
-        /// <response code="204">If the tournament is successfully deleted.</response>
+        /// <response code="200">If the tournament is successfully deleted.</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Forbidden access</response>
         /// <response code="404">If the tournament is not found.</response>
         [HttpDelete("{id}")]
         [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser)]
@@ -134,6 +140,12 @@ namespace WrestlingTournamentSystem.Api.Controllers
             }
         }
 
+        /// <summary>
+        /// Get all tournament statuses.
+        /// </summary>
+        /// <response code="200">all tournament statuses</response>
+        /// <response code="401">Not authorized</response>
+        /// <response code="403">Forbidden access</response>
         [HttpGet("Statuses")]
         [Authorize(Roles = UserRoles.Admin + "," + UserRoles.TournamentOrganiser)]
         public async Task<IActionResult> GetTournamentStatuses()
